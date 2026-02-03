@@ -25,54 +25,116 @@ export function Logo({ size = "md", showText = true, className }: LogoProps) {
         xmlns="http://www.w3.org/2000/svg"
         className="shrink-0"
       >
-        {/* Background rounded square */}
-        <rect width="40" height="40" rx="10" className="fill-primary" />
+        {/* Slack-inspired colorful pinwheel of documents */}
         
-        {/* Overlapping document shapes - Slack-inspired */}
-        {/* Back document */}
+        {/* Top-left document - Blue */}
         <rect
-          x="10"
-          y="8"
+          x="4"
+          y="4"
           width="14"
           height="18"
-          rx="2"
-          className="fill-primary-foreground/40"
+          rx="3"
+          fill="#36C5F0"
+        />
+        <rect
+          x="4"
+          y="4"
+          width="6"
+          height="6"
+          rx="3"
+          fill="#36C5F0"
         />
         
-        {/* Front document */}
+        {/* Top-right document - Green */}
+        <rect
+          x="22"
+          y="4"
+          width="14"
+          height="18"
+          rx="3"
+          fill="#2EB67D"
+        />
+        <rect
+          x="30"
+          y="4"
+          width="6"
+          height="6"
+          rx="3"
+          fill="#2EB67D"
+        />
+        
+        {/* Bottom-left document - Yellow */}
+        <rect
+          x="4"
+          y="18"
+          width="14"
+          height="18"
+          rx="3"
+          fill="#ECB22E"
+        />
+        <rect
+          x="4"
+          y="30"
+          width="6"
+          height="6"
+          rx="3"
+          fill="#ECB22E"
+        />
+        
+        {/* Bottom-right document - Red/Pink */}
+        <rect
+          x="22"
+          y="18"
+          width="14"
+          height="18"
+          rx="3"
+          fill="#E01E5A"
+        />
+        <rect
+          x="30"
+          y="30"
+          width="6"
+          height="6"
+          rx="3"
+          fill="#E01E5A"
+        />
+        
+        {/* Center overlap - creates pinwheel effect */}
+        <rect
+          x="14"
+          y="14"
+          width="12"
+          height="12"
+          rx="2"
+          fill="white"
+        />
+        
+        {/* Center document icon */}
         <rect
           x="16"
-          y="14"
-          width="14"
-          height="18"
-          rx="2"
-          className="fill-primary-foreground"
-        />
-        
-        {/* Document lines on front */}
-        <rect
-          x="19"
-          y="19"
+          y="16"
           width="8"
-          height="2"
-          rx="1"
-          className="fill-primary/60"
+          height="8"
+          rx="1.5"
+          fill="#611f69"
         />
         <rect
-          x="19"
-          y="23"
-          width="6"
-          height="2"
-          rx="1"
-          className="fill-primary/40"
+          x="18"
+          y="18"
+          width="4"
+          height="1"
+          rx="0.5"
+          fill="white"
+          opacity="0.8"
         />
         <rect
-          x="19"
-          y="27"
-          width="7"
-          height="2"
-          rx="1"
-          className="fill-primary/40"
+          x="18"
+          y="20"
+          width="3"
+          height="1"
+          rx="0.5"
+          fill="white"
+          opacity="0.6"
         />
       </svg>
       
