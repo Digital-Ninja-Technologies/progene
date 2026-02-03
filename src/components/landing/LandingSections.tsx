@@ -641,6 +641,166 @@ export function LandingTestimonials() {
   );
 }
 
+const pricingPlans = [
+  {
+    name: "Free",
+    description: "Perfect for trying out ScopeGen",
+    price: "$0",
+    period: "forever",
+    color: "border-border",
+    buttonColor: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    buttonText: "Get Started Free",
+    popular: false,
+    features: [
+      { text: "2 proposals included", included: true },
+      { text: "All project types", included: true },
+      { text: "Smart pricing engine", included: true },
+      { text: "PDF export", included: true },
+      { text: "Unlimited proposals", included: false },
+      { text: "Priority support", included: false },
+      { text: "Custom branding", included: false },
+      { text: "Team collaboration", included: false },
+    ],
+  },
+  {
+    name: "Pro",
+    description: "For busy freelancers",
+    price: "$19",
+    period: "/month",
+    color: "border-[#2EB67D] ring-2 ring-[#2EB67D]/20",
+    buttonColor: "bg-gradient-to-r from-[#36C5F0] to-[#2EB67D] hover:opacity-90 text-white",
+    buttonText: "Start Pro Trial",
+    popular: true,
+    features: [
+      { text: "Unlimited proposals", included: true, highlight: true },
+      { text: "All project types", included: true },
+      { text: "Smart pricing engine", included: true },
+      { text: "PDF export", included: true },
+      { text: "Priority support", included: true },
+      { text: "Custom branding", included: true },
+      { text: "Proposal analytics", included: true },
+      { text: "Team collaboration", included: false },
+    ],
+  },
+  {
+    name: "Agency",
+    description: "For teams and agencies",
+    price: "$49",
+    period: "/month",
+    color: "border-[#E01E5A]",
+    buttonColor: "bg-[#E01E5A] hover:bg-[#E01E5A]/90 text-white",
+    buttonText: "Contact Sales",
+    popular: false,
+    features: [
+      { text: "Unlimited proposals", included: true, highlight: true },
+      { text: "All project types", included: true },
+      { text: "Smart pricing engine", included: true },
+      { text: "PDF export", included: true },
+      { text: "Priority support", included: true },
+      { text: "Custom branding", included: true },
+      { text: "Proposal analytics", included: true },
+      { text: "Team collaboration (5 seats)", included: true, highlight: true },
+    ],
+  },
+];
+
+export function LandingPricing() {
+  return (
+    <section className="py-24 lg:py-32 bg-card relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-[20%] w-72 h-72 rounded-full bg-[#36C5F0]/5 blur-3xl" />
+        <div className="absolute bottom-0 left-[10%] w-96 h-96 rounded-full bg-[#E01E5A]/5 blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#2EB67D]/10 px-4 py-2 text-sm text-[#2EB67D] font-medium mb-6">
+            <DollarSign className="h-4 w-4" />
+            <span>Simple Pricing</span>
+          </div>
+          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+            Start free, upgrade when
+            <br />
+            <span className="bg-gradient-to-r from-[#2EB67D] to-[#36C5F0] bg-clip-text text-transparent">you're ready</span>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Try ScopeGen with 2 free proposals. No credit card required. 
+            Upgrade anytime for unlimited access.
+          </p>
+        </div>
+
+        {/* Pricing cards */}
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {pricingPlans.map((plan, index) => (
+            <div
+              key={plan.name}
+              className={`relative bg-background rounded-2xl p-8 border-2 ${plan.color} transition-all duration-300 hover:shadow-xl animate-fade-in-up`}
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              {/* Popular badge */}
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                  <div className="bg-gradient-to-r from-[#36C5F0] to-[#2EB67D] text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg">
+                    Most Popular
+                  </div>
+                </div>
+              )}
+
+              {/* Plan header */}
+              <div className="text-center mb-8">
+                <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+                <p className="text-sm text-muted-foreground mb-4">{plan.description}</p>
+                <div className="flex items-baseline justify-center gap-1">
+                  <span className="text-5xl font-bold">{plan.price}</span>
+                  <span className="text-muted-foreground">{plan.period}</span>
+                </div>
+              </div>
+
+              {/* Features list */}
+              <ul className="space-y-4 mb-8">
+                {plan.features.map((feature, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    {feature.included ? (
+                      <div className={`h-5 w-5 rounded-full flex items-center justify-center ${feature.highlight ? 'bg-[#2EB67D]' : 'bg-[#2EB67D]/20'}`}>
+                        <CheckCircle2 className={`h-3 w-3 ${feature.highlight ? 'text-white' : 'text-[#2EB67D]'}`} />
+                      </div>
+                    ) : (
+                      <div className="h-5 w-5 rounded-full bg-muted flex items-center justify-center">
+                        <XCircle className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                    )}
+                    <span className={feature.included ? 'text-foreground' : 'text-muted-foreground'}>
+                      {feature.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* CTA button */}
+              <Button 
+                className={`w-full rounded-full ${plan.buttonColor}`}
+                size="lg"
+                asChild
+              >
+                <Link to="/wizard">{plan.buttonText}</Link>
+              </Button>
+            </div>
+          ))}
+        </div>
+
+        {/* Money-back guarantee */}
+        <div className="mt-12 text-center">
+          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <Shield className="h-4 w-4 text-[#2EB67D]" />
+            <span>14-day money-back guarantee on all paid plans</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function LandingCTA() {
   return (
     <section className="py-24 lg:py-32 relative overflow-hidden">
