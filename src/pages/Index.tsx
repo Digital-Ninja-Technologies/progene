@@ -6,6 +6,7 @@ import {
   LandingStats,
   LandingHowItWorks,
   LandingProjectTypes,
+  LandingTestimonials,
   LandingCTA,
   LandingFooter,
 } from "@/components/landing/LandingSections";
@@ -21,6 +22,7 @@ const Index = () => {
         <LandingFeatures />
         <LandingHowItWorks />
         <LandingProjectTypes />
+        <LandingTestimonials />
         <LandingCTA />
       </main>
       <LandingFooter />

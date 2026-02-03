@@ -13,7 +13,9 @@ import {
   Sparkles,
   Target,
   Shield,
-  Rocket
+  Rocket,
+  Quote,
+  Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -494,6 +496,145 @@ export function LandingHowItWorks() {
               <p className="text-sm text-muted-foreground">{step.description}</p>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const testimonials = [
+  {
+    quote: "I used to spend 3+ hours on every proposal. Now I'm done in 10 minutes and my close rate actually went UP. This thing pays for itself.",
+    name: "Sarah Chen",
+    role: "Freelance WordPress Developer",
+    avatar: "SC",
+    color: "from-[#36C5F0] to-[#2EB67D]",
+    platform: "WordPress",
+  },
+  {
+    quote: "Finally stopped undercharging for my Webflow projects. ScopeGen helped me realize I was leaving thousands on the table every month.",
+    name: "Marcus Johnson",
+    role: "Webflow Agency Owner",
+    avatar: "MJ",
+    color: "from-[#2EB67D] to-[#ECB22E]",
+    platform: "Webflow",
+  },
+  {
+    quote: "The scope documents are incredibly detailed. My clients actually read them now and we have way fewer 'that wasn't in the scope' conversations.",
+    name: "Emily Rodriguez",
+    role: "Framer Designer",
+    avatar: "ER",
+    color: "from-[#ECB22E] to-[#E01E5A]",
+    platform: "Framer",
+  },
+  {
+    quote: "Game changer for my Shopify agency. We've standardized our proposals across the team and everyone prices consistently now.",
+    name: "David Park",
+    role: "Shopify Plus Partner",
+    avatar: "DP",
+    color: "from-[#E01E5A] to-[#36C5F0]",
+    platform: "Shopify",
+  },
+  {
+    quote: "I was nervous about raising my rates. ScopeGen showed me exactly how to justify higher prices with detailed scope breakdowns. Clients actually respect it more.",
+    name: "Jessica Williams",
+    role: "Full-Stack Freelancer",
+    avatar: "JW",
+    color: "from-[#36C5F0] to-[#E01E5A]",
+    platform: "WordPress",
+  },
+  {
+    quote: "The best part? No more awkward pricing conversations. I just send the proposal and let ScopeGen do the talking.",
+    name: "Alex Thompson",
+    role: "Web Design Studio",
+    avatar: "AT",
+    color: "from-[#2EB67D] to-[#36C5F0]",
+    platform: "Webflow",
+  },
+];
+
+export function LandingTestimonials() {
+  return (
+    <section className="py-24 lg:py-32 bg-background relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 left-[5%] w-64 h-64 rounded-full bg-[#36C5F0]/5 blur-3xl" />
+        <div className="absolute bottom-20 right-[5%] w-80 h-80 rounded-full bg-[#E01E5A]/5 blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#E01E5A]/10 px-4 py-2 text-sm text-[#E01E5A] font-medium mb-6">
+            <Users className="h-4 w-4" />
+            <span>Loved by Freelancers</span>
+          </div>
+          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+            Don't take our word for it.
+            <br />
+            <span className="bg-gradient-to-r from-[#36C5F0] via-[#2EB67D] to-[#E01E5A] bg-clip-text text-transparent">Hear from real freelancers.</span>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Thousands of developers trust ScopeGen to price their projects accurately and win more clients.
+          </p>
+        </div>
+
+        {/* Testimonials grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {testimonials.map((testimonial, index) => (
+            <div
+              key={testimonial.name}
+              className="group bg-card rounded-2xl p-6 border border-border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in-up relative"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              {/* Quote icon */}
+              <div className={`absolute -top-3 -left-3 w-8 h-8 rounded-xl bg-gradient-to-br ${testimonial.color} flex items-center justify-center shadow-lg`}>
+                <Quote className="h-4 w-4 text-white" />
+              </div>
+
+              {/* Stars */}
+              <div className="flex gap-1 mb-4 pt-2">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-[#ECB22E] text-[#ECB22E]" />
+                ))}
+              </div>
+
+              {/* Quote */}
+              <p className="text-foreground mb-6 leading-relaxed">
+                "{testimonial.quote}"
+              </p>
+
+              {/* Author */}
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${testimonial.color} flex items-center justify-center text-white font-semibold text-sm`}>
+                  {testimonial.avatar}
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-sm">{testimonial.name}</p>
+                  <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                </div>
+                <div className="text-xs font-medium px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                  {testimonial.platform}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom social proof */}
+        <div className="mt-16 text-center">
+          <div className="inline-flex items-center gap-3 bg-card rounded-full px-6 py-3 border border-border shadow-sm">
+            <div className="flex -space-x-2">
+              <div className="w-8 h-8 rounded-full bg-[#36C5F0] border-2 border-card flex items-center justify-center text-white text-xs font-semibold">S</div>
+              <div className="w-8 h-8 rounded-full bg-[#2EB67D] border-2 border-card flex items-center justify-center text-white text-xs font-semibold">M</div>
+              <div className="w-8 h-8 rounded-full bg-[#ECB22E] border-2 border-card flex items-center justify-center text-white text-xs font-semibold">E</div>
+              <div className="w-8 h-8 rounded-full bg-[#E01E5A] border-2 border-card flex items-center justify-center text-white text-xs font-semibold">D</div>
+              <div className="w-8 h-8 rounded-full bg-primary border-2 border-card flex items-center justify-center text-white text-xs font-semibold">+</div>
+            </div>
+            <div className="text-sm">
+              <span className="font-semibold">2,500+</span>
+              <span className="text-muted-foreground"> freelancers trust ScopeGen</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
