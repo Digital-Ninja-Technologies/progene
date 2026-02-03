@@ -285,7 +285,7 @@ export function LandingCTA() {
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-primary-foreground/80 mb-12">
             Join freelancers and agencies who've stopped underpricing their work. 
-            Start with 3 free proposals—no credit card required.
+            Start with 2 free proposals—no credit card required.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button variant="secondary" size="xl" className="rounded-lg" asChild>
