@@ -28,6 +28,9 @@ const features = [
 const projectTypes = [
   "Framer Landing Pages",
   "Framer Marketing Sites",
+  "Webflow Landing Pages",
+  "Webflow Marketing Sites",
+  "Webflow E-commerce",
   "WordPress Blogs",
   "WordPress Business Sites",
   "WordPress E-commerce",

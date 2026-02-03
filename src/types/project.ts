@@ -1,6 +1,9 @@
 export type ProjectType = 
   | 'framer-landing'
   | 'framer-marketing'
+  | 'webflow-landing'
+  | 'webflow-marketing'
+  | 'webflow-ecommerce'
   | 'wordpress-blog'
   | 'wordpress-business'
   | 'wordpress-ecommerce'
@@ -54,6 +57,24 @@ export const PROJECT_TYPES: { value: ProjectType; label: string; description: st
     icon: '✨',
   },
   {
+    value: 'webflow-landing',
+    label: 'Webflow Landing Page',
+    description: 'High-converting landing page with interactions',
+    icon: '🚀',
+  },
+  {
+    value: 'webflow-marketing',
+    label: 'Webflow Marketing Website',
+    description: 'Multi-page marketing site with CMS',
+    icon: '💼',
+  },
+  {
+    value: 'webflow-ecommerce',
+    label: 'Webflow E-commerce',
+    description: 'Online store with Webflow Commerce',
+    icon: '🛍️',
+  },
+  {
     value: 'wordpress-blog',
     label: 'WordPress Blog',
     description: 'Content-focused blog with custom theme',
@@ -102,6 +123,9 @@ export const CURRENCIES: { value: Currency; symbol: string; label: string }[] = 
 export const BASE_HOURS: Record<ProjectType, number> = {
   'framer-landing': 16,
   'framer-marketing': 32,
+  'webflow-landing': 18,
+  'webflow-marketing': 36,
+  'webflow-ecommerce': 56,
   'wordpress-blog': 24,
   'wordpress-business': 40,
   'wordpress-ecommerce': 64,
@@ -112,6 +136,9 @@ export const BASE_HOURS: Record<ProjectType, number> = {
 export const HOURS_PER_PAGE: Record<ProjectType, number> = {
   'framer-landing': 3,
   'framer-marketing': 4,
+  'webflow-landing': 3.5,
+  'webflow-marketing': 4,
+  'webflow-ecommerce': 4.5,
   'wordpress-blog': 2,
   'wordpress-business': 3,
   'wordpress-ecommerce': 4,
