@@ -20,6 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Logo } from "@/components/brand/Logo";
+import { ScrollReveal, StaggerContainer } from "@/components/animations/ScrollReveal";
 
 const features = [
   {
@@ -259,7 +260,7 @@ export function LandingPainPoints() {
       </div>
 
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <ScrollReveal className="text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#E01E5A]/10 px-4 py-2 text-sm text-[#E01E5A] font-medium mb-6">
             <AlertTriangle className="h-4 w-4" />
             <span>Sound familiar?</span>
@@ -269,63 +270,64 @@ export function LandingPainPoints() {
             <br />
             <span className="text-muted-foreground">Proposals shouldn't be.</span>
           </h2>
-        </div>
+        </ScrollReveal>
 
-        {/* Pain points vs Solutions */}
         <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {/* Pain column */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="h-8 w-8 rounded-full bg-[#E01E5A]/20 flex items-center justify-center">
-                <XCircle className="h-4 w-4 text-[#E01E5A]" />
+          <ScrollReveal direction="left" delay={100}>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="h-8 w-8 rounded-full bg-[#E01E5A]/20 flex items-center justify-center">
+                  <XCircle className="h-4 w-4 text-[#E01E5A]" />
+                </div>
+                <span className="font-semibold text-[#E01E5A]">Without ScopeGen</span>
               </div>
-              <span className="font-semibold text-[#E01E5A]">Without ScopeGen</span>
-            </div>
-            {painPoints.map((point, index) => (
-              <div
-                key={point.title}
-                className="bg-[#E01E5A]/5 border border-[#E01E5A]/20 rounded-2xl p-6 animate-fade-in-up"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-[#E01E5A]/10 flex items-center justify-center flex-shrink-0">
-                    <point.icon className="h-5 w-5 text-[#E01E5A]" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">{point.title}</h3>
-                    <p className="text-sm text-muted-foreground">{point.description}</p>
+              {painPoints.map((point, index) => (
+                <div
+                  key={point.title}
+                  className="bg-[#E01E5A]/5 border border-[#E01E5A]/20 rounded-2xl p-6"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="h-10 w-10 rounded-xl bg-[#E01E5A]/10 flex items-center justify-center flex-shrink-0">
+                      <point.icon className="h-5 w-5 text-[#E01E5A]" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">{point.title}</h3>
+                      <p className="text-sm text-muted-foreground">{point.description}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </ScrollReveal>
 
           {/* Solution column */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-6">
-              <div className="h-8 w-8 rounded-full bg-[#2EB67D]/20 flex items-center justify-center">
-                <CheckCircle2 className="h-4 w-4 text-[#2EB67D]" />
+          <ScrollReveal direction="right" delay={200}>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-6">
+                <div className="h-8 w-8 rounded-full bg-[#2EB67D]/20 flex items-center justify-center">
+                  <CheckCircle2 className="h-4 w-4 text-[#2EB67D]" />
+                </div>
+                <span className="font-semibold text-[#2EB67D]">With ScopeGen</span>
               </div>
-              <span className="font-semibold text-[#2EB67D]">With ScopeGen</span>
-            </div>
-            {solutions.map((point, index) => (
-              <div
-                key={point.title}
-                className="bg-[#2EB67D]/5 border border-[#2EB67D]/20 rounded-2xl p-6 animate-fade-in-up"
-                style={{ animationDelay: `${index * 100 + 300}ms` }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-[#2EB67D]/10 flex items-center justify-center flex-shrink-0">
-                    <point.icon className="h-5 w-5 text-[#2EB67D]" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">{point.title}</h3>
-                    <p className="text-sm text-muted-foreground">{point.description}</p>
+              {solutions.map((point, index) => (
+                <div
+                  key={point.title}
+                  className="bg-[#2EB67D]/5 border border-[#2EB67D]/20 rounded-2xl p-6"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="h-10 w-10 rounded-xl bg-[#2EB67D]/10 flex items-center justify-center flex-shrink-0">
+                      <point.icon className="h-5 w-5 text-[#2EB67D]" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">{point.title}</h3>
+                      <p className="text-sm text-muted-foreground">{point.description}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>
@@ -336,7 +338,7 @@ export function LandingFeatures() {
   return (
     <section className="py-24 lg:py-32 bg-card">
       <div className="container mx-auto px-4">
-        <div className="mx-auto max-w-3xl text-center mb-20">
+        <ScrollReveal className="mx-auto max-w-3xl text-center mb-20">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#36C5F0]/10 px-4 py-2 text-sm text-[#36C5F0] font-medium mb-6">
             <Zap className="h-4 w-4" />
             <span>Features</span>
@@ -349,14 +351,13 @@ export function LandingFeatures() {
           <p className="text-lg text-muted-foreground">
             Built specifically for WordPress, Framer, Webflow, and Shopify developers.
           </p>
-        </div>
+        </ScrollReveal>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature, index) => (
+        <StaggerContainer className="grid gap-6 md:grid-cols-2 lg:grid-cols-4" staggerDelay={100}>
+          {features.map((feature) => (
             <div
               key={feature.title}
-              className="group bg-background rounded-2xl p-8 border border-border hover:shadow-xl hover:border-transparent hover:-translate-y-1 transition-all duration-300 animate-fade-in-up"
-              style={{ animationDelay: `${index * 100}ms` }}
+              className="group bg-background rounded-2xl p-8 border border-border hover:shadow-xl hover:border-transparent hover:-translate-y-1 transition-all duration-300"
             >
               <div className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ${feature.color} transition-transform group-hover:scale-110`}>
                 <feature.icon className="h-6 w-6" />
@@ -365,7 +366,7 @@ export function LandingFeatures() {
               <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
             </div>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
@@ -375,14 +376,14 @@ export function LandingStats() {
   return (
     <section className="py-16 bg-gradient-to-r from-[#36C5F0] via-[#2EB67D] to-[#ECB22E]">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-3 gap-8">
-          {stats.map((stat, index) => (
-            <div key={stat.label} className="text-center text-white animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
+        <StaggerContainer className="grid md:grid-cols-3 gap-8" staggerDelay={150}>
+          {stats.map((stat) => (
+            <div key={stat.label} className="text-center text-white">
               <p className="text-5xl font-bold mb-2">{stat.value}</p>
               <p className="text-white/80">{stat.label}</p>
             </div>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
@@ -392,7 +393,7 @@ export function LandingProjectTypes() {
   return (
     <section className="py-24 lg:py-32 overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <ScrollReveal className="text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#ECB22E]/10 px-4 py-2 text-sm text-[#ECB22E] font-medium mb-6">
             <Target className="h-4 w-4" />
             <span>Project Types</span>
@@ -406,21 +407,21 @@ export function LandingProjectTypes() {
             Whether you're building a simple landing page or a complex e-commerce site, 
             ScopeGen understands the nuances and calculates accurate estimates.
           </p>
-        </div>
+        </ScrollReveal>
 
-        {/* Animated project type cards */}
-        <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
-          {projectTypes.map((type, index) => (
-            <div
-              key={type.name}
-              className="group flex items-center gap-2 bg-card border border-border rounded-full px-4 py-2 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animate-fade-in-up cursor-default"
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              <div className={`w-2 h-2 rounded-full ${type.color}`} />
-              <span className="text-sm font-medium">{type.name}</span>
-            </div>
-          ))}
-        </div>
+        <ScrollReveal delay={200}>
+          <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+            {projectTypes.map((type) => (
+              <div
+                key={type.name}
+                className="group flex items-center gap-2 bg-card border border-border rounded-full px-4 py-2 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-default"
+              >
+                <div className={`w-2 h-2 rounded-full ${type.color}`} />
+                <span className="text-sm font-medium">{type.name}</span>
+              </div>
+            ))}
+          </div>
+        </ScrollReveal>
 
         {/* CTA */}
         <div className="text-center mt-12">
@@ -467,7 +468,7 @@ export function LandingHowItWorks() {
   return (
     <section className="py-24 lg:py-32 bg-card">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
+        <ScrollReveal className="text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm text-primary font-medium mb-6">
             <Rocket className="h-4 w-4" />
             <span>How It Works</span>
@@ -477,14 +478,13 @@ export function LandingHowItWorks() {
             <br />
             <span className="bg-gradient-to-r from-[#36C5F0] via-[#2EB67D] via-[#ECB22E] to-[#E01E5A] bg-clip-text text-transparent">in 4 simple steps</span>
           </h2>
-        </div>
+        </ScrollReveal>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {steps.map((step, index) => (
+        <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto" staggerDelay={100}>
+          {steps.map((step) => (
             <div
               key={step.number}
-              className="relative bg-background rounded-2xl p-8 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in-up"
-              style={{ animationDelay: `${index * 100}ms` }}
+              className="relative bg-background rounded-2xl p-8 border border-border hover:shadow-lg transition-all duration-300"
             >
               <div className={`text-6xl font-bold bg-gradient-to-br ${step.color} bg-clip-text text-transparent opacity-20 absolute top-4 right-4`}>
                 {step.number}
@@ -496,7 +496,7 @@ export function LandingHowItWorks() {
               <p className="text-sm text-muted-foreground">{step.description}</p>
             </div>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
@@ -563,7 +563,7 @@ export function LandingTestimonials() {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16">
+        <ScrollReveal className="text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#E01E5A]/10 px-4 py-2 text-sm text-[#E01E5A] font-medium mb-6">
             <Users className="h-4 w-4" />
             <span>Loved by Freelancers</span>
@@ -576,15 +576,13 @@ export function LandingTestimonials() {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Thousands of developers trust ScopeGen to price their projects accurately and win more clients.
           </p>
-        </div>
+        </ScrollReveal>
 
-        {/* Testimonials grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {testimonials.map((testimonial, index) => (
+        <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto" staggerDelay={100}>
+          {testimonials.map((testimonial) => (
             <div
               key={testimonial.name}
-              className="group bg-card rounded-2xl p-6 border border-border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in-up relative"
-              style={{ animationDelay: `${index * 100}ms` }}
+              className="group bg-card rounded-2xl p-6 border border-border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative"
             >
               {/* Quote icon */}
               <div className={`absolute -top-3 -left-3 w-8 h-8 rounded-xl bg-gradient-to-br ${testimonial.color} flex items-center justify-center shadow-lg`}>
@@ -618,7 +616,7 @@ export function LandingTestimonials() {
               </div>
             </div>
           ))}
-        </div>
+        </StaggerContainer>
 
         {/* Bottom social proof */}
         <div className="mt-16 text-center">
@@ -714,7 +712,7 @@ export function LandingPricing() {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16">
+        <ScrollReveal className="text-center mb-16">
           <div className="inline-flex items-center gap-2 rounded-full bg-[#2EB67D]/10 px-4 py-2 text-sm text-[#2EB67D] font-medium mb-6">
             <DollarSign className="h-4 w-4" />
             <span>Simple Pricing</span>
@@ -728,15 +726,13 @@ export function LandingPricing() {
             Try ScopeGen with 2 free proposals. No credit card required. 
             Upgrade anytime for unlimited access.
           </p>
-        </div>
+        </ScrollReveal>
 
-        {/* Pricing cards */}
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {pricingPlans.map((plan, index) => (
+        <StaggerContainer className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto" staggerDelay={150}>
+          {pricingPlans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative bg-background rounded-2xl p-8 border-2 ${plan.color} transition-all duration-300 hover:shadow-xl animate-fade-in-up`}
-              style={{ animationDelay: `${index * 100}ms` }}
+              className={`relative bg-background rounded-2xl p-8 border-2 ${plan.color} transition-all duration-300 hover:shadow-xl`}
             >
               {/* Popular badge */}
               {plan.popular && (
@@ -787,7 +783,7 @@ export function LandingPricing() {
               </Button>
             </div>
           ))}
-        </div>
+        </StaggerContainer>
 
         {/* Money-back guarantee */}
         <div className="mt-12 text-center">
