@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { format } from "date-fns";
-import { Copy, Eye, Trash2, Calendar, Clock, DollarSign } from "lucide-react";
+import { Copy, Eye, Trash2, Calendar, Clock, DollarSign, Share2, Link as LinkIcon, Check, Globe, GlobeLock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PROJECT_TYPES, CURRENCIES } from "@/types/project";
 import { SavedProposal } from "@/pages/DashboardPage";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +20,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface ProposalCardProps {
   proposal: SavedProposal;
@@ -28,10 +36,58 @@ export function ProposalCard({ proposal, onDelete, onDuplicate }: ProposalCardPr
   const navigate = useNavigate();
   const projectType = PROJECT_TYPES.find((t) => t.value === proposal.project_type);
   const currency = CURRENCIES.find((c) => c.value === proposal.project_config.currency);
+  const [isPublic, setIsPublic] = useState((proposal as any).is_public || false);
+  const [shareToken, setShareToken] = useState((proposal as any).share_token || null);
+  const [copied, setCopied] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   const handleView = () => {
     navigate(`/proposal/${proposal.id}`);
   };
+
+  const togglePublic = async () => {
+    setUpdating(true);
+    const { error } = await supabase
+      .from("proposals")
+      .update({ is_public: !isPublic })
+      .eq("id", proposal.id);
+
+    if (error) {
+      toast.error("Failed to update sharing settings");
+    } else {
+      setIsPublic(!isPublic);
+      toast.success(isPublic ? "Proposal is now private" : "Proposal is now shareable!");
+    }
+    setUpdating(false);
+  };
+
+  const copyShareLink = async () => {
+    if (!shareToken) {
+      // Fetch the share token
+      const { data } = await supabase
+        .from("proposals")
+        .select("share_token")
+        .eq("id", proposal.id)
+        .single();
+      
+      if (data?.share_token) {
+        setShareToken(data.share_token);
+        await copyToClipboard(data.share_token);
+      }
+    } else {
+      await copyToClipboard(shareToken);
+    }
+  };
+
+  const copyToClipboard = async (token: string) => {
+    const url = `${window.location.origin}/p/${token}`;
+    await navigator.clipboard.writeText(url);
+    setCopied(true);
+    toast.success("Link copied to clipboard!");
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const isSigned = !!(proposal as any).client_signed_at;
 
   return (
     <Card className="group hover:shadow-lg transition-all duration-200 hover:border-primary/20">
@@ -48,9 +104,16 @@ export function ProposalCard({ proposal, onDelete, onDuplicate }: ProposalCardPr
               </p>
             </div>
           </div>
-          <Badge variant="secondary" className="shrink-0">
-            {proposal.pricing_result.complexityLevel}
-          </Badge>
+          <div className="flex items-center gap-1.5">
+            {isSigned && (
+              <Badge className="bg-green-500/10 text-green-600 border-green-500/20 shrink-0">
+                Signed
+              </Badge>
+            )}
+            <Badge variant="secondary" className="shrink-0">
+              {proposal.pricing_result.complexityLevel}
+            </Badge>
+          </div>
         </div>
       </CardHeader>
 
@@ -94,15 +157,67 @@ export function ProposalCard({ proposal, onDelete, onDuplicate }: ProposalCardPr
           <Eye className="mr-1.5 h-3.5 w-3.5" />
           View
         </Button>
+        
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className="flex-1">
+              <Share2 className="mr-1.5 h-3.5 w-3.5" />
+              Share
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-64" align="center">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {isPublic ? (
+                    <Globe className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <GlobeLock className="h-4 w-4 text-muted-foreground" />
+                  )}
+                  <span className="text-sm font-medium">
+                    {isPublic ? "Public" : "Private"}
+                  </span>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={togglePublic}
+                  disabled={updating}
+                >
+                  {isPublic ? "Make Private" : "Make Public"}
+                </Button>
+              </div>
+              {isPublic && (
+                <Button 
+                  className="w-full" 
+                  size="sm" 
+                  onClick={copyShareLink}
+                >
+                  {copied ? (
+                    <>
+                      <Check className="mr-1.5 h-3.5 w-3.5" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <LinkIcon className="mr-1.5 h-3.5 w-3.5" />
+                      Copy Link
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
+
         <Button
           variant="outline"
-          size="sm"
-          className="flex-1"
+          size="icon-sm"
           onClick={() => onDuplicate(proposal)}
         >
-          <Copy className="mr-1.5 h-3.5 w-3.5" />
-          Duplicate
+          <Copy className="h-4 w-4" />
         </Button>
+        
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="ghost" size="icon-sm" className="text-destructive hover:text-destructive">

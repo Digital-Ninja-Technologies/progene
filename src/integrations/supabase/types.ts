@@ -14,6 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      branding_settings: {
+        Row: {
+          address: string | null
+          company_name: string | null
+          created_at: string
+          email: string | null
+          id: string
+          logo_url: string | null
+          phone: string | null
+          primary_color: string | null
+          secondary_color: string | null
+          tagline: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          tagline?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          tagline?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      clients: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -53,38 +137,177 @@ export type Database = {
         }
         Relationships: []
       }
-      proposals: {
+      proposal_templates: {
         Row: {
           created_at: string
-          document_details: Json | null
+          description: string | null
           id: string
-          pricing_result: Json
+          is_default: boolean | null
+          name: string
           project_config: Json
-          project_type: string
-          proposal_data: Json
+          updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
-          document_details?: Json | null
+          description?: string | null
           id?: string
-          pricing_result: Json
+          is_default?: boolean | null
+          name: string
           project_config: Json
-          project_type: string
-          proposal_data: Json
+          updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
+          description?: string | null
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          project_config?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      proposal_views: {
+        Row: {
+          id: string
+          proposal_id: string
+          viewed_at: string
+          viewer_ip: string | null
+          viewer_user_agent: string | null
+        }
+        Insert: {
+          id?: string
+          proposal_id: string
+          viewed_at?: string
+          viewer_ip?: string | null
+          viewer_user_agent?: string | null
+        }
+        Update: {
+          id?: string
+          proposal_id?: string
+          viewed_at?: string
+          viewer_ip?: string | null
+          viewer_user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_views_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposals: {
+        Row: {
+          client_id: string | null
+          client_signature: string | null
+          client_signed_at: string | null
+          created_at: string
+          document_details: Json | null
+          id: string
+          is_public: boolean | null
+          pricing_result: Json
+          project_config: Json
+          project_type: string
+          proposal_data: Json
+          share_token: string | null
+          user_id: string
+        }
+        Insert: {
+          client_id?: string | null
+          client_signature?: string | null
+          client_signed_at?: string | null
+          created_at?: string
           document_details?: Json | null
           id?: string
+          is_public?: boolean | null
+          pricing_result: Json
+          project_config: Json
+          project_type: string
+          proposal_data: Json
+          share_token?: string | null
+          user_id: string
+        }
+        Update: {
+          client_id?: string | null
+          client_signature?: string | null
+          client_signed_at?: string | null
+          created_at?: string
+          document_details?: Json | null
+          id?: string
+          is_public?: boolean | null
           pricing_result?: Json
           project_config?: Json
           project_type?: string
           proposal_data?: Json
+          share_token?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "proposals_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_entries: {
+        Row: {
+          billable: boolean | null
+          client_id: string | null
+          created_at: string
+          date: string
+          description: string
+          hours: number
+          id: string
+          proposal_id: string | null
+          user_id: string
+        }
+        Insert: {
+          billable?: boolean | null
+          client_id?: string | null
+          created_at?: string
+          date?: string
+          description: string
+          hours: number
+          id?: string
+          proposal_id?: string | null
+          user_id: string
+        }
+        Update: {
+          billable?: boolean | null
+          client_id?: string | null
+          created_at?: string
+          date?: string
+          description?: string
+          hours?: number
+          id?: string
+          proposal_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_entries_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_entries_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
