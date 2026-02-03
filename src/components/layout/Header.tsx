@@ -1,4 +1,4 @@
-import { FileText, LogOut, User } from "lucide-react";
+import { FileText, LayoutDashboard, LogOut, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/contexts/AuthContext";
@@ -25,6 +25,12 @@ export function Header() {
           <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             Home
           </Link>
+          {user && (
+            <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
+              <LayoutDashboard className="h-3.5 w-3.5" />
+              My Proposals
+            </Link>
+          )}
           <Link to="/wizard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             Create Proposal
           </Link>
