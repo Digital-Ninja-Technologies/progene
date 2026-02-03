@@ -15,12 +15,19 @@ import {
   Shield,
   Rocket,
   Quote,
-  Star
+  Star,
+  HelpCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Logo } from "@/components/brand/Logo";
 import { ScrollReveal, StaggerContainer } from "@/components/animations/ScrollReveal";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const features = [
   {
@@ -792,6 +799,79 @@ export function LandingPricing() {
             <span>14-day money-back guarantee on all paid plans</span>
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+const faqs = [
+  {
+    question: "How does ScopeGen calculate pricing?",
+    answer: "ScopeGen uses a smart pricing engine that considers project type, number of pages, integrations, animations, CMS requirements, and urgency. It factors in your hourly rate and applies industry-standard multipliers to give you accurate estimates based on real market data."
+  },
+  {
+    question: "What's included in the free plan?",
+    answer: "The free plan includes 2 complete proposals with full access to all features—project types, integrations, PDF export, and the pricing calculator. No credit card required to get started."
+  },
+  {
+    question: "Can I customize the proposals?",
+    answer: "Yes! You can adjust your hourly rate, add client details, customize the scope of work, and modify deliverables before exporting. The proposal adapts to your specific project requirements."
+  },
+  {
+    question: "What project types are supported?",
+    answer: "ScopeGen supports Framer, Webflow, Shopify, and WordPress projects—covering everything from simple landing pages to complex e-commerce stores and membership sites."
+  },
+  {
+    question: "How accurate are the pricing estimates?",
+    answer: "Our pricing is based on real market rates and project complexity analysis. With a 98% client approval rate, freelancers find the estimates align well with industry standards and help them avoid underpricing."
+  },
+  {
+    question: "Can I upgrade or downgrade my plan anytime?",
+    answer: "Absolutely! You can upgrade to Pro ($19/mo) or Agency ($49/mo) at any time for unlimited proposals. Downgrade anytime—we don't lock you in."
+  },
+];
+
+export function LandingFAQ() {
+  return (
+    <section className="py-24 lg:py-32 bg-card">
+      <div className="container mx-auto px-4">
+        <ScrollReveal className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#36C5F0]/10 px-4 py-2 text-sm text-[#36C5F0] font-medium mb-6">
+            <HelpCircle className="h-4 w-4" />
+            <span>FAQ</span>
+          </div>
+          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+            Frequently Asked
+            <br />
+            <span className="bg-gradient-to-r from-[#36C5F0] to-[#2EB67D] bg-clip-text text-transparent">Questions</span>
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Everything you need to know about ScopeGen and how it can help you price projects accurately.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={100}>
+          <div className="max-w-3xl mx-auto">
+            <Accordion type="single" collapsible className="w-full">
+              {faqs.map((faq, index) => (
+                <AccordionItem 
+                  key={index} 
+                  value={`item-${index}`}
+                  className="border-b border-border"
+                >
+                  <AccordionTrigger className="text-left py-6 hover:no-underline group">
+                    <span className="font-semibold text-lg group-hover:text-[#36C5F0] transition-colors">
+                      {faq.question}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground pb-6 text-base leading-relaxed">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
