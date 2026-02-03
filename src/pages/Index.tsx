@@ -9,7 +9,7 @@ import {
 
 const Index = () => {
   return (
-    <div className="min-h-screen dark pt-14">
+    <div className="min-h-screen pt-14">
       <Header />
       <main>
         <LandingHero />

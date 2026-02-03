@@ -3,44 +3,44 @@
 @tailwind utilities;
 
 /* ScopeGen Design System
-   Inspired by Framer.com - Dark, minimal, sophisticated
-   Pure blacks, crisp whites, subtle grays
+   Inspired by Dojah.io - Clean, professional, trustworthy
+   Light backgrounds, blue accents, soft shadows
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
-    /* Light mode - keeping for accessibility but dark is default */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    /* Dojah-inspired light theme - clean & professional */
+    --background: 216 33% 97%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 0 0% 0%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 0%;
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 214 32% 91%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 221 83% 96%;
+    --accent-foreground: 221 83% 53%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 0%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     /* Custom tokens */
     --success: 142 71% 45%;
@@ -49,54 +49,54 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 0 0% 0%;
-    --sidebar-primary: 0 0% 0%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 221 83% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 96%;
-    --sidebar-accent-foreground: 0 0% 0%;
-    --sidebar-border: 0 0% 90%;
-    --sidebar-ring: 0 0% 0%;
+    --sidebar-accent: 221 83% 96%;
+    --sidebar-accent-foreground: 221 83% 53%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 221 83% 53%;
   }
 
   .dark {
-    /* Pure black theme with high contrast */
-    --background: 0 0% 0%;
+    /* Dark mode variant */
+    --background: 222 47% 11%;
     --foreground: 0 0% 100%;
 
-    --card: 0 0% 4%;
+    --card: 222 47% 15%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 4%;
+    --popover: 222 47% 15%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 10%;
+    --secondary: 222 47% 20%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 70%;
+    --muted: 222 47% 20%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 0 0% 14%;
+    --accent: 221 83% 25%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 0 0% 100%;
+    --border: 222 47% 25%;
+    --input: 222 47% 25%;
+    --ring: 221 83% 53%;
 
-    --sidebar-background: 0 0% 0%;
+    --sidebar-background: 222 47% 11%;
     --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 0 0% 10%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 221 83% 25%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 0 0% 100%;
+    --sidebar-border: 222 47% 25%;
+    --sidebar-ring: 221 83% 53%;
   }
 }
 
@@ -109,9 +109,9 @@
     scroll-behavior: smooth;
   }
 
-  /* Default to dark mode */
+  /* Default to light mode */
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {
@@ -126,28 +126,29 @@
 }
 
 @layer components {
-  /* Framer-style glass card */
+  /* Dojah-style clean card with shadow */
   .glass-card {
-    @apply bg-card border border-border rounded-2xl;
+    @apply bg-card border border-border rounded-2xl shadow-sm;
   }
 
   /* Subtle gradient for cards */
   .card-gradient {
-    background: linear-gradient(180deg, hsl(0 0% 8%) 0%, hsl(0 0% 4%) 100%);
+    background: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(214 32% 97%) 100%);
   }
 
-  /* Hero section styles */
+  /* Hero section styles - Dojah blue gradient */
   .hero-gradient {
-    background: radial-gradient(ellipse 80% 50% at 50% -20%, hsl(0 0% 20%), transparent);
+    background: linear-gradient(135deg, hsl(221 83% 96%) 0%, hsl(216 33% 97%) 50%, hsl(0 0% 100%) 100%);
   }
 
   /* Showcase card hover effect */
   .showcase-card {
-    @apply rounded-2xl overflow-hidden transition-all duration-500;
+    @apply rounded-2xl overflow-hidden transition-all duration-500 shadow-lg;
   }
 
   .showcase-card:hover {
-    transform: translateY(-4px) scale(1.02);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px hsl(221 83% 53% / 0.15);
   }
 
   /* Step indicator styles */
@@ -160,35 +161,35 @@
   }
 
   .step-pending {
-    @apply bg-muted text-muted-foreground;
+    @apply bg-secondary text-muted-foreground;
   }
 
   /* Form wizard card */
   .wizard-card {
-    @apply bg-card rounded-2xl p-8 border border-border;
+    @apply bg-card rounded-2xl p-8 border border-border shadow-sm;
   }
 
   /* Proposal section styling */
   .proposal-section {
-    @apply bg-muted/50 rounded-xl p-6 border border-border;
+    @apply bg-accent/50 rounded-xl p-6 border border-border;
   }
 
-  /* Pill button style like Framer */
+  /* Pill button style */
   .btn-pill {
     @apply rounded-full px-6 py-2.5 font-medium transition-all duration-200;
   }
 
-  /* Framer-style outlined button */
+  /* Outlined button */
   .btn-outline-light {
-    @apply border border-border bg-transparent text-foreground hover:bg-muted;
+    @apply border border-border bg-transparent text-foreground hover:bg-secondary;
   }
 }
 
 @layer utilities {
-  /* Subtle text gradient */
+  /* Blue text gradient like Dojah */
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(to right, hsl(0 0% 100%), hsl(0 0% 70%));
+    background-image: linear-gradient(135deg, hsl(221 83% 53%), hsl(262 83% 58%));
   }
 
   /* Animate fade in up */
