@@ -1,4 +1,6 @@
-import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, ArrowRight, RotateCcw, Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/Header";
 import { StepIndicator } from "@/components/wizard/StepIndicator";
@@ -9,6 +11,8 @@ import { PricingStep } from "@/components/wizard/PricingStep";
 import { ProposalPreview } from "@/components/wizard/ProposalPreview";
 import { LivePricingSidebar } from "@/components/wizard/LivePricingSidebar";
 import { useWizard } from "@/hooks/useWizard";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { Link } from "react-router-dom";
 
 const stepLabels = [
   "Project Type",
@@ -26,13 +30,51 @@ export default function WizardPage() {
     pricing,
     proposal,
     canProceed,
+    isSaving,
     updateConfig,
     toggleIntegration,
     nextStep,
     prevStep,
     goToStep,
     resetWizard,
+    saveProposal,
   } = useWizard();
+
+  const { user, loading, canCreateProposal, getRemainingProposals, profile } = useAuthContext();
+  const navigate = useNavigate();
+  const [proposalSaved, setProposalSaved] = useState(false);
+
+  // Handle step 5 transition - save proposal when reaching it
+  useEffect(() => {
+    if (step === 5 && user && !proposalSaved && canCreateProposal()) {
+      saveProposal(proposal).then(({ error }) => {
+        if (!error) {
+          setProposalSaved(true);
+        }
+      });
+    }
+  }, [step, user, proposalSaved, proposal, saveProposal, canCreateProposal]);
+
+  // Reset saved state when starting over
+  const handleReset = () => {
+    setProposalSaved(false);
+    resetWizard();
+  };
+
+  const handleNextStep = () => {
+    // Check if user can proceed to proposal step
+    if (step === 4 && !user) {
+      navigate('/auth');
+      return;
+    }
+    
+    if (step === 4 && !canCreateProposal()) {
+      // User has used all free proposals
+      return;
+    }
+    
+    nextStep();
+  };
 
   const renderStep = () => {
     switch (step) {
@@ -85,6 +127,17 @@ export default function WizardPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const remaining = getRemainingProposals();
+  const canGenerate = canCreateProposal();
+
   return (
     <div className="min-h-screen bg-background pt-14">
       <Header />
@@ -122,17 +175,49 @@ export default function WizardPage() {
 
               <div className="flex items-center gap-3">
                 {step === totalSteps ? (
-                  <Button variant="pill-outline" onClick={resetWizard}>
+                  <Button variant="pill-outline" onClick={handleReset}>
                     <RotateCcw className="mr-2 h-4 w-4" />
                     Start Over
                   </Button>
+                ) : step === 4 ? (
+                  // Special handling for step 4 -> 5 transition
+                  !user ? (
+                    <Button
+                      variant="wizard-primary"
+                      onClick={() => navigate('/auth')}
+                    >
+                      <Lock className="mr-2 h-4 w-4" />
+                      Sign in to Generate
+                    </Button>
+                  ) : !canGenerate ? (
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm text-destructive">
+                        No free proposals remaining
+                      </span>
+                      <Button variant="wizard-primary" disabled>
+                        Upgrade to Pro
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      variant="wizard-primary"
+                      onClick={handleNextStep}
+                      disabled={!canProceed || isSaving}
+                    >
+                      {isSaving ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : null}
+                      Generate Proposal ({remaining} left)
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  )
                 ) : (
                   <Button
                     variant="wizard-primary"
-                    onClick={nextStep}
+                    onClick={handleNextStep}
                     disabled={!canProceed}
                   >
-                    {step === totalSteps - 1 ? "Generate Proposal" : "Continue"}
+                    Continue
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 )}

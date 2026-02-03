@@ -1,6 +1,9 @@
 import { useState, useCallback, useMemo } from 'react';
-import { ProjectConfig, PricingResult, ProposalData, Currency } from '@/types/project';
+import { ProjectConfig, PricingResult, ProposalData } from '@/types/project';
 import { calculatePricing, generateProposal } from '@/lib/pricing';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuthContext } from '@/contexts/AuthContext';
+import type { Json } from '@/integrations/supabase/types';
 
 const defaultConfig: ProjectConfig = {
   type: null,
@@ -17,6 +20,8 @@ const defaultConfig: ProjectConfig = {
 export function useWizard() {
   const [step, setStep] = useState(1);
   const [config, setConfig] = useState<ProjectConfig>(defaultConfig);
+  const [isSaving, setIsSaving] = useState(false);
+  const { user, profile, fetchProfile, canCreateProposal } = useAuthContext();
 
   const totalSteps = 5;
 
@@ -35,6 +40,42 @@ export function useWizard() {
         : [...prev.integrations, integrationId],
     }));
   }, []);
+
+  const saveProposal = useCallback(async (proposalData: ProposalData) => {
+    if (!user || !canCreateProposal()) return { error: new Error('Cannot create proposal') };
+    
+    setIsSaving(true);
+    
+    // Save proposal to database
+    const { error: insertError } = await supabase
+      .from('proposals')
+      .insert([{
+        user_id: user.id,
+        project_type: config.type || '',
+        project_config: JSON.parse(JSON.stringify(config)) as Json,
+        pricing_result: JSON.parse(JSON.stringify(proposalData.pricing)) as Json,
+        proposal_data: JSON.parse(JSON.stringify(proposalData)) as Json,
+      }]);
+    
+    if (insertError) {
+      setIsSaving(false);
+      return { error: insertError };
+    }
+    
+    // Increment proposals_used counter
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ proposals_used: (profile?.proposals_used || 0) + 1 })
+      .eq('user_id', user.id);
+    
+    if (!updateError) {
+      // Refresh profile to get updated count
+      await fetchProfile(user.id);
+    }
+    
+    setIsSaving(false);
+    return { error: updateError };
+  }, [user, config, profile, canCreateProposal, fetchProfile]);
 
   const nextStep = useCallback(() => {
     setStep((prev) => Math.min(prev + 1, totalSteps));
@@ -84,11 +125,13 @@ export function useWizard() {
     pricing,
     proposal,
     canProceed,
+    isSaving,
     updateConfig,
     toggleIntegration,
     nextStep,
     prevStep,
     goToStep,
     resetWizard,
+    saveProposal,
   };
 }
