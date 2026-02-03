@@ -1,7 +1,10 @@
 import { Header } from "@/components/layout/Header";
 import {
   LandingHero,
+  LandingPainPoints,
   LandingFeatures,
+  LandingStats,
+  LandingHowItWorks,
   LandingProjectTypes,
   LandingCTA,
   LandingFooter,
@@ -13,7 +16,10 @@ const Index = () => {
       <Header />
       <main>
         <LandingHero />
+        <LandingPainPoints />
+        <LandingStats />
         <LandingFeatures />
+        <LandingHowItWorks />
         <LandingProjectTypes />
         <LandingCTA />
       </main>
