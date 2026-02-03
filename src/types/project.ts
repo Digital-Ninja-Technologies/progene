@@ -178,3 +178,26 @@ export const URGENCY_MULTIPLIERS: Record<TimelineUrgency, { multiplier: number; 
   fast: { multiplier: 1.25, weeks: 0.7 },
   urgent: { multiplier: 1.5, weeks: 0.5 },
 };
+
+// Invoice types
+export interface InvoiceData {
+  invoiceNumber: string;
+  issueDate: string;
+  dueDate: string;
+  clientName: string;
+  clientEmail: string;
+  clientAddress: string;
+  yourName: string;
+  yourEmail: string;
+  yourAddress: string;
+  items: InvoiceItem[];
+  notes: string;
+  taxRate: number;
+}
+
+export interface InvoiceItem {
+  description: string;
+  quantity: number;
+  rate: number;
+  amount: number;
+}

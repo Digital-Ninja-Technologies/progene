@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ProposalData, PROJECT_TYPES, CURRENCIES } from "@/types/project";
 import { useState } from "react";
 import { toast } from "sonner";
+import { InvoiceGenerator } from "./InvoiceGenerator";
 
 interface ProposalPreviewProps {
   proposal: ProposalData;
@@ -147,6 +148,7 @@ Generated with ScopeGen
           )}
           Copy All
         </Button>
+        <InvoiceGenerator proposal={proposal} />
         <Button variant="pill-outline" size="lg">
           <Mail className="mr-2 h-4 w-4" />
           Email Draft
