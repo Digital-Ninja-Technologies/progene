@@ -74,12 +74,12 @@ Generated with ScopeGen
         <head>
           <title>Project Proposal - ${projectTypeLabel}</title>
           <style>
-            body { font-family: 'Inter', system-ui, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; color: #1a1a2e; }
-            h1 { color: #1a1a2e; border-bottom: 2px solid #e36a4f; padding-bottom: 10px; }
-            h2 { color: #1a1a2e; margin-top: 30px; }
+            body { font-family: 'Inter', system-ui, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; color: #000; }
+            h1 { color: #000; border-bottom: 2px solid #000; padding-bottom: 10px; }
+            h2 { color: #000; margin-top: 30px; }
             ul { line-height: 1.8; }
-            .price-box { background: #f5f5f7; padding: 20px; border-radius: 8px; margin: 20px 0; }
-            .price-recommended { font-size: 32px; font-weight: bold; color: #e36a4f; }
+            .price-box { background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .price-recommended { font-size: 32px; font-weight: bold; color: #000; }
             .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666; }
           </style>
         </head>
@@ -125,8 +125,8 @@ Generated with ScopeGen
   return (
     <div className="space-y-8 animate-fade-in-up">
       <div className="text-center mb-8">
-        <h2 className="font-display text-2xl font-bold sm:text-3xl mb-2">
-          Your Proposal is Ready! 🎉
+        <h2 className="text-2xl font-semibold sm:text-3xl mb-2">
+          Your proposal is ready
         </h2>
         <p className="text-muted-foreground">
           Review, customize, and export your client-ready proposal.
@@ -135,11 +135,11 @@ Generated with ScopeGen
 
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-3 justify-center">
-        <Button variant="accent" size="lg" onClick={handleExportPDF}>
+        <Button variant="pill" size="lg" onClick={handleExportPDF}>
           <Download className="mr-2 h-4 w-4" />
           Export PDF
         </Button>
-        <Button variant="outline" size="lg" onClick={handleCopyAll}>
+        <Button variant="pill-outline" size="lg" onClick={handleCopyAll}>
           {copiedSection === 'all' ? (
             <Check className="mr-2 h-4 w-4" />
           ) : (
@@ -147,7 +147,7 @@ Generated with ScopeGen
           )}
           Copy All
         </Button>
-        <Button variant="outline" size="lg">
+        <Button variant="pill-outline" size="lg">
           <Mail className="mr-2 h-4 w-4" />
           Email Draft
         </Button>
@@ -156,24 +156,24 @@ Generated with ScopeGen
       {/* Pricing Summary */}
       <div className="glass-card p-8">
         <div className="flex items-center gap-2 mb-6">
-          <FileText className="h-5 w-5 text-accent" />
-          <h3 className="font-display text-xl font-semibold">Pricing Summary</h3>
+          <FileText className="h-5 w-5 text-muted-foreground" />
+          <h3 className="text-xl font-semibold">Pricing Summary</h3>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3 mb-6">
-          <div className="text-center p-4 rounded-lg bg-muted/50">
+          <div className="text-center p-4 rounded-xl bg-muted/50">
             <p className="text-sm text-muted-foreground mb-1">Minimum</p>
-            <p className="text-2xl font-bold">{formatCurrency(proposal.pricing.minPrice)}</p>
+            <p className="text-2xl font-semibold">{formatCurrency(proposal.pricing.minPrice)}</p>
           </div>
-          <div className="text-center p-4 rounded-lg bg-accent/10 ring-2 ring-accent">
-            <p className="text-sm text-accent mb-1">Recommended</p>
-            <p className="text-3xl font-bold text-gradient-accent">
+          <div className="text-center p-4 rounded-xl bg-muted ring-1 ring-foreground/20">
+            <p className="text-sm text-muted-foreground mb-1">Recommended</p>
+            <p className="text-3xl font-semibold">
               {formatCurrency(proposal.pricing.recommendedPrice)}
             </p>
           </div>
-          <div className="text-center p-4 rounded-lg bg-muted/50">
+          <div className="text-center p-4 rounded-xl bg-muted/50">
             <p className="text-sm text-muted-foreground mb-1">Premium</p>
-            <p className="text-2xl font-bold">{formatCurrency(proposal.pricing.premiumPrice)}</p>
+            <p className="text-2xl font-semibold">{formatCurrency(proposal.pricing.premiumPrice)}</p>
           </div>
         </div>
 
@@ -196,7 +196,7 @@ Generated with ScopeGen
       {/* Scope of Work */}
       <div className="proposal-section">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-display text-lg font-semibold">Scope of Work</h3>
+          <h3 className="text-lg font-semibold">Scope of Work</h3>
           <Button
             variant="ghost"
             size="sm"
@@ -214,7 +214,7 @@ Generated with ScopeGen
         <ul className="space-y-2">
           {proposal.scopeOfWork.map((item, index) => (
             <li key={index} className="flex items-start gap-2">
-              <span className="text-accent mt-1">•</span>
+              <span className="text-muted-foreground mt-1">•</span>
               <span>{item}</span>
             </li>
           ))}
@@ -224,7 +224,7 @@ Generated with ScopeGen
       {/* Deliverables */}
       <div className="proposal-section">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-display text-lg font-semibold">Deliverables</h3>
+          <h3 className="text-lg font-semibold">Deliverables</h3>
           <Button
             variant="ghost"
             size="sm"
@@ -242,7 +242,7 @@ Generated with ScopeGen
         <ul className="space-y-2">
           {proposal.deliverables.map((item, index) => (
             <li key={index} className="flex items-start gap-2">
-              <span className="text-accent mt-1">✓</span>
+              <span className="text-muted-foreground mt-1">✓</span>
               <span>{item}</span>
             </li>
           ))}
@@ -251,7 +251,7 @@ Generated with ScopeGen
 
       {/* Payment Structure */}
       <div className="proposal-section">
-        <h3 className="font-display text-lg font-semibold mb-4">Payment Structure</h3>
+        <h3 className="text-lg font-semibold mb-4">Payment Structure</h3>
         <div className="space-y-3">
           {proposal.paymentStructure.map((payment, index) => (
             <div
