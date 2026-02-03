@@ -4,6 +4,9 @@ export type ProjectType =
   | 'webflow-landing'
   | 'webflow-marketing'
   | 'webflow-ecommerce'
+  | 'shopify-theme'
+  | 'shopify-custom'
+  | 'shopify-plus'
   | 'wordpress-blog'
   | 'wordpress-business'
   | 'wordpress-ecommerce'
@@ -75,6 +78,24 @@ export const PROJECT_TYPES: { value: ProjectType; label: string; description: st
     icon: '🛍️',
   },
   {
+    value: 'shopify-theme',
+    label: 'Shopify Theme Customization',
+    description: 'Customize existing Shopify theme',
+    icon: '🎨',
+  },
+  {
+    value: 'shopify-custom',
+    label: 'Shopify Custom Store',
+    description: 'Custom Shopify store with bespoke features',
+    icon: '🏪',
+  },
+  {
+    value: 'shopify-plus',
+    label: 'Shopify Plus Enterprise',
+    description: 'Enterprise-level Shopify Plus implementation',
+    icon: '💎',
+  },
+  {
     value: 'wordpress-blog',
     label: 'WordPress Blog',
     description: 'Content-focused blog with custom theme',
@@ -126,6 +147,9 @@ export const BASE_HOURS: Record<ProjectType, number> = {
   'webflow-landing': 18,
   'webflow-marketing': 36,
   'webflow-ecommerce': 56,
+  'shopify-theme': 20,
+  'shopify-custom': 48,
+  'shopify-plus': 80,
   'wordpress-blog': 24,
   'wordpress-business': 40,
   'wordpress-ecommerce': 64,
@@ -139,6 +163,9 @@ export const HOURS_PER_PAGE: Record<ProjectType, number> = {
   'webflow-landing': 3.5,
   'webflow-marketing': 4,
   'webflow-ecommerce': 4.5,
+  'shopify-theme': 2.5,
+  'shopify-custom': 4,
+  'shopify-plus': 5,
   'wordpress-blog': 2,
   'wordpress-business': 3,
   'wordpress-ecommerce': 4,
