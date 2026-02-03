@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -82,6 +83,22 @@ export function PricingStep({
               /hour
             </span>
           </div>
+        </div>
+
+        {/* Rate Slider */}
+        <div className="mb-8">
+          <div className="flex justify-between text-sm text-muted-foreground mb-3">
+            <span>{currencySymbol}25</span>
+            <span>{currencySymbol}300+</span>
+          </div>
+          <Slider
+            value={[Math.min(hourlyRate, 300)]}
+            onValueChange={(value) => onRateChange(value[0])}
+            min={25}
+            max={300}
+            step={5}
+            className="w-full"
+          />
         </div>
 
         <div className="flex flex-wrap gap-2 justify-center">
