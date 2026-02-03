@@ -56,6 +56,7 @@ export type Database = {
       proposals: {
         Row: {
           created_at: string
+          document_details: Json | null
           id: string
           pricing_result: Json
           project_config: Json
@@ -65,6 +66,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          document_details?: Json | null
           id?: string
           pricing_result: Json
           project_config: Json
@@ -74,6 +76,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          document_details?: Json | null
           id?: string
           pricing_result?: Json
           project_config?: Json

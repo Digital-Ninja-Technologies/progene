@@ -31,6 +31,7 @@ export default function WizardPage() {
     proposal,
     canProceed,
     isSaving,
+    savedProposalId,
     updateConfig,
     toggleIntegration,
     nextStep,
@@ -121,7 +122,7 @@ export default function WizardPage() {
           />
         );
       case 5:
-        return <ProposalPreview proposal={proposal} />;
+        return <ProposalPreview proposal={proposal} proposalId={savedProposalId || undefined} />;
       default:
         return null;
     }

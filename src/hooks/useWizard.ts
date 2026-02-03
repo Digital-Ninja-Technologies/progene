@@ -21,6 +21,7 @@ export function useWizard() {
   const [step, setStep] = useState(1);
   const [config, setConfig] = useState<ProjectConfig>(defaultConfig);
   const [isSaving, setIsSaving] = useState(false);
+  const [savedProposalId, setSavedProposalId] = useState<string | null>(null);
   const { user, profile, fetchProfile, canCreateProposal } = useAuthContext();
 
   const totalSteps = 5;
@@ -42,12 +43,12 @@ export function useWizard() {
   }, []);
 
   const saveProposal = useCallback(async (proposalData: ProposalData) => {
-    if (!user || !canCreateProposal()) return { error: new Error('Cannot create proposal') };
+    if (!user || !canCreateProposal()) return { error: new Error('Cannot create proposal'), proposalId: null };
     
     setIsSaving(true);
     
     // Save proposal to database
-    const { error: insertError } = await supabase
+    const { data: insertData, error: insertError } = await supabase
       .from('proposals')
       .insert([{
         user_id: user.id,
@@ -55,12 +56,18 @@ export function useWizard() {
         project_config: JSON.parse(JSON.stringify(config)) as Json,
         pricing_result: JSON.parse(JSON.stringify(proposalData.pricing)) as Json,
         proposal_data: JSON.parse(JSON.stringify(proposalData)) as Json,
-      }]);
+      }])
+      .select('id')
+      .single();
     
     if (insertError) {
       setIsSaving(false);
-      return { error: insertError };
+      return { error: insertError, proposalId: null };
     }
+    
+    // Store the proposal ID
+    const proposalId = insertData?.id || null;
+    setSavedProposalId(proposalId);
     
     // Increment proposals_used counter
     const { error: updateError } = await supabase
@@ -74,7 +81,7 @@ export function useWizard() {
     }
     
     setIsSaving(false);
-    return { error: updateError };
+    return { error: updateError, proposalId };
   }, [user, config, profile, canCreateProposal, fetchProfile]);
 
   const nextStep = useCallback(() => {
@@ -126,6 +133,7 @@ export function useWizard() {
     proposal,
     canProceed,
     isSaving,
+    savedProposalId,
     updateConfig,
     toggleIntegration,
     nextStep,

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileText, Download, Send, Plus, Trash2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { FileText, Download, Send, Plus, Trash2, AlertCircle, CheckCircle2, Save, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,9 +16,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProposalData, PROJECT_TYPES, CURRENCIES, InvoiceData, InvoiceItem } from "@/types/project";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuthContext } from "@/contexts/AuthContext";
+import type { Json } from "@/integrations/supabase/types";
 
 interface InvoiceGeneratorProps {
   proposal: ProposalData;
+  proposalId?: string;
+  onSaved?: () => void;
 }
 
 interface ValidationErrors {
@@ -29,7 +34,29 @@ interface ValidationErrors {
   projectName?: string;
 }
 
-export function InvoiceGenerator({ proposal }: InvoiceGeneratorProps) {
+interface DocumentDetails {
+  invoiceNumber: string;
+  issueDate: string;
+  dueDate: string;
+  startDate: string;
+  projectName: string;
+  projectDescription: string;
+  clientName: string;
+  clientEmail: string;
+  clientAddress: string;
+  yourName: string;
+  yourEmail: string;
+  yourAddress: string;
+  items: InvoiceItem[];
+  notes: string;
+  taxRate: number;
+  subtotal: number;
+  taxAmount: number;
+  total: number;
+}
+
+export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGeneratorProps) {
+  const { user } = useAuthContext();
   const currencySymbol =
     CURRENCIES.find((c) => c.value === proposal.config.currency)?.symbol || "$";
   
@@ -80,6 +107,8 @@ export function InvoiceGenerator({ proposal }: InvoiceGeneratorProps) {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("details");
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const updateInvoice = <K extends keyof InvoiceData>(
     key: K,
@@ -172,6 +201,55 @@ export function InvoiceGenerator({ proposal }: InvoiceGeneratorProps) {
       invoice.clientEmail.trim() &&
       projectName.trim()
     );
+  };
+
+  const handleSaveDocument = async () => {
+    if (!validateForm()) return;
+    if (!user || !proposalId) {
+      toast.error("Unable to save - please ensure you're logged in");
+      return;
+    }
+
+    setIsSaving(true);
+
+    const documentDetails: DocumentDetails = {
+      invoiceNumber: invoice.invoiceNumber,
+      issueDate: invoice.issueDate,
+      dueDate: invoice.dueDate,
+      startDate,
+      projectName,
+      projectDescription,
+      clientName: invoice.clientName,
+      clientEmail: invoice.clientEmail,
+      clientAddress: invoice.clientAddress,
+      yourName: invoice.yourName,
+      yourEmail: invoice.yourEmail,
+      yourAddress: invoice.yourAddress,
+      items: invoice.items,
+      notes: invoice.notes,
+      taxRate: invoice.taxRate,
+      subtotal,
+      taxAmount,
+      total,
+    };
+
+    const { error } = await supabase
+      .from("proposals")
+      .update({ document_details: documentDetails as unknown as Json })
+      .eq("id", proposalId)
+      .eq("user_id", user.id);
+
+    setIsSaving(false);
+
+    if (error) {
+      console.error("Error saving document:", error);
+      toast.error("Failed to save proposal document");
+      return;
+    }
+
+    setIsSaved(true);
+    toast.success("Proposal document saved successfully!");
+    onSaved?.();
   };
 
   const handleExportDocument = () => {
@@ -802,7 +880,23 @@ ${invoice.yourEmail}`);
 
         {/* Actions */}
         <div className="flex flex-wrap gap-3 pt-4 border-t">
-          <Button variant="pill" onClick={handleExportDocument} disabled={!isFormComplete()}>
+          {proposalId && user && (
+            <Button 
+              variant="pill" 
+              onClick={handleSaveDocument} 
+              disabled={!isFormComplete() || isSaving}
+            >
+              {isSaving ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : isSaved ? (
+                <CheckCircle2 className="mr-2 h-4 w-4" />
+              ) : (
+                <Save className="mr-2 h-4 w-4" />
+              )}
+              {isSaving ? "Saving..." : isSaved ? "Saved" : "Save Proposal"}
+            </Button>
+          )}
+          <Button variant="pill-outline" onClick={handleExportDocument} disabled={!isFormComplete()}>
             <Download className="mr-2 h-4 w-4" />
             Export PDF
           </Button>

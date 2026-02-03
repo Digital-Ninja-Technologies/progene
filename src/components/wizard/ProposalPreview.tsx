@@ -7,9 +7,10 @@ import { InvoiceGenerator } from "./InvoiceGenerator";
 
 interface ProposalPreviewProps {
   proposal: ProposalData;
+  proposalId?: string;
 }
 
-export function ProposalPreview({ proposal }: ProposalPreviewProps) {
+export function ProposalPreview({ proposal, proposalId }: ProposalPreviewProps) {
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
 
   const projectTypeLabel =
@@ -148,7 +149,7 @@ Generated with ScopeGen
           )}
           Copy All
         </Button>
-        <InvoiceGenerator proposal={proposal} />
+        <InvoiceGenerator proposal={proposal} proposalId={proposalId} />
         <Button variant="pill-outline" size="lg">
           <Mail className="mr-2 h-4 w-4" />
           Email Draft
