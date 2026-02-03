@@ -16,16 +16,9 @@ export function LivePricingSidebar({ config, pricing }: LivePricingSidebarProps)
     return `${currencySymbol}${amount.toLocaleString()}`;
   };
 
-  const complexityColors = {
-    Simple: 'bg-green-500',
-    Medium: 'bg-yellow-500',
-    Complex: 'bg-orange-500',
-    Enterprise: 'bg-red-500',
-  };
-
   return (
     <div className="glass-card p-6 sticky top-24">
-      <h3 className="font-display text-lg font-semibold mb-6">Live Estimate</h3>
+      <h3 className="text-lg font-semibold mb-6">Live Estimate</h3>
 
       {/* Project Summary */}
       <div className="space-y-4 mb-6 pb-6 border-b border-border">
@@ -42,7 +35,7 @@ export function LivePricingSidebar({ config, pricing }: LivePricingSidebarProps)
         {config.cmsNeeded && (
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">CMS</span>
-            <span className="font-medium text-accent">Included</span>
+            <span className="font-medium">Included</span>
           </div>
         )}
         {config.integrations.length > 0 && (
@@ -54,7 +47,7 @@ export function LivePricingSidebar({ config, pricing }: LivePricingSidebarProps)
         {config.animations && (
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Animations</span>
-            <span className="font-medium text-accent">Included</span>
+            <span className="font-medium">Included</span>
           </div>
         )}
         <div className="flex justify-between text-sm">
@@ -65,21 +58,21 @@ export function LivePricingSidebar({ config, pricing }: LivePricingSidebarProps)
 
       {/* Pricing */}
       <div className="space-y-4 mb-6">
-        <div className="text-center p-4 rounded-xl bg-accent/10">
+        <div className="text-center p-5 rounded-xl bg-muted">
           <p className="text-sm text-muted-foreground mb-1">Recommended Price</p>
-          <p className="text-3xl font-bold text-gradient-accent">
+          <p className="text-4xl font-semibold">
             {config.type ? formatCurrency(pricing.recommendedPrice) : '--'}
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="text-center p-3 rounded-lg bg-muted/50">
+          <div className="text-center p-3 rounded-xl bg-muted/50">
             <p className="text-xs text-muted-foreground mb-1">Min</p>
             <p className="text-lg font-semibold">
               {config.type ? formatCurrency(pricing.minPrice) : '--'}
             </p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-muted/50">
+          <div className="text-center p-3 rounded-xl bg-muted/50">
             <p className="text-xs text-muted-foreground mb-1">Premium</p>
             <p className="text-lg font-semibold">
               {config.type ? formatCurrency(pricing.premiumPrice) : '--'}
@@ -104,16 +97,9 @@ export function LivePricingSidebar({ config, pricing }: LivePricingSidebarProps)
         </div>
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Complexity</span>
-          <div className="flex items-center gap-2">
-            <div
-              className={`h-2 w-2 rounded-full ${
-                config.type ? complexityColors[pricing.complexityLevel] : 'bg-muted'
-              }`}
-            />
-            <span className="font-semibold">
-              {config.type ? pricing.complexityLevel : '--'}
-            </span>
-          </div>
+          <span className="font-semibold">
+            {config.type ? pricing.complexityLevel : '--'}
+          </span>
         </div>
       </div>
 

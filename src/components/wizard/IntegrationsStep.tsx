@@ -2,7 +2,7 @@ import { INTEGRATIONS } from "@/types/project";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { Sparkles, Clock, Wrench } from "lucide-react";
+import { Sparkles, Clock, Wrench, Check } from "lucide-react";
 
 interface IntegrationsStepProps {
   selectedIntegrations: string[];
@@ -33,9 +33,9 @@ export function IntegrationsStep({
 }: IntegrationsStepProps) {
   return (
     <div className="space-y-8 animate-fade-in-up">
-      <div className="text-center mb-8">
-        <h2 className="font-display text-2xl font-bold sm:text-3xl mb-2">
-          Integrations & Features
+      <div className="text-center mb-10">
+        <h2 className="text-2xl font-semibold sm:text-3xl mb-3">
+          Integrations & features
         </h2>
         <p className="text-muted-foreground">
           What additional features does the project need?
@@ -44,42 +44,30 @@ export function IntegrationsStep({
 
       {/* Integrations Grid */}
       <div className="glass-card p-6">
-        <Label className="text-lg font-medium mb-4 block">Third-Party Integrations</Label>
+        <Label className="text-base font-medium mb-4 block">Third-Party Integrations</Label>
         <div className="grid gap-3 sm:grid-cols-2">
           {INTEGRATIONS.map((integration) => (
             <button
               key={integration.id}
               onClick={() => onToggleIntegration(integration.id)}
               className={cn(
-                "flex items-center justify-between p-4 rounded-lg border-2 transition-all duration-200",
+                "flex items-center justify-between p-4 rounded-xl border transition-all duration-200",
                 selectedIntegrations.includes(integration.id)
-                  ? "border-accent bg-accent/5"
-                  : "border-border hover:border-accent/50"
+                  ? "border-foreground bg-muted"
+                  : "border-border hover:border-foreground/50"
               )}
             >
               <span className="font-medium">{integration.label}</span>
               <div
                 className={cn(
-                  "h-5 w-5 rounded-full border-2 transition-all duration-200 flex items-center justify-center",
+                  "h-5 w-5 rounded-full border transition-all duration-200 flex items-center justify-center",
                   selectedIntegrations.includes(integration.id)
-                    ? "border-accent bg-accent"
+                    ? "border-foreground bg-foreground"
                     : "border-muted-foreground"
                 )}
               >
                 {selectedIntegrations.includes(integration.id) && (
-                  <svg
-                    className="h-3 w-3 text-accent-foreground"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={3}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
+                  <Check className="h-3 w-3 text-background" />
                 )}
               </div>
             </button>
@@ -91,9 +79,9 @@ export function IntegrationsStep({
       <div className="glass-card p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Sparkles className="h-5 w-5 text-accent" />
+            <Sparkles className="h-5 w-5 text-muted-foreground" />
             <div>
-              <Label className="text-lg font-medium">Custom Animations</Label>
+              <Label className="text-base font-medium">Custom Animations</Label>
               <p className="text-sm text-muted-foreground">
                 Smooth transitions, scroll effects, micro-interactions
               </p>
@@ -106,8 +94,8 @@ export function IntegrationsStep({
       {/* Urgency Selection */}
       <div className="glass-card p-6">
         <div className="flex items-center gap-3 mb-4">
-          <Clock className="h-5 w-5 text-accent" />
-          <Label className="text-lg font-medium">Timeline Urgency</Label>
+          <Clock className="h-5 w-5 text-muted-foreground" />
+          <Label className="text-base font-medium">Timeline Urgency</Label>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
           {urgencyOptions.map((option) => (
@@ -115,14 +103,14 @@ export function IntegrationsStep({
               key={option.value}
               onClick={() => onUrgencyChange(option.value)}
               className={cn(
-                "flex flex-col items-center p-4 rounded-lg border-2 transition-all duration-200",
+                "flex flex-col items-center p-4 rounded-xl border transition-all duration-200",
                 urgency === option.value
-                  ? "border-accent bg-accent/5"
-                  : "border-border hover:border-accent/50"
+                  ? "border-foreground bg-muted"
+                  : "border-border hover:border-foreground/50"
               )}
             >
               <span className="text-2xl mb-2">{option.icon}</span>
-              <span className="font-semibold">{option.label}</span>
+              <span className="font-medium">{option.label}</span>
               <span className="text-xs text-muted-foreground">{option.description}</span>
             </button>
           ))}
@@ -133,9 +121,9 @@ export function IntegrationsStep({
       <div className="glass-card p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Wrench className="h-5 w-5 text-accent" />
+            <Wrench className="h-5 w-5 text-muted-foreground" />
             <div>
-              <Label className="text-lg font-medium">Ongoing Maintenance</Label>
+              <Label className="text-base font-medium">Ongoing Maintenance</Label>
               <p className="text-sm text-muted-foreground">
                 Client interested in monthly support retainer?
               </p>

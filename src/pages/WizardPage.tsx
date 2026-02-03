@@ -86,7 +86,7 @@ export default function WizardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-14">
       <Header />
 
       <div className="container mx-auto px-4 py-8">
@@ -111,7 +111,7 @@ export default function WizardPage() {
               <div>
                 {step > 1 && (
                   <Button
-                    variant="wizard-nav"
+                    variant="wizard"
                     onClick={prevStep}
                   >
                     <ArrowLeft className="mr-2 h-4 w-4" />
@@ -122,7 +122,7 @@ export default function WizardPage() {
 
               <div className="flex items-center gap-3">
                 {step === totalSteps ? (
-                  <Button variant="outline" onClick={resetWizard}>
+                  <Button variant="pill-outline" onClick={resetWizard}>
                     <RotateCcw className="mr-2 h-4 w-4" />
                     Start Over
                   </Button>
@@ -152,7 +152,7 @@ export default function WizardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Estimated Price</p>
-                <p className="text-2xl font-bold text-gradient-accent">
+                <p className="text-2xl font-semibold">
                   {config.type
                     ? `$${pricing.recommendedPrice.toLocaleString()}`
                     : "--"}

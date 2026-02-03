@@ -26,27 +26,27 @@ export function StepIndicator({
               className={cn(
                 "flex items-center gap-3 transition-all duration-200",
                 step <= currentStep && "cursor-pointer",
-                step > currentStep && "cursor-not-allowed opacity-50"
+                step > currentStep && "cursor-not-allowed opacity-40"
               )}
             >
               <div
                 className={cn(
-                  "flex h-10 w-10 items-center justify-center rounded-full border-2 font-semibold transition-all duration-300",
-                  step < currentStep && "step-completed border-transparent",
-                  step === currentStep && "step-active border-transparent shadow-glow",
-                  step > currentStep && "step-pending border-border"
+                  "flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition-all duration-300",
+                  step < currentStep && "bg-foreground text-background",
+                  step === currentStep && "bg-foreground text-background",
+                  step > currentStep && "bg-muted text-muted-foreground"
                 )}
               >
                 {step < currentStep ? (
-                  <Check className="h-5 w-5" />
+                  <Check className="h-4 w-4" />
                 ) : (
                   <span>{step}</span>
                 )}
               </div>
               <span
                 className={cn(
-                  "text-sm font-medium transition-colors",
-                  step === currentStep && "text-foreground",
+                  "text-sm transition-colors",
+                  step === currentStep && "text-foreground font-medium",
                   step !== currentStep && "text-muted-foreground"
                 )}
               >
@@ -57,8 +57,8 @@ export function StepIndicator({
               <div className="flex-1 mx-4">
                 <div
                   className={cn(
-                    "h-0.5 rounded-full transition-all duration-300",
-                    step < currentStep ? "bg-primary" : "bg-border"
+                    "h-px transition-all duration-300",
+                    step < currentStep ? "bg-foreground" : "bg-border"
                   )}
                 />
               </div>
@@ -82,10 +82,8 @@ export function StepIndicator({
             <div
               key={step}
               className={cn(
-                "h-1.5 flex-1 rounded-full transition-all duration-300",
-                step < currentStep && "bg-primary",
-                step === currentStep && "accent-gradient",
-                step > currentStep && "bg-border"
+                "h-1 flex-1 rounded-full transition-all duration-300",
+                step <= currentStep ? "bg-foreground" : "bg-border"
               )}
             />
           ))}
