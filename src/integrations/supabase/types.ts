@@ -14,7 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          company_name: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          is_premium: boolean
+          proposals_used: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          is_premium?: boolean
+          proposals_used?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          is_premium?: boolean
+          proposals_used?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      proposals: {
+        Row: {
+          created_at: string
+          id: string
+          pricing_result: Json
+          project_config: Json
+          project_type: string
+          proposal_data: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pricing_result: Json
+          project_config: Json
+          project_type: string
+          proposal_data: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pricing_result?: Json
+          project_config?: Json
+          project_type?: string
+          proposal_data?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
