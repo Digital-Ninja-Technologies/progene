@@ -313,13 +313,13 @@ function GeneCharacter() {
 function HeroIllustration() {
   return (
     <div className="relative flex items-center justify-center">
-      {/* Gene Character */}
-      <div className="absolute -left-8 bottom-0 z-0">
+      {/* Gene Character - centered behind the card */}
+      <div className="absolute inset-0 flex items-center justify-center z-0">
         <GeneCharacter />
       </div>
       
-      {/* Main proposal card - positioned to look like gene is holding it */}
-      <div className="glass-card p-6 shadow-xl relative z-10 ml-20">
+      {/* Main proposal card - in front of gene */}
+      <div className="glass-card p-6 shadow-xl relative z-10 mt-8">
         <div className="flex items-center gap-3 mb-4">
           <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#36C5F0] to-[#2EB67D] flex items-center justify-center">
             <FileText className="h-6 w-6 text-white" />
