@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -63,6 +64,32 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log("Sending contact email from:", email, "Subject:", subject);
+
+    // Initialize Supabase client with service role to bypass RLS
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    // Store the submission in the database
+    const { data: submission, error: dbError } = await supabase
+      .from("contact_submissions")
+      .insert({
+        name,
+        email,
+        subject,
+        message,
+        status: "new",
+      })
+      .select("id")
+      .single();
+
+    if (dbError) {
+      console.error("Error storing contact submission:", dbError);
+      // Continue with email sending even if DB insert fails
+    } else {
+      console.log("Contact submission stored with ID:", submission?.id);
+    }
 
     // Send email to the business owner
     const ownerEmailResponse = await resend.emails.send({
