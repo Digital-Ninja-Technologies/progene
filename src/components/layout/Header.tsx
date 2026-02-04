@@ -23,6 +23,12 @@ export function Header() {
           <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             Home
           </Link>
+          <a href="/#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            Pricing
+          </a>
+          <a href="/#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            FAQ
+          </a>
           {user && (
             <>
               <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">

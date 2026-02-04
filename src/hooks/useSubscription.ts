@@ -37,13 +37,13 @@ export const PLANS = {
   },
   pro: {
     name: 'Pro',
-    price: 30,
+    price: 15,
     proposals: Infinity,
     features: ['Unlimited proposals', 'All templates', 'Custom branding', 'Client portal', 'Analytics'],
   },
   agency: {
     name: 'Agency',
-    price: 60,
+    price: 35,
     proposals: Infinity,
     features: ['Everything in Pro', 'Team collaboration', 'Priority support', 'API access', 'White-label exports'],
   },

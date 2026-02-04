@@ -14,13 +14,13 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 const PLANS = {
   pro: {
     name: 'Pro',
-    amount: 3000, // $30 in cents
+    amount: 1500, // $15 in cents
     interval: 'monthly',
     description: 'Unlimited proposals, templates, and branding'
   },
   agency: {
     name: 'Agency',
-    amount: 6000, // $60 in cents
+    amount: 3500, // $35 in cents
     interval: 'monthly',
     description: 'Everything in Pro plus team features and priority support'
   }
