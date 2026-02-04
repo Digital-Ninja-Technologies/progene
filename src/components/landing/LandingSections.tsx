@@ -375,11 +375,11 @@ function HeroIllustration() {
 
 export function LandingHero() {
   return (
-    <section className="relative overflow-hidden min-h-[90vh] flex items-center">
+    <section className="relative overflow-hidden min-h-[90vh] flex items-center justify-center">
       <FloatingShapes />
       
       {/* Content */}
-      <div className="container mx-auto px-4 py-20 sm:py-28 lg:py-36 relative z-10">
+      <div className="w-[80%] mx-auto py-20 sm:py-28 lg:py-36 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
             {/* Badge */}
