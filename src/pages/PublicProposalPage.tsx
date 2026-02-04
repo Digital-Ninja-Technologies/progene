@@ -46,12 +46,31 @@ interface PublicProposal {
   };
 }
 
+const MAX_SIGNATURE_LENGTH = 100;
+
+const validateSignature = (name: string): string | null => {
+  const trimmed = name.trim();
+  
+  if (trimmed.length === 0) return 'Please enter your name';
+  if (trimmed.length > MAX_SIGNATURE_LENGTH) {
+    return `Name must be ${MAX_SIGNATURE_LENGTH} characters or less`;
+  }
+  
+  // Restrict to common name characters
+  if (!/^[a-zA-Z\s\-''.]+$/.test(trimmed)) {
+    return 'Please use only letters, spaces, hyphens, and apostrophes';
+  }
+  
+  return null;
+};
+
 export default function PublicProposalPage() {
   const { token } = useParams<{ token: string }>();
   const [proposal, setProposal] = useState<PublicProposal | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [signatureName, setSignatureName] = useState("");
+  const [signatureError, setSignatureError] = useState<string | null>(null);
   const [signing, setSigning] = useState(false);
   const hasLoggedView = useRef(false);
 
@@ -110,6 +129,14 @@ export default function PublicProposalPage() {
 
   const handleSign = async () => {
     if (!proposal || !signatureName.trim()) return;
+
+    const validationError = validateSignature(signatureName);
+    if (validationError) {
+      setSignatureError(validationError);
+      toast.error(validationError);
+      return;
+    }
+    setSignatureError(null);
 
     setSigning(true);
     const { error: signError } = await supabase
@@ -334,10 +361,17 @@ export default function PublicProposalPage() {
                   <label className="text-sm font-medium">Your Full Name</label>
                   <Input
                     value={signatureName}
-                    onChange={(e) => setSignatureName(e.target.value)}
+                    onChange={(e) => {
+                      setSignatureName(e.target.value);
+                      if (signatureError) setSignatureError(null);
+                    }}
                     placeholder="Type your full name to sign"
-                    className="mt-1.5"
+                    maxLength={MAX_SIGNATURE_LENGTH}
+                    className={`mt-1.5 ${signatureError ? 'border-red-500' : ''}`}
                   />
+                  {signatureError && (
+                    <p className="text-sm text-red-500 mt-1">{signatureError}</p>
+                  )}
                 </div>
                 <Button 
                   onClick={handleSign} 
