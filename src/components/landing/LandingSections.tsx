@@ -651,11 +651,13 @@ const pricingPlans = [
     name: "Free",
     description: "Perfect for trying out ScopeGen",
     price: "$0",
+    originalPrice: null,
     period: "forever",
     color: "border-border",
     buttonColor: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
     buttonText: "Get Started Free",
     popular: false,
+    launchDeal: false,
     features: [
       { text: "2 proposals included", included: true },
       { text: "All project types", included: true },
@@ -670,12 +672,14 @@ const pricingPlans = [
   {
     name: "Pro",
     description: "For busy freelancers",
-    price: "$19",
+    price: "$25",
+    originalPrice: "$30",
     period: "/month",
     color: "border-[#2EB67D] ring-2 ring-[#2EB67D]/20",
     buttonColor: "bg-gradient-to-r from-[#36C5F0] to-[#2EB67D] hover:opacity-90 text-white",
-    buttonText: "Start Pro Trial",
+    buttonText: "Lock In This Price",
     popular: true,
+    launchDeal: true,
     features: [
       { text: "Unlimited proposals", included: true, highlight: true },
       { text: "All project types", included: true },
@@ -690,12 +694,14 @@ const pricingPlans = [
   {
     name: "Agency",
     description: "For teams and agencies",
-    price: "$49",
+    price: "$55",
+    originalPrice: "$60",
     period: "/month",
-    color: "border-[#E01E5A]",
+    color: "border-[#E01E5A] ring-2 ring-[#E01E5A]/20",
     buttonColor: "bg-[#E01E5A] hover:bg-[#E01E5A]/90 text-white",
-    buttonText: "Contact Sales",
+    buttonText: "Lock In This Price",
     popular: false,
+    launchDeal: true,
     features: [
       { text: "Unlimited proposals", included: true, highlight: true },
       { text: "All project types", included: true },
@@ -720,18 +726,21 @@ export function LandingPricing() {
 
       <div className="container mx-auto px-4 relative z-10">
         <ScrollReveal className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#2EB67D]/10 px-4 py-2 text-sm text-[#2EB67D] font-medium mb-6">
-            <DollarSign className="h-4 w-4" />
-            <span>Simple Pricing</span>
+          {/* Launch offer banner */}
+          <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#E01E5A] to-[#ECB22E] px-4 py-2 text-sm text-white font-semibold mb-6 animate-pulse">
+            <Zap className="h-4 w-4" />
+            <span>🔥 Launch Special — Limited Time Only!</span>
           </div>
           <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
-            Start free, upgrade when
+            Lock in launch pricing
             <br />
-            <span className="bg-gradient-to-r from-[#2EB67D] to-[#36C5F0] bg-clip-text text-transparent">you're ready</span>
+            <span className="bg-gradient-to-r from-[#2EB67D] to-[#36C5F0] bg-clip-text text-transparent">before it's gone</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Try ScopeGen with 2 free proposals. No credit card required. 
-            Upgrade anytime for unlimited access.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
+            Try ScopeGen with 2 free proposals. No credit card required.
+          </p>
+          <p className="text-base font-medium text-[#E01E5A] max-w-2xl mx-auto">
+            ⏰ Early supporters get <span className="font-bold">$5/month off forever</span> — this offer won't last!
           </p>
         </ScrollReveal>
 
@@ -750,14 +759,29 @@ export function LandingPricing() {
                 </div>
               )}
 
+              {/* Launch deal badge */}
+              {plan.launchDeal && (
+                <div className="absolute -top-4 -right-4">
+                  <div className="bg-[#ECB22E] text-black text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform rotate-12">
+                    SAVE $5/mo
+                  </div>
+                </div>
+              )}
+
               {/* Plan header */}
               <div className="text-center mb-8">
                 <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
                 <p className="text-sm text-muted-foreground mb-4">{plan.description}</p>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-bold">{plan.price}</span>
+                  {plan.originalPrice && (
+                    <span className="text-2xl text-muted-foreground line-through mr-2">{plan.originalPrice}</span>
+                  )}
+                  <span className={`text-5xl font-bold ${plan.launchDeal ? 'text-[#2EB67D]' : ''}`}>{plan.price}</span>
                   <span className="text-muted-foreground">{plan.period}</span>
                 </div>
+                {plan.launchDeal && (
+                  <p className="text-xs text-[#E01E5A] font-medium mt-2">🔒 Price locked forever when you subscribe now</p>
+                )}
               </div>
 
               {/* Features list */}
@@ -827,7 +851,7 @@ const faqs = [
   },
   {
     question: "Can I upgrade or downgrade my plan anytime?",
-    answer: "Absolutely! You can upgrade to Pro ($19/mo) or Agency ($49/mo) at any time for unlimited proposals. Downgrade anytime—we don't lock you in."
+    answer: "Absolutely! You can upgrade to Pro ($30/mo) or Agency ($60/mo) at any time for unlimited proposals. During our launch special, you get $5/month off forever — Pro at $25/mo and Agency at $55/mo. Downgrade anytime—we don't lock you in."
   },
 ];
 
