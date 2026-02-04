@@ -826,7 +826,7 @@ export function LandingPricing() {
             Try ProposalGene with 2 free proposals. No credit card required.
           </p>
           <p className="text-base font-medium text-[#E01E5A] max-w-2xl mx-auto">
-            ⏰ Early supporters get <span className="font-bold">$5/month off forever</span> — this offer won't last!
+            ⏰ Early supporters get <span className="font-bold">$10/month off forever</span> — this offer won't last!
           </p>
         </ScrollReveal>
 
@@ -849,7 +849,7 @@ export function LandingPricing() {
               {plan.launchDeal && (
                 <div className="absolute -top-4 -right-4">
                   <div className="bg-[#ECB22E] text-black text-xs font-bold px-3 py-1.5 rounded-full shadow-lg transform rotate-12">
-                    SAVE $5/mo
+                    SAVE $10/mo
                   </div>
                 </div>
               )}
