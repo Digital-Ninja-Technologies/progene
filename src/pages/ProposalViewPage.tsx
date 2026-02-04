@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2, Copy, Pencil } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { ProposalPreview } from "@/components/wizard/ProposalPreview";
+import { ShareForSignature } from "@/components/proposal/ShareForSignature";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { SavedProposal } from "@/pages/DashboardPage";
@@ -101,6 +102,7 @@ export default function ProposalViewPage() {
           </Button>
 
           <div className="flex items-center gap-2">
+            <ShareForSignature proposalId={proposal.id} />
             <Button variant="outline" onClick={handleEdit}>
               <Pencil className="mr-2 h-4 w-4" />
               Edit
