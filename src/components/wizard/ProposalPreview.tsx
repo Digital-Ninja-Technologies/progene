@@ -4,6 +4,7 @@ import { ProposalData, PROJECT_TYPES, CURRENCIES } from "@/types/project";
 import { useState } from "react";
 import { toast } from "sonner";
 import { InvoiceGenerator } from "./InvoiceGenerator";
+import { ShareForSignature } from "@/components/proposal/ShareForSignature";
 import { escapeHtml } from "@/lib/htmlEscape";
 
 interface ProposalPreviewProps {
@@ -141,6 +142,9 @@ Generated with ProposalGene
 
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-3 justify-center">
+        {proposalId && (
+          <ShareForSignature proposalId={proposalId} />
+        )}
         <Button variant="pill" size="lg" onClick={handleExportPDF}>
           <Download className="mr-2 h-4 w-4" />
           Export PDF
