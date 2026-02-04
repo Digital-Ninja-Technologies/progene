@@ -389,14 +389,14 @@ export function LandingHero() {
             </div>
 
             {/* Headline */}
-            <h1 className="mb-6 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl animate-fade-in-up [animation-delay:100ms]">
+            <h1 className="mb-4 sm:mb-6 text-3xl font-bold tracking-tight sm:text-5xl lg:text-7xl animate-fade-in-up [animation-delay:100ms]">
               <span className="bg-gradient-to-r from-[#36C5F0] via-[#2EB67D] to-[#ECB22E] bg-clip-text text-transparent">Proposals</span>
               <span className="block text-foreground">that win clients,</span>
               <span className="block text-foreground">not headaches</span>
             </h1>
 
             {/* Subheadline */}
-            <p className="mb-8 max-w-lg text-lg text-muted-foreground animate-fade-in-up [animation-delay:200ms]">
+            <p className="mb-6 sm:mb-8 max-w-lg text-base sm:text-lg text-muted-foreground animate-fade-in-up [animation-delay:200ms]">
               Tired of spending hours on proposals that don't convert? ProposalGene creates 
               professional, accurately-priced proposals in <span className="text-[#2EB67D] font-semibold">under 5 minutes</span>.
             </p>
@@ -454,7 +454,7 @@ export function LandingPainPoints() {
             <AlertTriangle className="h-4 w-4" />
             <span>Sound familiar?</span>
           </div>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 sm:mb-6">
             Freelancing is hard enough.
             <br />
             <span className="text-muted-foreground">Proposals shouldn't be.</span>
@@ -532,12 +532,12 @@ export function LandingFeatures() {
             <Zap className="h-4 w-4" />
             <span>Features</span>
           </div>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 sm:mb-6">
             Everything you need to
             <br />
             <span className="bg-gradient-to-r from-[#36C5F0] to-[#2EB67D] bg-clip-text text-transparent">price projects right</span>
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-base sm:text-lg text-muted-foreground">
             Built specifically for WordPress, Framer, Webflow, and Shopify developers.
           </p>
         </ScrollReveal>
@@ -565,11 +565,11 @@ export function LandingStats() {
   return (
     <section className="py-16 bg-gradient-to-r from-[#36C5F0] via-[#2EB67D] to-[#ECB22E]">
       <div className="container mx-auto px-4">
-        <StaggerContainer className="grid md:grid-cols-3 gap-8" staggerDelay={150}>
+        <StaggerContainer className="grid md:grid-cols-3 gap-6 sm:gap-8" staggerDelay={150}>
           {stats.map((stat) => (
             <div key={stat.label} className="text-center text-white">
-              <p className="text-5xl font-bold mb-2">{stat.value}</p>
-              <p className="text-white/80">{stat.label}</p>
+              <p className="text-3xl sm:text-5xl font-bold mb-1 sm:mb-2">{stat.value}</p>
+              <p className="text-sm sm:text-base text-white/80">{stat.label}</p>
             </div>
           ))}
         </StaggerContainer>
@@ -587,12 +587,12 @@ export function LandingProjectTypes() {
             <Target className="h-4 w-4" />
             <span>Project Types</span>
           </div>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 sm:mb-6">
             Tailored pricing for
             <br />
             <span className="bg-gradient-to-r from-[#ECB22E] to-[#E01E5A] bg-clip-text text-transparent">every project type</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             Whether you're building a simple landing page or a complex e-commerce site, 
             ProposalGene understands the nuances and calculates accurate estimates.
           </p>
@@ -662,7 +662,7 @@ export function LandingHowItWorks() {
             <Rocket className="h-4 w-4" />
             <span>How It Works</span>
           </div>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 sm:mb-6">
             From zero to proposal
             <br />
             <span className="bg-gradient-to-r from-[#36C5F0] via-[#2EB67D] via-[#ECB22E] to-[#E01E5A] bg-clip-text text-transparent">in 4 simple steps</span>
@@ -757,12 +757,12 @@ export function LandingTestimonials() {
             <Users className="h-4 w-4" />
             <span>Loved by Freelancers</span>
           </div>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 sm:mb-6">
             Don't take our word for it.
             <br />
             <span className="bg-gradient-to-r from-[#36C5F0] via-[#2EB67D] to-[#E01E5A] bg-clip-text text-transparent">Hear from real freelancers.</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             Thousands of developers trust ProposalGene to price their projects accurately and win more clients.
           </p>
         </ScrollReveal>
@@ -913,25 +913,25 @@ export function LandingPricing() {
             <Zap className="h-4 w-4" />
             <span>🔥 Launch Special — Limited Time Only!</span>
           </div>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 sm:mb-6">
             Lock in launch pricing
             <br />
             <span className="bg-gradient-to-r from-[#2EB67D] to-[#36C5F0] bg-clip-text text-transparent">before it's gone</span>
           </h2>
           
           {/* Countdown Timer */}
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-4">
+          <div className="mb-6 sm:mb-8">
+            <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
               <Timer className="h-4 w-4 text-[#E01E5A]" />
               <span>Offer expires in:</span>
             </div>
             <CountdownTimer />
           </div>
           
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-3 sm:mb-4">
             Try ProposalGene with 2 free proposals. No credit card required.
           </p>
-          <p className="text-base font-medium text-[#E01E5A] max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base font-medium text-[#E01E5A] max-w-2xl mx-auto">
             ⏰ Early supporters get <span className="font-bold">$10/month off forever</span> — this offer won't last!
           </p>
         </ScrollReveal>
@@ -1056,12 +1056,12 @@ export function LandingFAQ() {
             <HelpCircle className="h-4 w-4" />
             <span>FAQ</span>
           </div>
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4 sm:mb-6">
             Frequently Asked
             <br />
             <span className="bg-gradient-to-r from-[#36C5F0] to-[#2EB67D] bg-clip-text text-transparent">Questions</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             Everything you need to know about ProposalGene and how it can help you price projects accurately.
           </p>
         </ScrollReveal>
@@ -1075,8 +1075,8 @@ export function LandingFAQ() {
                   value={`item-${index}`}
                   className="border-b border-border"
                 >
-                  <AccordionTrigger className="text-left py-6 hover:no-underline group">
-                    <span className="font-semibold text-lg group-hover:text-[#36C5F0] transition-colors">
+                  <AccordionTrigger className="text-left py-4 sm:py-6 hover:no-underline group">
+                    <span className="font-semibold text-base sm:text-lg group-hover:text-[#36C5F0] transition-colors">
                       {faq.question}
                     </span>
                   </AccordionTrigger>
@@ -1109,12 +1109,12 @@ export function LandingCTA() {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center">
-          <h2 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl mb-6 text-white">
+          <h2 className="text-2xl sm:text-4xl lg:text-6xl font-bold tracking-tight mb-4 sm:mb-6 text-white">
             Ready to stop guessing
             <br />
             and start winning?
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-white/80 mb-12">
+          <p className="mx-auto max-w-2xl text-base sm:text-lg text-white/80 mb-8 sm:mb-12">
             Join thousands of freelancers who've stopped underpricing their work. 
             Start with <span className="font-semibold text-white">2 free proposals</span>—no credit card required.
           </p>
