@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { 
   FileText, 
   Zap, 
@@ -16,7 +17,8 @@ import {
   Rocket,
   Quote,
   Star,
-  HelpCircle
+  HelpCircle,
+  Timer
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -28,6 +30,80 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+
+// Countdown Timer Component
+function CountdownTimer() {
+  // Set end date to 14 days from now (persisted via localStorage for consistency)
+  const getEndDate = () => {
+    const stored = localStorage.getItem('scopegen_launch_end');
+    if (stored) {
+      return new Date(stored);
+    }
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 14);
+    localStorage.setItem('scopegen_launch_end', endDate.toISOString());
+    return endDate;
+  };
+
+  const [endDate] = useState(getEndDate);
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const difference = endDate.getTime() - new Date().getTime();
+      
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60),
+        });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, [endDate]);
+
+  const TimeBlock = ({ value, label }: { value: number; label: string }) => (
+    <div className="flex flex-col items-center">
+      <div className="relative">
+        <div className="bg-gradient-to-br from-[#E01E5A] to-[#ECB22E] rounded-xl p-[2px]">
+          <div className="bg-background rounded-[10px] w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+            <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#E01E5A] to-[#ECB22E] bg-clip-text text-transparent">
+              {value.toString().padStart(2, '0')}
+            </span>
+          </div>
+        </div>
+        {/* Animated glow effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#E01E5A]/20 to-[#ECB22E]/20 rounded-xl blur-lg -z-10 animate-pulse" />
+      </div>
+      <span className="text-xs sm:text-sm text-muted-foreground mt-2 font-medium uppercase tracking-wide">
+        {label}
+      </span>
+    </div>
+  );
+
+  return (
+    <div className="flex items-center justify-center gap-3 sm:gap-4">
+      <TimeBlock value={timeLeft.days} label="Days" />
+      <div className="text-2xl font-bold text-muted-foreground self-start mt-5">:</div>
+      <TimeBlock value={timeLeft.hours} label="Hours" />
+      <div className="text-2xl font-bold text-muted-foreground self-start mt-5">:</div>
+      <TimeBlock value={timeLeft.minutes} label="Mins" />
+      <div className="text-2xl font-bold text-muted-foreground self-start mt-5">:</div>
+      <TimeBlock value={timeLeft.seconds} label="Secs" />
+    </div>
+  );
+}
 
 const features = [
   {
@@ -736,6 +812,16 @@ export function LandingPricing() {
             <br />
             <span className="bg-gradient-to-r from-[#2EB67D] to-[#36C5F0] bg-clip-text text-transparent">before it's gone</span>
           </h2>
+          
+          {/* Countdown Timer */}
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-4">
+              <Timer className="h-4 w-4 text-[#E01E5A]" />
+              <span>Offer expires in:</span>
+            </div>
+            <CountdownTimer />
+          </div>
+          
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
             Try ScopeGen with 2 free proposals. No credit card required.
           </p>
