@@ -46,10 +46,11 @@ export function PricingStep({
           <SelectTrigger className="w-full rounded-xl h-12">
             <SelectValue placeholder="Select currency" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-[300px]">
             {CURRENCIES.map((curr) => (
               <SelectItem key={curr.value} value={curr.value}>
                 <span className="flex items-center gap-2">
+                  <span>{curr.icon}</span>
                   <span className="font-mono">{curr.symbol}</span>
                   <span>{curr.label}</span>
                 </span>
