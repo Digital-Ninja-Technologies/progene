@@ -281,8 +281,47 @@ serve(async (req) => {
     }
 
     if (path === 'webhook') {
-      // Handle Paystack webhooks
-      const payload = await req.json();
+      // Handle Paystack webhooks with signature verification
+      const signature = req.headers.get('x-paystack-signature');
+      const body = await req.text();
+
+      if (!signature) {
+        console.error('No webhook signature provided');
+        return new Response(
+          JSON.stringify({ error: 'No signature provided' }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Verify webhook signature using HMAC SHA512
+      const encoder = new TextEncoder();
+      const key = await crypto.subtle.importKey(
+        'raw',
+        encoder.encode(PAYSTACK_SECRET_KEY),
+        { name: 'HMAC', hash: 'SHA-512' },
+        false,
+        ['sign']
+      );
+
+      const hash = await crypto.subtle.sign(
+        'HMAC',
+        key,
+        encoder.encode(body)
+      );
+
+      const expectedSignature = Array.from(new Uint8Array(hash))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+
+      if (signature !== expectedSignature) {
+        console.error('Invalid webhook signature');
+        return new Response(
+          JSON.stringify({ error: 'Invalid signature' }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const payload = JSON.parse(body);
       const event = payload.event;
 
       console.log('Webhook received:', event);

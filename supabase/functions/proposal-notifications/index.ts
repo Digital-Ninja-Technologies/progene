@@ -29,13 +29,38 @@ serve(async (req: Request) => {
       throw new Error("Missing required fields: proposalId and type");
     }
 
-    // Create Supabase client with service role for fetching proposal data
+    // SECURITY: First verify the proposal exists and is public using anon client
+    // This prevents unauthorized access to private proposals and email spam attacks
+    const anonClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!
+    );
+
+    const { data: proposalCheck, error: checkError } = await anonClient
+      .from("proposals")
+      .select("id, is_public, user_id")
+      .eq("id", proposalId)
+      .eq("is_public", true)
+      .single();
+
+    if (checkError || !proposalCheck) {
+      console.error("Proposal not found or not public:", checkError);
+      return new Response(
+        JSON.stringify({ success: false, error: "Proposal not found or not public" }),
+        {
+          status: 404,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    // Create Supabase client with service role for fetching additional data
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Fetch the proposal with owner's profile and branding
+    // Fetch the proposal with pricing details
     const { data: proposal, error: proposalError } = await supabase
       .from("proposals")
       .select("id, project_type, pricing_result, user_id")

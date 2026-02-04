@@ -439,7 +439,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      sign_proposal: {
+        Args: { p_client_signature: string; p_proposal_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

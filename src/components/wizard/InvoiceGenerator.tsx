@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuthContext } from "@/contexts/AuthContext";
 import type { Json } from "@/integrations/supabase/types";
+import { escapeHtml, escapeHtmlWithBreaks } from "@/lib/htmlEscape";
 
 interface InvoiceGeneratorProps {
   proposal: ProposalData;
@@ -255,13 +256,27 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
   const handleExportDocument = () => {
     if (!validateForm()) return;
 
+    // Escape all user-controlled inputs to prevent XSS
+    const safeData = {
+      projectName: escapeHtml(projectName),
+      invoiceNumber: escapeHtml(invoice.invoiceNumber),
+      yourName: escapeHtml(invoice.yourName),
+      yourEmail: escapeHtml(invoice.yourEmail),
+      yourAddress: escapeHtmlWithBreaks(invoice.yourAddress),
+      clientName: escapeHtml(invoice.clientName),
+      clientEmail: escapeHtml(invoice.clientEmail),
+      clientAddress: escapeHtmlWithBreaks(invoice.clientAddress),
+      projectDescription: escapeHtml(projectDescription),
+      notes: escapeHtml(invoice.notes),
+    };
+
     const printWindow = window.open("", "_blank");
     if (printWindow) {
       printWindow.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Project Proposal - ${projectName}</title>
+          <title>Project Proposal - ${safeData.projectName}</title>
           <style>
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { font-family: 'Inter', system-ui, sans-serif; padding: 50px; max-width: 850px; margin: 0 auto; color: #1a1a1a; font-size: 14px; line-height: 1.6; }
@@ -333,25 +348,25 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
         <body>
           <div class="header">
             <div class="document-title">PROJECT PROPOSAL</div>
-            <div class="document-number">${invoice.invoiceNumber}</div>
-            <div class="project-name">${projectName}</div>
+            <div class="document-number">${safeData.invoiceNumber}</div>
+            <div class="project-name">${safeData.projectName}</div>
           </div>
           
           <div class="meta-section">
             <div class="meta-block">
               <h3>From</h3>
               <p>
-                <strong>${invoice.yourName}</strong><br/>
-                ${invoice.yourEmail}<br/>
-                ${invoice.yourAddress ? invoice.yourAddress.replace(/\n/g, "<br/>") : ""}
+                <strong>${safeData.yourName}</strong><br/>
+                ${safeData.yourEmail}<br/>
+                ${safeData.yourAddress}
               </p>
             </div>
             <div class="meta-block">
               <h3>Prepared For</h3>
               <p>
-                <strong>${invoice.clientName}</strong><br/>
-                ${invoice.clientEmail}<br/>
-                ${invoice.clientAddress ? invoice.clientAddress.replace(/\n/g, "<br/>") : ""}
+                <strong>${safeData.clientName}</strong><br/>
+                ${safeData.clientEmail}<br/>
+                ${safeData.clientAddress}
               </p>
             </div>
           </div>
@@ -371,10 +386,10 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
             </div>
           </div>
           
-          ${projectDescription ? `
+          ${safeData.projectDescription ? `
             <div class="section">
               <div class="section-title">Project Overview</div>
-              <p>${projectDescription}</p>
+              <p>${safeData.projectDescription}</p>
             </div>
           ` : ""}
           
@@ -383,7 +398,7 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
             <div class="summary-grid">
               <div class="summary-item">
                 <label>Project Type</label>
-                <div class="value">${projectTypeLabel.split(" ")[0]}</div>
+                <div class="value">${escapeHtml(projectTypeLabel.split(" ")[0])}</div>
               </div>
               <div class="summary-item">
                 <label>Est. Hours</label>
@@ -403,14 +418,14 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
           <div class="section">
             <div class="section-title">Scope of Work</div>
             <ul>
-              ${proposal.scopeOfWork.map((item) => `<li>${item}</li>`).join("")}
+              ${proposal.scopeOfWork.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
             </ul>
           </div>
           
           <div class="section">
             <div class="section-title">Deliverables</div>
             <ul>
-              ${proposal.deliverables.map((item) => `<li>${item}</li>`).join("")}
+              ${proposal.deliverables.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
             </ul>
           </div>
           
@@ -427,8 +442,8 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
               <tbody>
                 ${proposal.milestones.map((milestone) => `
                   <tr>
-                    <td class="milestone-name">${milestone.name}</td>
-                    <td>${milestone.duration}</td>
+                    <td class="milestone-name">${escapeHtml(milestone.name)}</td>
+                    <td>${escapeHtml(milestone.duration)}</td>
                     <td>${milestone.payment}%</td>
                   </tr>
                 `).join("")}
@@ -448,7 +463,7 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
               <tbody>
                 ${invoice.items.map((item) => `
                   <tr>
-                    <td>${item.description}</td>
+                    <td>${escapeHtml(item.description)}</td>
                     <td>${formatCurrency(item.amount)}</td>
                   </tr>
                 `).join("")}
@@ -473,10 +488,10 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
             </div>
           </div>
           
-          ${invoice.notes ? `
+          ${safeData.notes ? `
             <div class="terms">
               <h3>Terms & Conditions</h3>
-              <p>${invoice.notes}</p>
+              <p>${safeData.notes}</p>
             </div>
           ` : ""}
           
@@ -484,12 +499,12 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
             <div class="signature-block">
               <h4>Client Approval</h4>
               <div class="signature-line"></div>
-              <div class="signature-label">${invoice.clientName} / Date</div>
+              <div class="signature-label">${safeData.clientName} / Date</div>
             </div>
             <div class="signature-block">
               <h4>Provider</h4>
               <div class="signature-line"></div>
-              <div class="signature-label">${invoice.yourName} / Date</div>
+              <div class="signature-label">${safeData.yourName} / Date</div>
             </div>
           </div>
           
