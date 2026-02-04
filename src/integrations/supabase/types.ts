@@ -284,6 +284,7 @@ export type Database = {
       }
       proposals: {
         Row: {
+          branding_snapshot: Json | null
           client_id: string | null
           client_signature: string | null
           client_signed_at: string | null
@@ -299,6 +300,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          branding_snapshot?: Json | null
           client_id?: string | null
           client_signature?: string | null
           client_signed_at?: string | null
@@ -314,6 +316,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          branding_snapshot?: Json | null
           client_id?: string | null
           client_signature?: string | null
           client_signed_at?: string | null
@@ -337,6 +340,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      rate_limits: {
+        Row: {
+          action: string
+          id: string
+          identifier: string
+          request_count: number
+          window_start: string
+        }
+        Insert: {
+          action: string
+          id?: string
+          identifier: string
+          request_count?: number
+          window_start?: string
+        }
+        Update: {
+          action?: string
+          id?: string
+          identifier?: string
+          request_count?: number
+          window_start?: string
+        }
+        Relationships: []
       }
       subscriptions: {
         Row: {
@@ -439,6 +466,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          p_action: string
+          p_identifier: string
+          p_max_requests: number
+          p_window_seconds: number
+        }
+        Returns: number
+      }
+      cleanup_old_rate_limits: { Args: never; Returns: undefined }
       sign_proposal: {
         Args: { p_client_signature: string; p_proposal_id: string }
         Returns: boolean

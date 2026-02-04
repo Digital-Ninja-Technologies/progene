@@ -9,6 +9,7 @@ import { PROJECT_TYPES, CURRENCIES } from "@/types/project";
 import { SavedProposal } from "@/pages/DashboardPage";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuthContext } from "@/contexts/AuthContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,6 +35,7 @@ interface ProposalCardProps {
 
 export function ProposalCard({ proposal, onDelete, onDuplicate }: ProposalCardProps) {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
   const projectType = PROJECT_TYPES.find((t) => t.value === proposal.project_type);
   const currency = CURRENCIES.find((c) => c.value === proposal.project_config.currency);
   const [isPublic, setIsPublic] = useState((proposal as any).is_public || false);
@@ -46,17 +48,47 @@ export function ProposalCard({ proposal, onDelete, onDuplicate }: ProposalCardPr
   };
 
   const togglePublic = async () => {
+    if (!user) return;
+    
     setUpdating(true);
-    const { error } = await supabase
-      .from("proposals")
-      .update({ is_public: !isPublic })
-      .eq("id", proposal.id);
+    
+    // When making public, also store branding snapshot for secure access
+    if (!isPublic) {
+      // Fetch current branding settings
+      const { data: branding } = await supabase
+        .from("branding_settings")
+        .select("company_name, tagline, primary_color, secondary_color, website, email, phone, address, logo_url")
+        .eq("user_id", user.id)
+        .single();
+      
+      // Update proposal with is_public and branding snapshot
+      const { error } = await supabase
+        .from("proposals")
+        .update({ 
+          is_public: true,
+          branding_snapshot: branding || null
+        })
+        .eq("id", proposal.id);
 
-    if (error) {
-      toast.error("Failed to update sharing settings");
+      if (error) {
+        toast.error("Failed to update sharing settings");
+      } else {
+        setIsPublic(true);
+        toast.success("Proposal is now shareable!");
+      }
     } else {
-      setIsPublic(!isPublic);
-      toast.success(isPublic ? "Proposal is now private" : "Proposal is now shareable!");
+      // Making private - just update is_public
+      const { error } = await supabase
+        .from("proposals")
+        .update({ is_public: false })
+        .eq("id", proposal.id);
+
+      if (error) {
+        toast.error("Failed to update sharing settings");
+      } else {
+        setIsPublic(false);
+        toast.success("Proposal is now private");
+      }
     }
     setUpdating(false);
   };

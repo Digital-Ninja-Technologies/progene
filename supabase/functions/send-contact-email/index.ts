@@ -10,6 +10,10 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Rate limiting configuration
+const RATE_LIMIT_MAX_REQUESTS = 5; // 5 submissions per hour
+const RATE_LIMIT_WINDOW_SECONDS = 3600; // 1 hour
+
 interface ContactRequest {
   name: string;
   email: string;
@@ -24,6 +28,39 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Get client IP for rate limiting
+    const clientIP = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || 
+                     req.headers.get("x-real-ip") || 
+                     "unknown";
+
+    // Initialize Supabase client with service role to bypass RLS
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    // Check rate limit
+    const { data: rateLimitCount, error: rateLimitError } = await supabase.rpc("check_rate_limit", {
+      p_identifier: clientIP,
+      p_action: "contact_form",
+      p_max_requests: RATE_LIMIT_MAX_REQUESTS,
+      p_window_seconds: RATE_LIMIT_WINDOW_SECONDS,
+    });
+
+    if (rateLimitError) {
+      console.error("Rate limit check error:", rateLimitError);
+      // Continue without rate limiting if there's an error
+    } else if (rateLimitCount > RATE_LIMIT_MAX_REQUESTS) {
+      console.warn("Rate limit exceeded for IP:", clientIP);
+      return new Response(
+        JSON.stringify({ error: "Too many requests. Please try again later." }),
+        {
+          status: 429,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
     const { name, email, subject, message }: ContactRequest = await req.json();
 
     // Validate required fields
@@ -65,12 +102,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending contact email from:", email, "Subject:", subject);
 
-    // Initialize Supabase client with service role to bypass RLS
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
-
     // Store the submission in the database
     const { data: submission, error: dbError } = await supabase
       .from("contact_submissions")
@@ -90,6 +121,16 @@ const handler = async (req: Request): Promise<Response> => {
     } else {
       console.log("Contact submission stored with ID:", submission?.id);
     }
+
+    // HTML escape helper for email content
+    const escapeHtml = (text: string): string => {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    };
 
     // Send email to the business owner
     const ownerEmailResponse = await resend.emails.send({
@@ -113,14 +154,14 @@ const handler = async (req: Request): Promise<Response> => {
               <div style="margin-bottom: 20px;">
                 <p style="color: #6b7280; font-size: 14px; margin-bottom: 4px;">From:</p>
                 <p style="color: #1f2937; font-size: 16px; font-weight: 500; margin: 0;">
-                  ${name} &lt;${email}&gt;
+                  ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt;
                 </p>
               </div>
               
               <div style="margin-bottom: 20px;">
                 <p style="color: #6b7280; font-size: 14px; margin-bottom: 4px;">Subject:</p>
                 <p style="color: #1f2937; font-size: 16px; font-weight: 500; margin: 0;">
-                  ${subject}
+                  ${escapeHtml(subject)}
                 </p>
               </div>
               
@@ -128,14 +169,14 @@ const handler = async (req: Request): Promise<Response> => {
                 <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Message:</p>
                 <div style="background-color: #f3f4f6; border-radius: 8px; padding: 16px;">
                   <p style="color: #374151; font-size: 15px; line-height: 1.6; margin: 0; white-space: pre-wrap;">
-                    ${message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+                    ${escapeHtml(message)}
                   </p>
                 </div>
               </div>
               
               <div style="border-top: 1px solid #e5e7eb; padding-top: 16px;">
-                <a href="mailto:${email}" style="display: inline-block; background-color: #3b82f6; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 500;">
-                  Reply to ${name}
+                <a href="mailto:${escapeHtml(email)}" style="display: inline-block; background-color: #3b82f6; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 500;">
+                  Reply to ${escapeHtml(name)}
                 </a>
               </div>
             </div>
@@ -171,7 +212,7 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               
               <h1 style="color: #1f2937; font-size: 24px; margin-bottom: 16px; text-align: center;">
-                Thanks for reaching out, ${name}!
+                Thanks for reaching out, ${escapeHtml(name)}!
               </h1>
               
               <p style="color: #6b7280; font-size: 16px; line-height: 1.6; text-align: center; margin-bottom: 32px;">
@@ -186,14 +227,14 @@ const handler = async (req: Request): Promise<Response> => {
                 <div style="margin-bottom: 16px;">
                   <p style="color: #9ca3af; font-size: 12px; margin-bottom: 4px;">Subject:</p>
                   <p style="color: #1f2937; font-size: 15px; font-weight: 500; margin: 0;">
-                    ${subject}
+                    ${escapeHtml(subject)}
                   </p>
                 </div>
                 
                 <div>
                   <p style="color: #9ca3af; font-size: 12px; margin-bottom: 4px;">Message:</p>
                   <p style="color: #374151; font-size: 14px; line-height: 1.6; margin: 0; white-space: pre-wrap;">
-                    ${message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+                    ${escapeHtml(message)}
                   </p>
                 </div>
               </div>
@@ -229,7 +270,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error in send-contact-email function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "An error occurred. Please try again." }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

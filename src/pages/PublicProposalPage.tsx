@@ -84,10 +84,10 @@ export default function PublicProposalPage() {
     setLoading(true);
     setError(null);
 
-    // Fetch the proposal by share token
+    // Fetch the proposal by share token, including branding_snapshot
     const { data, error: fetchError } = await supabase
       .from("proposals")
-      .select("id, project_type, project_config, pricing_result, proposal_data, created_at, client_signed_at, client_signature, user_id")
+      .select("id, project_type, project_config, pricing_result, proposal_data, created_at, client_signed_at, client_signature, branding_snapshot")
       .eq("share_token", token)
       .eq("is_public", true)
       .single();
@@ -98,16 +98,10 @@ export default function PublicProposalPage() {
       return;
     }
 
-    // Fetch branding settings for the proposal owner
-    const { data: branding } = await supabase
-      .from("branding_settings")
-      .select("*")
-      .eq("user_id", data.user_id)
-      .single();
-
+    // Use branding_snapshot stored with the proposal (secure - no RLS bypass needed)
     setProposal({
       ...data,
-      branding: branding || undefined,
+      branding: data.branding_snapshot as PublicProposal['branding'] || undefined,
     } as PublicProposal);
 
     // Log view (only once per session)
