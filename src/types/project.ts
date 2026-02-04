@@ -10,7 +10,11 @@ export type ProjectType =
   | 'wordpress-blog'
   | 'wordpress-business'
   | 'wordpress-ecommerce'
-  | 'wordpress-membership';
+  | 'wordpress-membership'
+  | 'ui-ux-designer'
+  | 'vibe-coder'
+  | 'frontend-dev'
+  | 'backend-dev';
 
 export type TimelineUrgency = 'normal' | 'fast' | 'urgent';
 
@@ -119,6 +123,30 @@ export const PROJECT_TYPES: { value: ProjectType; label: string; description: st
     description: 'Members-only content with subscriptions',
     icon: '🔐',
   },
+  {
+    value: 'ui-ux-designer',
+    label: 'UI/UX Design',
+    description: 'User interface and experience design services',
+    icon: '🎨',
+  },
+  {
+    value: 'vibe-coder',
+    label: 'Vibe Coder',
+    description: 'AI-assisted rapid prototyping and development',
+    icon: '⚡',
+  },
+  {
+    value: 'frontend-dev',
+    label: 'Frontend Development',
+    description: 'Custom frontend development with React, Vue, etc.',
+    icon: '💻',
+  },
+  {
+    value: 'backend-dev',
+    label: 'Backend Development',
+    description: 'API, database, and server-side development',
+    icon: '🔧',
+  },
 ];
 
 export const INTEGRATIONS = [
@@ -154,6 +182,10 @@ export const BASE_HOURS: Record<ProjectType, number> = {
   'wordpress-business': 40,
   'wordpress-ecommerce': 64,
   'wordpress-membership': 56,
+  'ui-ux-designer': 30,
+  'vibe-coder': 20,
+  'frontend-dev': 40,
+  'backend-dev': 48,
 };
 
 // Hours per page by project type
@@ -170,6 +202,10 @@ export const HOURS_PER_PAGE: Record<ProjectType, number> = {
   'wordpress-business': 3,
   'wordpress-ecommerce': 4,
   'wordpress-membership': 4,
+  'ui-ux-designer': 4,
+  'vibe-coder': 2,
+  'frontend-dev': 4,
+  'backend-dev': 5,
 };
 
 // Urgency multipliers
