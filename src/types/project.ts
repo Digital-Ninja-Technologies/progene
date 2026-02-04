@@ -19,7 +19,7 @@ export type ProjectType =
 
 export type TimelineUrgency = 'normal' | 'fast' | 'urgent';
 
-export type Currency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD';
+export type Currency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'NGN' | 'ZAR' | 'KES' | 'GHS' | 'INR' | 'JPY' | 'CNY' | 'BRL' | 'MXN' | 'CHF' | 'SEK' | 'NOK' | 'DKK' | 'SGD' | 'HKD' | 'NZD' | 'AED' | 'SAR';
 
 export interface ProjectConfig {
   type: ProjectType | null;
@@ -167,12 +167,35 @@ export const INTEGRATIONS = [
   { id: 'chat', label: 'Live Chat', multiplier: 1.06 },
 ];
 
-export const CURRENCIES: { value: Currency; symbol: string; label: string }[] = [
-  { value: 'USD', symbol: '$', label: 'US Dollar' },
-  { value: 'EUR', symbol: '€', label: 'Euro' },
-  { value: 'GBP', symbol: '£', label: 'British Pound' },
-  { value: 'CAD', symbol: 'C$', label: 'Canadian Dollar' },
-  { value: 'AUD', symbol: 'A$', label: 'Australian Dollar' },
+export const CURRENCIES: { value: Currency; symbol: string; label: string; icon: string }[] = [
+  // Americas
+  { value: 'USD', symbol: '$', label: 'US Dollar', icon: '🇺🇸' },
+  { value: 'CAD', symbol: 'C$', label: 'Canadian Dollar', icon: '🇨🇦' },
+  { value: 'BRL', symbol: 'R$', label: 'Brazilian Real', icon: '🇧🇷' },
+  { value: 'MXN', symbol: '$', label: 'Mexican Peso', icon: '🇲🇽' },
+  // Europe
+  { value: 'EUR', symbol: '€', label: 'Euro', icon: '🇪🇺' },
+  { value: 'GBP', symbol: '£', label: 'British Pound', icon: '🇬🇧' },
+  { value: 'CHF', symbol: 'Fr', label: 'Swiss Franc', icon: '🇨🇭' },
+  { value: 'SEK', symbol: 'kr', label: 'Swedish Krona', icon: '🇸🇪' },
+  { value: 'NOK', symbol: 'kr', label: 'Norwegian Krone', icon: '🇳🇴' },
+  { value: 'DKK', symbol: 'kr', label: 'Danish Krone', icon: '🇩🇰' },
+  // Africa
+  { value: 'NGN', symbol: '₦', label: 'Nigerian Naira', icon: '🇳🇬' },
+  { value: 'ZAR', symbol: 'R', label: 'South African Rand', icon: '🇿🇦' },
+  { value: 'KES', symbol: 'KSh', label: 'Kenyan Shilling', icon: '🇰🇪' },
+  { value: 'GHS', symbol: '₵', label: 'Ghanaian Cedi', icon: '🇬🇭' },
+  // Asia & Pacific
+  { value: 'INR', symbol: '₹', label: 'Indian Rupee', icon: '🇮🇳' },
+  { value: 'JPY', symbol: '¥', label: 'Japanese Yen', icon: '🇯🇵' },
+  { value: 'CNY', symbol: '¥', label: 'Chinese Yuan', icon: '🇨🇳' },
+  { value: 'SGD', symbol: 'S$', label: 'Singapore Dollar', icon: '🇸🇬' },
+  { value: 'HKD', symbol: 'HK$', label: 'Hong Kong Dollar', icon: '🇭🇰' },
+  { value: 'AUD', symbol: 'A$', label: 'Australian Dollar', icon: '🇦🇺' },
+  { value: 'NZD', symbol: 'NZ$', label: 'New Zealand Dollar', icon: '🇳🇿' },
+  // Middle East
+  { value: 'AED', symbol: 'د.إ', label: 'UAE Dirham', icon: '🇦🇪' },
+  { value: 'SAR', symbol: '﷼', label: 'Saudi Riyal', icon: '🇸🇦' },
 ];
 
 // Base hours per project type

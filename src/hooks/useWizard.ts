@@ -115,11 +115,11 @@ export function useWizard() {
       case 1:
         return config.type !== null;
       case 2:
-        return config.pages > 0;
-      case 3:
-        return true; // Integrations are optional
-      case 4:
         return config.hourlyRate > 0;
+      case 3:
+        return config.pages > 0;
+      case 4:
+        return true; // Integrations are optional
       default:
         return true;
     }

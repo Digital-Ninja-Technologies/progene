@@ -16,9 +16,9 @@ import { Link } from "react-router-dom";
 
 const stepLabels = [
   "Project Type",
+  "Pricing",
   "Details",
   "Features",
-  "Pricing",
   "Proposal",
 ];
 
@@ -88,6 +88,15 @@ export default function WizardPage() {
         );
       case 2:
         return (
+          <PricingStep
+            hourlyRate={config.hourlyRate}
+            currency={config.currency}
+            onRateChange={(rate) => updateConfig("hourlyRate", rate)}
+            onCurrencyChange={(currency) => updateConfig("currency", currency)}
+          />
+        );
+      case 3:
+        return (
           <ProjectDetailsStep
             pages={config.pages}
             cmsNeeded={config.cmsNeeded}
@@ -95,7 +104,7 @@ export default function WizardPage() {
             onCmsChange={(cmsNeeded) => updateConfig("cmsNeeded", cmsNeeded)}
           />
         );
-      case 3:
+      case 4:
         return (
           <IntegrationsStep
             selectedIntegrations={config.integrations}
@@ -110,15 +119,6 @@ export default function WizardPage() {
             onMaintenanceChange={(maintenance) =>
               updateConfig("maintenance", maintenance)
             }
-          />
-        );
-      case 4:
-        return (
-          <PricingStep
-            hourlyRate={config.hourlyRate}
-            currency={config.currency}
-            onRateChange={(rate) => updateConfig("hourlyRate", rate)}
-            onCurrencyChange={(currency) => updateConfig("currency", currency)}
           />
         );
       case 5:
