@@ -68,7 +68,7 @@ serve(async (req: Request) => {
 
     const ownerEmail = profile.email;
     const ownerName = profile.full_name || "there";
-    const companyName = branding?.company_name || "ScopeGen";
+    const companyName = branding?.company_name || "ProposalGene";
     const proposalValue = proposal.pricing_result?.recommendedPrice || 0;
     const projectType = proposal.project_type;
 
@@ -134,7 +134,7 @@ serve(async (req: Request) => {
 
     // Send the email
     const { error: emailError } = await resend.emails.send({
-      from: "ScopeGen <notifications@scopegen.lovable.app>",
+      from: "ProposalGene <notifications@proposalgene.lovable.app>",
       to: [ownerEmail],
       subject,
       html: htmlContent,

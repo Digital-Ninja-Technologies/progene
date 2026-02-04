@@ -494,7 +494,7 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
           </div>
           
           <div class="footer">
-            Generated with ScopeGen • ${formatDisplayDate(invoice.issueDate)}
+            Generated with ProposalGene • ${formatDisplayDate(invoice.issueDate)}
           </div>
         </body>
         </html>

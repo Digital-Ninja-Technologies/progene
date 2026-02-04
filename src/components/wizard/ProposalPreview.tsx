@@ -58,7 +58,7 @@ PAYMENT STRUCTURE
 ${proposal.paymentStructure.map((p) => `• ${p.label}: ${formatCurrency(p.amount)} (${p.percentage}%)`).join('\n')}
 
 ---
-Generated with ScopeGen
+Generated with ProposalGene
     `.trim();
   };
 
@@ -114,7 +114,7 @@ Generated with ScopeGen
           </ul>
           
           <div class="footer">
-            Generated with ScopeGen
+            Generated with ProposalGene
           </div>
         </body>
         </html>
