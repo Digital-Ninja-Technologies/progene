@@ -139,13 +139,11 @@ export default function PublicProposalPage() {
     setSignatureError(null);
 
     setSigning(true);
-    const { error: signError } = await supabase
-      .from("proposals")
-      .update({
-        client_signed_at: new Date().toISOString(),
-        client_signature: signatureName.trim(),
-      })
-      .eq("id", proposal.id);
+    // Use the secure RPC function for signing proposals
+    const { error: signError } = await supabase.rpc('sign_proposal', {
+      p_proposal_id: proposal.id,
+      p_client_signature: signatureName.trim()
+    });
 
     setSigning(false);
 

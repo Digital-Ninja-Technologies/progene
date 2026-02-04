@@ -4,6 +4,7 @@ import { ProposalData, PROJECT_TYPES, CURRENCIES } from "@/types/project";
 import { useState } from "react";
 import { toast } from "sonner";
 import { InvoiceGenerator } from "./InvoiceGenerator";
+import { escapeHtml } from "@/lib/htmlEscape";
 
 interface ProposalPreviewProps {
   proposal: ProposalData;
@@ -67,14 +68,17 @@ Generated with ProposalGene
   };
 
   const handleExportPDF = () => {
-    // Create a printable version
+    // Create a printable version with HTML-escaped user data
     const printWindow = window.open('', '_blank');
     if (printWindow) {
+      const safeProjectTypeLabel = escapeHtml(projectTypeLabel);
+      const safeComplexityLevel = escapeHtml(proposal.pricing.complexityLevel);
+      
       printWindow.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Project Proposal - ${projectTypeLabel}</title>
+          <title>Project Proposal - ${safeProjectTypeLabel}</title>
           <style>
             body { font-family: 'Inter', system-ui, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; color: #000; }
             h1 { color: #000; border-bottom: 2px solid #000; padding-bottom: 10px; }
@@ -87,10 +91,10 @@ Generated with ProposalGene
         </head>
         <body>
           <h1>Project Proposal</h1>
-          <p><strong>Project Type:</strong> ${projectTypeLabel}</p>
+          <p><strong>Project Type:</strong> ${safeProjectTypeLabel}</p>
           <p><strong>Estimated Hours:</strong> ${proposal.pricing.estimatedHours} hours</p>
           <p><strong>Timeline:</strong> ${proposal.pricing.timelineWeeks} weeks</p>
-          <p><strong>Complexity:</strong> ${proposal.pricing.complexityLevel}</p>
+          <p><strong>Complexity:</strong> ${safeComplexityLevel}</p>
           
           <div class="price-box">
             <p>Recommended Investment</p>
@@ -100,17 +104,17 @@ Generated with ProposalGene
           
           <h2>Scope of Work</h2>
           <ul>
-            ${proposal.scopeOfWork.map((item) => `<li>${item}</li>`).join('')}
+            ${proposal.scopeOfWork.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
           </ul>
           
           <h2>Deliverables</h2>
           <ul>
-            ${proposal.deliverables.map((item) => `<li>${item}</li>`).join('')}
+            ${proposal.deliverables.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
           </ul>
           
           <h2>Payment Structure</h2>
           <ul>
-            ${proposal.paymentStructure.map((p) => `<li>${p.label}: ${formatCurrency(p.amount)} (${p.percentage}%)</li>`).join('')}
+            ${proposal.paymentStructure.map((p) => `<li>${escapeHtml(p.label)}: ${formatCurrency(p.amount)} (${p.percentage}%)</li>`).join('')}
           </ul>
           
           <div class="footer">
