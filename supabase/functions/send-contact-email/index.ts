@@ -1,0 +1,142 @@
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { Resend } from "https://esm.sh/resend@2.0.0";
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
+
+interface ContactRequest {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    const { name, email, subject, message }: ContactRequest = await req.json();
+
+    // Validate required fields
+    if (!name || !email || !subject || !message) {
+      console.error("Missing required fields:", { name: !!name, email: !!email, subject: !!subject, message: !!message });
+      return new Response(
+        JSON.stringify({ error: "Missing required fields" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      console.error("Invalid email format:", email);
+      return new Response(
+        JSON.stringify({ error: "Invalid email format" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    // Validate field lengths
+    if (name.length > 100 || email.length > 255 || subject.length > 200 || message.length > 2000) {
+      console.error("Field length exceeded");
+      return new Response(
+        JSON.stringify({ error: "Field length exceeded" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    console.log("Sending contact email from:", email, "Subject:", subject);
+
+    // Send email to the business owner
+    const emailResponse = await resend.emails.send({
+      from: "ProposalGene Contact <onboarding@resend.dev>",
+      to: ["Ifeoluwa.designs@gmail.com"],
+      reply_to: email,
+      subject: `[Contact Form] ${subject}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
+            <div style="background-color: white; border-radius: 12px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+              <h1 style="color: #1f2937; font-size: 24px; margin-bottom: 24px; border-bottom: 2px solid #3b82f6; padding-bottom: 12px;">
+                New Contact Form Submission
+              </h1>
+              
+              <div style="margin-bottom: 20px;">
+                <p style="color: #6b7280; font-size: 14px; margin-bottom: 4px;">From:</p>
+                <p style="color: #1f2937; font-size: 16px; font-weight: 500; margin: 0;">
+                  ${name} &lt;${email}&gt;
+                </p>
+              </div>
+              
+              <div style="margin-bottom: 20px;">
+                <p style="color: #6b7280; font-size: 14px; margin-bottom: 4px;">Subject:</p>
+                <p style="color: #1f2937; font-size: 16px; font-weight: 500; margin: 0;">
+                  ${subject}
+                </p>
+              </div>
+              
+              <div style="margin-bottom: 24px;">
+                <p style="color: #6b7280; font-size: 14px; margin-bottom: 8px;">Message:</p>
+                <div style="background-color: #f3f4f6; border-radius: 8px; padding: 16px;">
+                  <p style="color: #374151; font-size: 15px; line-height: 1.6; margin: 0; white-space: pre-wrap;">
+                    ${message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+                  </p>
+                </div>
+              </div>
+              
+              <div style="border-top: 1px solid #e5e7eb; padding-top: 16px;">
+                <a href="mailto:${email}" style="display: inline-block; background-color: #3b82f6; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 500;">
+                  Reply to ${name}
+                </a>
+              </div>
+            </div>
+            
+            <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 24px;">
+              This email was sent from the ProposalGene contact form.
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    console.log("Contact email sent successfully:", emailResponse);
+
+    return new Response(JSON.stringify({ success: true, data: emailResponse }), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
+  } catch (error: any) {
+    console.error("Error in send-contact-email function:", error);
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      }
+    );
+  }
+};
+
+serve(handler);
