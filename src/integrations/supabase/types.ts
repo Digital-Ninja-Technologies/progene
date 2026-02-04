@@ -177,9 +177,11 @@ export type Database = {
       }
       profiles: {
         Row: {
+          anonymized: boolean | null
           avatar_url: string | null
           company_name: string | null
           created_at: string
+          deleted_at: string | null
           email: string | null
           full_name: string | null
           id: string
@@ -190,9 +192,11 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          anonymized?: boolean | null
           avatar_url?: string | null
           company_name?: string | null
           created_at?: string
+          deleted_at?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
@@ -203,9 +207,11 @@ export type Database = {
           user_id: string
         }
         Update: {
+          anonymized?: boolean | null
           avatar_url?: string | null
           company_name?: string | null
           created_at?: string
+          deleted_at?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
@@ -476,6 +482,7 @@ export type Database = {
         Returns: number
       }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
+      delete_user_account: { Args: never; Returns: undefined }
       sign_proposal: {
         Args: { p_client_signature: string; p_proposal_id: string }
         Returns: boolean
