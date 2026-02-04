@@ -35,13 +35,13 @@ import {
 function CountdownTimer() {
   // Set end date to 14 days from now (persisted via localStorage for consistency)
   const getEndDate = () => {
-    const stored = localStorage.getItem('scopegen_launch_end');
+    const stored = localStorage.getItem('proposalgene_launch_end');
     if (stored) {
       return new Date(stored);
     }
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + 14);
-    localStorage.setItem('scopegen_launch_end', endDate.toISOString());
+    localStorage.setItem('proposalgene_launch_end', endDate.toISOString());
     return endDate;
   };
 
@@ -291,7 +291,7 @@ export function LandingHero() {
 
             {/* Subheadline */}
             <p className="mb-8 max-w-lg text-lg text-muted-foreground animate-fade-in-up [animation-delay:200ms]">
-              Tired of spending hours on proposals that don't convert? ScopeGen creates 
+              Tired of spending hours on proposals that don't convert? ProposalGene creates 
               professional, accurately-priced proposals in <span className="text-[#2EB67D] font-semibold">under 5 minutes</span>.
             </p>
 
@@ -363,7 +363,7 @@ export function LandingPainPoints() {
                 <div className="h-8 w-8 rounded-full bg-[#E01E5A]/20 flex items-center justify-center">
                   <XCircle className="h-4 w-4 text-[#E01E5A]" />
                 </div>
-                <span className="font-semibold text-[#E01E5A]">Without ScopeGen</span>
+                <span className="font-semibold text-[#E01E5A]">Without ProposalGene</span>
               </div>
               {painPoints.map((point, index) => (
                 <div
@@ -391,7 +391,7 @@ export function LandingPainPoints() {
                 <div className="h-8 w-8 rounded-full bg-[#2EB67D]/20 flex items-center justify-center">
                   <CheckCircle2 className="h-4 w-4 text-[#2EB67D]" />
                 </div>
-                <span className="font-semibold text-[#2EB67D]">With ScopeGen</span>
+                <span className="font-semibold text-[#2EB67D]">With ProposalGene</span>
               </div>
               {solutions.map((point, index) => (
                 <div
@@ -488,7 +488,7 @@ export function LandingProjectTypes() {
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Whether you're building a simple landing page or a complex e-commerce site, 
-            ScopeGen understands the nuances and calculates accurate estimates.
+            ProposalGene understands the nuances and calculates accurate estimates.
           </p>
         </ScrollReveal>
 
@@ -595,7 +595,7 @@ const testimonials = [
     platform: "WordPress",
   },
   {
-    quote: "Finally stopped undercharging for my Webflow projects. ScopeGen helped me realize I was leaving thousands on the table every month.",
+    quote: "Finally stopped undercharging for my Webflow projects. ProposalGene helped me realize I was leaving thousands on the table every month.",
     name: "Marcus Johnson",
     role: "Webflow Agency Owner",
     avatar: "MJ",
@@ -619,7 +619,7 @@ const testimonials = [
     platform: "Shopify",
   },
   {
-    quote: "I was nervous about raising my rates. ScopeGen showed me exactly how to justify higher prices with detailed scope breakdowns. Clients actually respect it more.",
+    quote: "I was nervous about raising my rates. ProposalGene showed me exactly how to justify higher prices with detailed scope breakdowns. Clients actually respect it more.",
     name: "Jessica Williams",
     role: "Full-Stack Freelancer",
     avatar: "JW",
@@ -627,7 +627,7 @@ const testimonials = [
     platform: "WordPress",
   },
   {
-    quote: "The best part? No more awkward pricing conversations. I just send the proposal and let ScopeGen do the talking.",
+    quote: "The best part? No more awkward pricing conversations. I just send the proposal and let ProposalGene do the talking.",
     name: "Alex Thompson",
     role: "Web Design Studio",
     avatar: "AT",
@@ -657,7 +657,7 @@ export function LandingTestimonials() {
             <span className="bg-gradient-to-r from-[#36C5F0] via-[#2EB67D] to-[#E01E5A] bg-clip-text text-transparent">Hear from real freelancers.</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Thousands of developers trust ScopeGen to price their projects accurately and win more clients.
+            Thousands of developers trust ProposalGene to price their projects accurately and win more clients.
           </p>
         </ScrollReveal>
 
@@ -713,7 +713,7 @@ export function LandingTestimonials() {
             </div>
             <div className="text-sm">
               <span className="font-semibold">2,500+</span>
-              <span className="text-muted-foreground"> freelancers trust ScopeGen</span>
+              <span className="text-muted-foreground"> freelancers trust ProposalGene</span>
             </div>
           </div>
         </div>
@@ -725,7 +725,7 @@ export function LandingTestimonials() {
 const pricingPlans = [
   {
     name: "Free",
-    description: "Perfect for trying out ScopeGen",
+    description: "Perfect for trying out ProposalGene",
     price: "$0",
     originalPrice: null,
     period: "forever",
@@ -749,7 +749,7 @@ const pricingPlans = [
     name: "Pro",
     description: "For busy freelancers",
     price: "$15",
-    originalPrice: "$20",
+    originalPrice: "$25",
     period: "/month",
     color: "border-[#2EB67D] ring-2 ring-[#2EB67D]/20",
     buttonColor: "bg-gradient-to-r from-[#36C5F0] to-[#2EB67D] hover:opacity-90 text-white",
@@ -771,7 +771,7 @@ const pricingPlans = [
     name: "Agency",
     description: "For teams and agencies",
     price: "$35",
-    originalPrice: "$40",
+    originalPrice: "$45",
     period: "/month",
     color: "border-[#E01E5A] ring-2 ring-[#E01E5A]/20",
     buttonColor: "bg-[#E01E5A] hover:bg-[#E01E5A]/90 text-white",
@@ -823,7 +823,7 @@ export function LandingPricing() {
           </div>
           
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
-            Try ScopeGen with 2 free proposals. No credit card required.
+            Try ProposalGene with 2 free proposals. No credit card required.
           </p>
           <p className="text-base font-medium text-[#E01E5A] max-w-2xl mx-auto">
             ⏰ Early supporters get <span className="font-bold">$5/month off forever</span> — this offer won't last!
@@ -916,8 +916,8 @@ export function LandingPricing() {
 
 const faqs = [
   {
-    question: "How does ScopeGen calculate pricing?",
-    answer: "ScopeGen uses a smart pricing engine that considers project type, number of pages, integrations, animations, CMS requirements, and urgency. It factors in your hourly rate and applies industry-standard multipliers to give you accurate estimates based on real market data."
+    question: "How does ProposalGene calculate pricing?",
+    answer: "ProposalGene uses a smart pricing engine that considers project type, number of pages, integrations, animations, CMS requirements, and urgency. It factors in your hourly rate and applies industry-standard multipliers to give you accurate estimates based on real market data."
   },
   {
     question: "What's included in the free plan?",
@@ -929,7 +929,7 @@ const faqs = [
   },
   {
     question: "What project types are supported?",
-    answer: "ScopeGen supports Framer, Webflow, Shopify, and WordPress projects—covering everything from simple landing pages to complex e-commerce stores and membership sites."
+    answer: "ProposalGene supports Framer, Webflow, Shopify, and WordPress projects—covering everything from simple landing pages to complex e-commerce stores and membership sites."
   },
   {
     question: "How accurate are the pricing estimates?",
@@ -937,7 +937,7 @@ const faqs = [
   },
   {
     question: "Can I upgrade or downgrade my plan anytime?",
-    answer: "Absolutely! You can upgrade to Pro ($20/mo) or Agency ($40/mo) at any time for unlimited proposals. During our launch special, you get $5/month off forever — Pro at $15/mo and Agency at $35/mo. Downgrade anytime—we don't lock you in."
+    answer: "Absolutely! You can upgrade to Pro ($25/mo) or Agency ($45/mo) at any time for unlimited proposals. During our launch special, you get $10/month off forever — Pro at $15/mo and Agency at $35/mo. Downgrade anytime—we don't lock you in."
   },
 ];
 
@@ -956,7 +956,7 @@ export function LandingFAQ() {
             <span className="bg-gradient-to-r from-[#36C5F0] to-[#2EB67D] bg-clip-text text-transparent">Questions</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to know about ScopeGen and how it can help you price projects accurately.
+            Everything you need to know about ProposalGene and how it can help you price projects accurately.
           </p>
         </ScrollReveal>
 
@@ -1038,7 +1038,7 @@ export function LandingFooter() {
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
           <Logo size="md" />
           <p className="text-sm text-muted-foreground">
-            © 2024 ScopeGen. Built for developers who value their time.
+            © 2024 ProposalGene. Built for developers who value their time.
           </p>
         </div>
       </div>
