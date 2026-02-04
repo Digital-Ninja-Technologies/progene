@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Mail, Lock, User, Building2, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, Building2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +8,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { lovable } from '@/integrations/lovable';
 import { z } from 'zod';
 import { Link } from 'react-router-dom';
+import { Logo } from '@/components/brand/Logo';
 
 const emailSchema = z.string().email('Please enter a valid email address');
 const passwordSchema = z.string().min(6, 'Password must be at least 6 characters');
@@ -129,11 +130,8 @@ export default function AuthPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-            <FileText className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="text-2xl font-bold">ProposalGene</span>
+        <Link to="/" className="flex items-center justify-center mb-8">
+          <Logo size="lg" />
         </Link>
 
         {/* Card */}
