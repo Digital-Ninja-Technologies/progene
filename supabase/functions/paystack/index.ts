@@ -10,17 +10,17 @@ const PAYSTACK_SECRET_KEY = Deno.env.get('PAYSTACK_SECRET_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
-// Plan configurations (amounts in kobo for NGN)
+// Plan configurations (amounts in cents for USD)
 const PLANS = {
   pro: {
     name: 'Pro',
-    amount: 1900, // $19 in cents (will be converted based on currency)
+    amount: 3000, // $30 in cents
     interval: 'monthly',
     description: 'Unlimited proposals, templates, and branding'
   },
   agency: {
     name: 'Agency',
-    amount: 4900, // $49 in cents
+    amount: 6000, // $60 in cents
     interval: 'monthly',
     description: 'Everything in Pro plus team features and priority support'
   }
@@ -97,7 +97,7 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           email,
-          amount: selectedPlan.amount * 100, // Convert to kobo/cents
+          amount: selectedPlan.amount, // Amount already in cents
           currency: 'USD',
           reference,
           callback_url: callback_url || `${url.origin}/paystack/verify`,
