@@ -65,7 +65,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending contact email from:", email, "Subject:", subject);
 
     // Send email to the business owner
-    const emailResponse = await resend.emails.send({
+    const ownerEmailResponse = await resend.emails.send({
       from: "ProposalGene Contact <onboarding@resend.dev>",
       to: ["Ifeoluwa.designs@gmail.com"],
       reply_to: email,
@@ -121,9 +121,81 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Contact email sent successfully:", emailResponse);
+    console.log("Contact email sent to owner:", ownerEmailResponse);
 
-    return new Response(JSON.stringify({ success: true, data: emailResponse }), {
+    // Send confirmation email to the sender
+    const confirmationEmailResponse = await resend.emails.send({
+      from: "ProposalGene <onboarding@resend.dev>",
+      to: [email],
+      subject: `We received your message: ${subject}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
+            <div style="background-color: white; border-radius: 12px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+              <div style="text-align: center; margin-bottom: 24px;">
+                <div style="display: inline-block; width: 64px; height: 64px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 50%; line-height: 64px; font-size: 28px;">
+                  ✓
+                </div>
+              </div>
+              
+              <h1 style="color: #1f2937; font-size: 24px; margin-bottom: 16px; text-align: center;">
+                Thanks for reaching out, ${name}!
+              </h1>
+              
+              <p style="color: #6b7280; font-size: 16px; line-height: 1.6; text-align: center; margin-bottom: 32px;">
+                We've received your message and will get back to you as soon as possible, typically within 24-48 hours.
+              </p>
+              
+              <div style="background-color: #f3f4f6; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                <h2 style="color: #374151; font-size: 14px; font-weight: 600; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em;">
+                  Your Message
+                </h2>
+                
+                <div style="margin-bottom: 16px;">
+                  <p style="color: #9ca3af; font-size: 12px; margin-bottom: 4px;">Subject:</p>
+                  <p style="color: #1f2937; font-size: 15px; font-weight: 500; margin: 0;">
+                    ${subject}
+                  </p>
+                </div>
+                
+                <div>
+                  <p style="color: #9ca3af; font-size: 12px; margin-bottom: 4px;">Message:</p>
+                  <p style="color: #374151; font-size: 14px; line-height: 1.6; margin: 0; white-space: pre-wrap;">
+                    ${message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}
+                  </p>
+                </div>
+              </div>
+              
+              <div style="text-align: center; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                <p style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">
+                  In the meantime, feel free to explore what ProposalGene can do for you:
+                </p>
+                <a href="https://progene.lovable.app" style="display: inline-block; background-color: #3b82f6; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 500;">
+                  Visit ProposalGene
+                </a>
+              </div>
+            </div>
+            
+            <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 24px;">
+              This is an automated confirmation from ProposalGene. Please don't reply to this email.
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    console.log("Confirmation email sent to sender:", confirmationEmailResponse);
+
+    return new Response(JSON.stringify({ 
+      success: true, 
+      ownerEmail: ownerEmailResponse,
+      confirmationEmail: confirmationEmailResponse 
+    }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
