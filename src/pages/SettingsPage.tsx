@@ -9,7 +9,8 @@ import { BrandingSettings } from "@/components/branding/BrandingSettings";
 import { TimeTracker } from "@/components/analytics/TimeTracker";
 import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
 import { BillingSettings } from "@/components/billing/BillingSettings";
-import { Loader2, FileText, Users, Palette, Clock, BarChart3, CreditCard } from "lucide-react";
+import { AccountDeletion } from "@/components/settings/AccountDeletion";
+import { Loader2, FileText, Users, Palette, Clock, BarChart3, CreditCard, UserCog } from "lucide-react";
 
 export default function SettingsPage() {
   const { user, loading: authLoading } = useAuthContext();
@@ -46,7 +47,7 @@ export default function SettingsPage() {
         </div>
 
         <Tabs defaultValue={defaultTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 h-auto gap-1">
+          <TabsList className="grid w-full grid-cols-4 md:grid-cols-7 h-auto gap-1">
             <TabsTrigger value="templates" className="flex items-center gap-2 py-2.5">
               <FileText className="h-4 w-4" />
               <span className="hidden sm:inline">Templates</span>
@@ -70,6 +71,10 @@ export default function SettingsPage() {
             <TabsTrigger value="analytics" className="flex items-center gap-2 py-2.5">
               <BarChart3 className="h-4 w-4" />
               <span className="hidden sm:inline">Analytics</span>
+            </TabsTrigger>
+            <TabsTrigger value="account" className="flex items-center gap-2 py-2.5">
+              <UserCog className="h-4 w-4" />
+              <span className="hidden sm:inline">Account</span>
             </TabsTrigger>
           </TabsList>
 
@@ -95,6 +100,18 @@ export default function SettingsPage() {
 
           <TabsContent value="analytics" className="mt-6">
             <AnalyticsDashboard />
+          </TabsContent>
+
+          <TabsContent value="account" className="mt-6">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-semibold">Account Settings</h2>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Manage your account preferences and data
+                </p>
+              </div>
+              <AccountDeletion />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
