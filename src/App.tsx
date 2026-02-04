@@ -11,6 +11,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ProposalViewPage from "./pages/ProposalViewPage";
 import SettingsPage from "./pages/SettingsPage";
 import PublicProposalPage from "./pages/PublicProposalPage";
+import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/wizard" element={<WizardPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/proposal/:id" element={<ProposalViewPage />} />
             <Route path="/p/:token" element={<PublicProposalPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -29,6 +29,9 @@ export function Header() {
           <a href="/#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             FAQ
           </a>
+          <Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            Contact
+          </Link>
           {user && (
             <>
               <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
