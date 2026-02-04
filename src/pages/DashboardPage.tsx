@@ -5,6 +5,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { ProposalCard } from "@/components/dashboard/ProposalCard";
 import { EmptyState } from "@/components/dashboard/EmptyState";
+import { NotificationCenter } from "@/components/dashboard/NotificationCenter";
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
 import { ProjectConfig, PricingResult, ProposalData } from "@/types/project";
@@ -102,20 +103,30 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        {proposals.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {proposals.map((proposal) => (
-              <ProposalCard
-                key={proposal.id}
-                proposal={proposal}
-                onDelete={handleDelete}
-                onDuplicate={handleDuplicate}
-              />
-            ))}
+        <div className="grid gap-8 lg:grid-cols-[1fr_350px]">
+          {/* Proposals Grid */}
+          <div>
+            {proposals.length === 0 ? (
+              <EmptyState />
+            ) : (
+              <div className="grid gap-6 md:grid-cols-2">
+                {proposals.map((proposal) => (
+                  <ProposalCard
+                    key={proposal.id}
+                    proposal={proposal}
+                    onDelete={handleDelete}
+                    onDuplicate={handleDuplicate}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Notification Center Sidebar */}
+          <div className="order-first lg:order-last">
+            <NotificationCenter />
+          </div>
+        </div>
       </div>
     </div>
   );
