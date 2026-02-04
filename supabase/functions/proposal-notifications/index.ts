@@ -116,7 +116,7 @@ serve(async (req: Request) => {
             </div>
             <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px;">
               <p style="font-size: 16px;">Congratulations, ${ownerName}! 🥳</p>
-              <p style="font-size: 16px;">Your <strong>${projectType}</strong> proposal has been officially signed${clientSignature ? ` by <strong>${clientSignature}</strong>` : ""}!</p>
+              <p style="font-size: 16px;">Your <strong>${projectType}</strong> proposal has been officially signed${clientSignature ? ` by <strong>${clientSignature.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</strong>` : ""}!</p>
               <div style="background: white; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
                 <p style="font-size: 14px; color: #666; margin: 0 0 10px 0;">Project Value</p>
                 <p style="font-size: 32px; font-weight: bold; color: #2EB67D; margin: 0;">$${proposalValue.toLocaleString()}</p>
