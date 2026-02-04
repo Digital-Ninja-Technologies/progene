@@ -2,3 +2,6 @@ project_id = "uhgomclhtmdgjpnzkljk"
 
 [functions.paystack]
 verify_jwt = false
+
+[functions.proposal-notifications]
+verify_jwt = false

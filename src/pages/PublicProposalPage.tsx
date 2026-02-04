@@ -98,6 +98,11 @@ export default function PublicProposalPage() {
         proposal_id: data.id,
         viewer_user_agent: navigator.userAgent,
       }]);
+      
+      // Send view notification email (fire and forget)
+      supabase.functions.invoke("proposal-notifications", {
+        body: { proposalId: data.id, type: "view" },
+      }).catch(err => console.error("Failed to send view notification:", err));
     }
 
     setLoading(false);
@@ -126,6 +131,15 @@ export default function PublicProposalPage() {
         client_signed_at: new Date().toISOString(),
         client_signature: signatureName.trim(),
       } : null);
+      
+      // Send signature notification email
+      supabase.functions.invoke("proposal-notifications", {
+        body: { 
+          proposalId: proposal.id, 
+          type: "sign", 
+          clientSignature: signatureName.trim() 
+        },
+      }).catch(err => console.error("Failed to send sign notification:", err));
     }
   };
 
