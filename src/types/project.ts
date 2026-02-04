@@ -14,7 +14,8 @@ export type ProjectType =
   | 'ui-ux-designer'
   | 'vibe-coder'
   | 'frontend-dev'
-  | 'backend-dev';
+  | 'backend-dev'
+  | 'fullstack-dev';
 
 export type TimelineUrgency = 'normal' | 'fast' | 'urgent';
 
@@ -147,6 +148,12 @@ export const PROJECT_TYPES: { value: ProjectType; label: string; description: st
     description: 'API, database, and server-side development',
     icon: '🔧',
   },
+  {
+    value: 'fullstack-dev',
+    label: 'Full Stack Development',
+    description: 'End-to-end web application development',
+    icon: '🚀',
+  },
 ];
 
 export const INTEGRATIONS = [
@@ -186,6 +193,7 @@ export const BASE_HOURS: Record<ProjectType, number> = {
   'vibe-coder': 20,
   'frontend-dev': 40,
   'backend-dev': 48,
+  'fullstack-dev': 60,
 };
 
 // Hours per page by project type
@@ -206,6 +214,7 @@ export const HOURS_PER_PAGE: Record<ProjectType, number> = {
   'vibe-coder': 2,
   'frontend-dev': 4,
   'backend-dev': 5,
+  'fullstack-dev': 5,
 };
 
 // Urgency multipliers
