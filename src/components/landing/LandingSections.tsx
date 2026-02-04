@@ -208,12 +208,118 @@ function FloatingShapes() {
   );
 }
 
+// Gene Character Mascot
+function GeneCharacter() {
+  return (
+    <svg
+      viewBox="0 0 200 280"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-48 h-auto"
+    >
+      {/* DNA Helix Body */}
+      <g className="animate-pulse" style={{ animationDuration: '3s' }}>
+        {/* Left strand */}
+        <path
+          d="M70 60 Q50 90 70 120 Q90 150 70 180 Q50 210 70 240"
+          stroke="#36C5F0"
+          strokeWidth="8"
+          strokeLinecap="round"
+          fill="none"
+        />
+        {/* Right strand */}
+        <path
+          d="M130 60 Q150 90 130 120 Q110 150 130 180 Q150 210 130 240"
+          stroke="#2EB67D"
+          strokeWidth="8"
+          strokeLinecap="round"
+          fill="none"
+        />
+        {/* Connecting rungs */}
+        <line x1="70" y1="75" x2="130" y2="75" stroke="#ECB22E" strokeWidth="6" strokeLinecap="round" />
+        <line x1="85" y1="105" x2="115" y2="105" stroke="#E01E5A" strokeWidth="6" strokeLinecap="round" />
+        <line x1="70" y1="135" x2="130" y2="135" stroke="#36C5F0" strokeWidth="6" strokeLinecap="round" />
+        <line x1="85" y1="165" x2="115" y2="165" stroke="#2EB67D" strokeWidth="6" strokeLinecap="round" />
+        <line x1="70" y1="195" x2="130" y2="195" stroke="#ECB22E" strokeWidth="6" strokeLinecap="round" />
+        <line x1="85" y1="225" x2="115" y2="225" stroke="#E01E5A" strokeWidth="6" strokeLinecap="round" />
+      </g>
+      
+      {/* Head */}
+      <circle cx="100" cy="35" r="30" fill="url(#headGradient)" />
+      
+      {/* Face */}
+      {/* Eyes */}
+      <ellipse cx="88" cy="32" rx="6" ry="7" fill="white" />
+      <ellipse cx="112" cy="32" rx="6" ry="7" fill="white" />
+      <circle cx="90" cy="33" r="3" fill="#333" />
+      <circle cx="114" cy="33" r="3" fill="#333" />
+      {/* Eye shine */}
+      <circle cx="91" cy="31" r="1.5" fill="white" />
+      <circle cx="115" cy="31" r="1.5" fill="white" />
+      
+      {/* Happy smile */}
+      <path
+        d="M90 45 Q100 55 110 45"
+        stroke="#333"
+        strokeWidth="3"
+        strokeLinecap="round"
+        fill="none"
+      />
+      
+      {/* Rosy cheeks */}
+      <circle cx="78" cy="42" r="5" fill="#FFB6C1" opacity="0.6" />
+      <circle cx="122" cy="42" r="5" fill="#FFB6C1" opacity="0.6" />
+      
+      {/* Arms holding something */}
+      {/* Left arm */}
+      <path
+        d="M55 100 Q30 110 25 140 Q20 160 40 175"
+        stroke="#36C5F0"
+        strokeWidth="10"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Left hand */}
+      <circle cx="40" cy="175" r="12" fill="#36C5F0" />
+      
+      {/* Right arm */}
+      <path
+        d="M145 100 Q170 110 175 140 Q180 160 160 175"
+        stroke="#2EB67D"
+        strokeWidth="10"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Right hand */}
+      <circle cx="160" cy="175" r="12" fill="#2EB67D" />
+      
+      {/* Little feet */}
+      <ellipse cx="80" cy="255" rx="15" ry="10" fill="#36C5F0" />
+      <ellipse cx="120" cy="255" rx="15" ry="10" fill="#2EB67D" />
+      
+      {/* Gradients */}
+      <defs>
+        <linearGradient id="headGradient" x1="70" y1="5" x2="130" y2="65" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#36C5F0" />
+          <stop offset="50%" stopColor="#2EB67D" />
+          <stop offset="100%" stopColor="#ECB22E" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
 // Illustration component for hero
 function HeroIllustration() {
   return (
-    <div className="relative">
-      {/* Main proposal card */}
-      <div className="glass-card p-6 shadow-xl relative z-10">
+    <div className="relative flex items-center justify-center">
+      {/* Gene Character */}
+      <div className="absolute -left-8 bottom-0 z-0">
+        <GeneCharacter />
+      </div>
+      
+      {/* Main proposal card - positioned to look like gene is holding it */}
+      <div className="glass-card p-6 shadow-xl relative z-10 ml-20">
         <div className="flex items-center gap-3 mb-4">
           <div className="h-12 w-12 rounded-full bg-gradient-to-br from-[#36C5F0] to-[#2EB67D] flex items-center justify-center">
             <FileText className="h-6 w-6 text-white" />
@@ -237,7 +343,7 @@ function HeroIllustration() {
       </div>
 
       {/* Floating card - Sparkles */}
-      <div className="absolute -top-6 -right-6 glass-card p-3 shadow-lg animate-bounce z-20" style={{ animationDuration: '2s' }}>
+      <div className="absolute -top-6 right-0 glass-card p-3 shadow-lg animate-bounce z-20" style={{ animationDuration: '2s' }}>
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#ECB22E] to-[#E01E5A] flex items-center justify-center">
             <Sparkles className="h-4 w-4 text-white" />
@@ -247,7 +353,7 @@ function HeroIllustration() {
       </div>
 
       {/* Floating card - Time saved */}
-      <div className="absolute -bottom-4 -left-6 glass-card p-3 shadow-lg animate-pulse z-20">
+      <div className="absolute bottom-8 right-4 glass-card p-3 shadow-lg animate-pulse z-20">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-[#36C5F0]/20 flex items-center justify-center">
             <Clock className="h-4 w-4 text-[#36C5F0]" />
@@ -261,7 +367,7 @@ function HeroIllustration() {
 
       {/* Background decoration */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] rounded-full bg-gradient-to-br from-[#36C5F0]/5 via-[#2EB67D]/5 to-[#ECB22E]/5" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] rounded-full bg-gradient-to-br from-[#36C5F0]/5 via-[#2EB67D]/5 to-[#ECB22E]/5" />
       </div>
     </div>
   );
