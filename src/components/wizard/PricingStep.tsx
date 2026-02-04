@@ -1,15 +1,24 @@
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { CURRENCIES, Currency } from "@/types/project";
-import { DollarSign } from "lucide-react";
+import { DollarSign, Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface PricingStepProps {
   hourlyRate: number;
@@ -20,13 +29,24 @@ interface PricingStepProps {
 
 const presetRates = [50, 75, 100, 125, 150, 200];
 
+// Group currencies by region
+const currencyGroups = [
+  { label: "Americas", currencies: ['USD', 'CAD', 'BRL', 'MXN'] },
+  { label: "Europe", currencies: ['EUR', 'GBP', 'CHF', 'SEK', 'NOK', 'DKK'] },
+  { label: "Africa", currencies: ['NGN', 'ZAR', 'KES', 'GHS'] },
+  { label: "Asia & Pacific", currencies: ['INR', 'JPY', 'CNY', 'SGD', 'HKD', 'AUD', 'NZD'] },
+  { label: "Middle East", currencies: ['AED', 'SAR'] },
+];
+
 export function PricingStep({
   hourlyRate,
   currency,
   onRateChange,
   onCurrencyChange,
 }: PricingStepProps) {
-  const currencySymbol = CURRENCIES.find((c) => c.value === currency)?.symbol || '$';
+  const [open, setOpen] = useState(false);
+  const selectedCurrency = CURRENCIES.find((c) => c.value === currency);
+  const currencySymbol = selectedCurrency?.symbol || '$';
 
   return (
     <div className="space-y-8 animate-fade-in-up">
@@ -42,22 +62,64 @@ export function PricingStep({
       {/* Currency Selection */}
       <div className="glass-card p-6">
         <Label className="text-base font-medium mb-4 block">Currency</Label>
-        <Select value={currency} onValueChange={(v) => onCurrencyChange(v as Currency)}>
-          <SelectTrigger className="w-full rounded-xl h-12">
-            <SelectValue placeholder="Select currency" />
-          </SelectTrigger>
-          <SelectContent className="max-h-[300px]">
-            {CURRENCIES.map((curr) => (
-              <SelectItem key={curr.value} value={curr.value}>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between h-12 rounded-xl bg-background"
+            >
+              {selectedCurrency ? (
                 <span className="flex items-center gap-2">
-                  <span>{curr.icon}</span>
-                  <span className="font-mono">{curr.symbol}</span>
-                  <span>{curr.label}</span>
+                  <span>{selectedCurrency.icon}</span>
+                  <span className="font-mono">{selectedCurrency.symbol}</span>
+                  <span>{selectedCurrency.label}</span>
                 </span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+              ) : (
+                "Select currency..."
+              )}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[350px] p-0 z-50 bg-popover border border-border shadow-lg" align="start">
+            <Command className="bg-popover">
+              <CommandInput placeholder="Search currency..." className="h-11" />
+              <CommandList className="max-h-[300px]">
+                <CommandEmpty>No currency found.</CommandEmpty>
+                {currencyGroups.map((group) => (
+                  <CommandGroup key={group.label} heading={group.label}>
+                    {group.currencies.map((code) => {
+                      const curr = CURRENCIES.find((c) => c.value === code);
+                      if (!curr) return null;
+                      return (
+                        <CommandItem
+                          key={curr.value}
+                          value={`${curr.value} ${curr.label}`}
+                          onSelect={() => {
+                            onCurrencyChange(curr.value);
+                            setOpen(false);
+                          }}
+                          className="cursor-pointer"
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              currency === curr.value ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          <span className="mr-2">{curr.icon}</span>
+                          <span className="font-mono mr-2">{curr.symbol}</span>
+                          <span>{curr.label}</span>
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                ))}
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Hourly Rate */}
