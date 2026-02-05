@@ -10,6 +10,7 @@ import { IntegrationsStep } from "@/components/wizard/IntegrationsStep";
 import { PricingStep } from "@/components/wizard/PricingStep";
 import { ProposalPreview } from "@/components/wizard/ProposalPreview";
 import { LivePricingSidebar } from "@/components/wizard/LivePricingSidebar";
+import { UpgradeDialog } from "@/components/wizard/UpgradeDialog";
 import { useWizard } from "@/hooks/useWizard";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
@@ -44,6 +45,7 @@ export default function WizardPage() {
   const { user, loading, canCreateProposal, getRemainingProposals, profile } = useAuthContext();
   const navigate = useNavigate();
   const [proposalSaved, setProposalSaved] = useState(false);
+  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false);
 
   // Handle step 5 transition - save proposal when reaching it
   useEffect(() => {
@@ -70,7 +72,8 @@ export default function WizardPage() {
     }
     
     if (step === 4 && !canCreateProposal()) {
-      // User has used all free proposals
+      // User has used all free proposals - show upgrade dialog
+      setShowUpgradeDialog(true);
       return;
     }
     
@@ -195,7 +198,10 @@ export default function WizardPage() {
                       <span className="text-sm text-destructive">
                         No free proposals remaining
                       </span>
-                      <Button variant="wizard-primary" disabled>
+                      <Button 
+                        variant="wizard-primary" 
+                        onClick={() => setShowUpgradeDialog(true)}
+                      >
                         Upgrade to Pro
                       </Button>
                     </div>
@@ -254,6 +260,11 @@ export default function WizardPage() {
           </div>
         </div>
       </div>
+
+      <UpgradeDialog 
+        open={showUpgradeDialog} 
+        onOpenChange={setShowUpgradeDialog} 
+      />
     </div>
   );
 }

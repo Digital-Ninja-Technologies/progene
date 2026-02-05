@@ -117,13 +117,13 @@ export function useAuth() {
   const canCreateProposal = () => {
     if (!profile) return false;
     if (profile.is_premium) return true;
-    return profile.proposals_used < 2;
+    return profile.proposals_used < 3;
   };
 
   const getRemainingProposals = () => {
     if (!profile) return 0;
     if (profile.is_premium) return Infinity;
-    return Math.max(0, 2 - profile.proposals_used);
+    return Math.max(0, 3 - profile.proposals_used);
   };
 
   return {
