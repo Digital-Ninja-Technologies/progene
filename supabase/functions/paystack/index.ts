@@ -10,17 +10,17 @@ const PAYSTACK_SECRET_KEY = Deno.env.get('PAYSTACK_SECRET_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
-// Plan configurations (amounts in cents for USD)
+// Plan configurations (amounts in kobo for NGN - Paystack's default currency)
 const PLANS = {
   pro: {
     name: 'Pro',
-    amount: 1500, // $15 in cents
+    amount: 1500000, // ₦15,000 in kobo
     interval: 'monthly',
     description: 'Unlimited proposals, templates, and branding'
   },
   agency: {
     name: 'Agency',
-    amount: 3500, // $35 in cents
+    amount: 3500000, // ₦35,000 in kobo
     interval: 'monthly',
     description: 'Everything in Pro plus team features and priority support'
   }
@@ -97,8 +97,8 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           email,
-          amount: selectedPlan.amount, // Amount already in cents
-          currency: 'USD',
+          amount: selectedPlan.amount, // Amount in kobo
+          currency: 'NGN',
           reference,
           callback_url: callback_url || `${url.origin}/paystack/verify`,
           metadata: {
@@ -207,8 +207,8 @@ serve(async (req) => {
       // Record payment
       await supabase.from('payment_history').insert({
         user_id: userIdFromMeta,
-        amount: amount / 100,
-        currency: 'USD',
+        amount: amount / 100, // Convert from kobo to Naira
+        currency: 'NGN',
         status: 'success',
         paystack_reference: reference,
         paystack_transaction_id: verifyData.data.id?.toString(),

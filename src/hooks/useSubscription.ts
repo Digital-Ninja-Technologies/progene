@@ -32,18 +32,21 @@ export const PLANS = {
   free: {
     name: 'Free',
     price: 0,
+    currency: '₦',
     proposals: 2,
     features: ['2 proposals/month', 'Basic templates', 'PDF export'],
   },
   pro: {
     name: 'Pro',
-    price: 15,
+    price: 15000,
+    currency: '₦',
     proposals: Infinity,
     features: ['Unlimited proposals', 'All templates', 'Custom branding', 'Client portal', 'Analytics'],
   },
   agency: {
     name: 'Agency',
-    price: 35,
+    price: 35000,
+    currency: '₦',
     proposals: Infinity,
     features: ['Everything in Pro', 'Team collaboration', 'Priority support', 'API access', 'White-label exports'],
   },
