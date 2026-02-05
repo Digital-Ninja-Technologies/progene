@@ -12,6 +12,7 @@ import ProposalViewPage from "./pages/ProposalViewPage";
 import SettingsPage from "./pages/SettingsPage";
 import PublicProposalPage from "./pages/PublicProposalPage";
 import ContactPage from "./pages/ContactPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/wizard" element={<WizardPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/settings" element={<SettingsPage />} />

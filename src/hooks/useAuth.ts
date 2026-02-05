@@ -90,6 +90,15 @@ export function useAuth() {
     return { error };
   };
 
+  const resetPassword = async (email: string) => {
+    const redirectUrl = `${window.location.origin}/reset-password`;
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl
+    });
+    return { error };
+  };
+
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) return { error: new Error('Not authenticated') };
     
@@ -125,6 +134,7 @@ export function useAuth() {
     signUp,
     signIn,
     signOut,
+    resetPassword,
     updateProfile,
     fetchProfile,
     canCreateProposal,
