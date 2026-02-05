@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Mail, Lock, User, Building2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,12 +28,16 @@ export default function AuthPage() {
   
   const { signIn, signUp, user, loading, updateProfile, resetPassword } = useAuthContext();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  
+  // Get redirect URL from query params
+  const redirectUrl = searchParams.get('redirect') || '/wizard';
 
   useEffect(() => {
     if (!loading && user) {
-      navigate('/wizard');
+      navigate(redirectUrl);
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, redirectUrl]);
 
   const validateInputs = () => {
     try {
@@ -209,7 +213,7 @@ export default function AuthPage() {
                 ? "Enter your email and we'll send you a reset link"
                 : isLogin
                   ? 'Sign in to access your proposals'
-                  : 'Start with 2 free proposals'}
+                  : 'Start with 3 free proposals'}
             </p>
           </div>
 

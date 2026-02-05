@@ -22,9 +22,12 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      navigate("/auth");
+      // Preserve the current tab in the redirect
+      const currentTab = searchParams.get('tab');
+      const redirectPath = currentTab ? `/settings?tab=${currentTab}` : '/settings';
+      navigate(`/auth?redirect=${encodeURIComponent(redirectPath)}`);
     }
-  }, [authLoading, user, navigate]);
+  }, [authLoading, user, navigate, searchParams]);
 
   if (authLoading) {
     return (

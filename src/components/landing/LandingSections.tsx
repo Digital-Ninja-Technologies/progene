@@ -841,7 +841,7 @@ const pricingPlans = [
     popular: false,
     launchDeal: false,
     features: [
-      { text: "2 proposals included", included: true },
+      { text: "3 proposals included", included: true },
       { text: "All project types", included: true },
       { text: "Smart pricing engine", included: true },
       { text: "PDF export", included: true },
@@ -904,8 +904,10 @@ export function LandingPricing() {
     if (planName === "Free") {
       navigate("/wizard");
     } else {
-      // For paid plans, go to billing page
-      navigate("/settings?tab=billing");
+      // For paid plans, store the intended plan and go to auth/billing
+      // Auth page will redirect to billing after login
+      sessionStorage.setItem('intended_plan', planName.toLowerCase());
+      navigate("/auth?redirect=/settings?tab=billing");
     }
   };
 
@@ -940,7 +942,7 @@ export function LandingPricing() {
           </div>
           
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-3 sm:mb-4">
-            Try ProposalGene with 2 free proposals. No credit card required.
+            Try ProposalGene with 3 free proposals. No credit card required.
           </p>
           <p className="text-sm sm:text-base font-medium text-[#E01E5A] max-w-2xl mx-auto">
             ⏰ Early supporters get <span className="font-bold">$10/month off forever</span> — this offer won't last!
@@ -1127,7 +1129,7 @@ export function LandingCTA() {
           </h2>
           <p className="mx-auto max-w-2xl text-base sm:text-lg text-white/80 mb-8 sm:mb-12">
             Join thousands of freelancers who've stopped underpricing their work. 
-            Start with <span className="font-semibold text-white">2 free proposals</span>—no credit card required.
+            Start with <span className="font-semibold text-white">3 free proposals</span>—no credit card required.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button size="lg" className="rounded-full bg-white text-[#2EB67D] hover:bg-white/90 shadow-xl shadow-black/20" asChild>
