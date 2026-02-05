@@ -33,8 +33,8 @@ export const PLANS = {
     name: 'Free',
     price: 0,
     currency: '₦',
-    proposals: 2,
-    features: ['2 proposals/month', 'Basic templates', 'PDF export'],
+    proposals: 3,
+    features: ['3 proposals/month', 'Basic templates', 'PDF export'],
   },
   pro: {
     name: 'Pro',
