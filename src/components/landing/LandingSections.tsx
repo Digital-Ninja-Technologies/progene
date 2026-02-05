@@ -21,7 +21,7 @@ import {
   Timer
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "@/components/brand/Logo";
 import { ScrollReveal, StaggerContainer } from "@/components/animations/ScrollReveal";
 import {
@@ -898,6 +898,17 @@ const pricingPlans = [
 ];
 
 export function LandingPricing() {
+  const navigate = useNavigate();
+  
+  const handlePlanClick = (planName: string) => {
+    if (planName === "Free") {
+      navigate("/wizard");
+    } else {
+      // For paid plans, go to billing page
+      navigate("/settings?tab=billing");
+    }
+  };
+
   return (
     <section id="pricing" className="py-24 lg:py-32 bg-card relative overflow-hidden">
       {/* Background decoration */}
@@ -1000,9 +1011,9 @@ export function LandingPricing() {
               <Button 
                 className={`w-full rounded-full ${plan.buttonColor}`}
                 size="lg"
-                asChild
+                onClick={() => handlePlanClick(plan.name)}
               >
-                <Link to="/wizard">{plan.buttonText}</Link>
+                {plan.buttonText}
               </Button>
             </div>
           ))}
