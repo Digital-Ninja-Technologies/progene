@@ -32,7 +32,7 @@ export function PricingPlans() {
           </CardTitle>
           <CardDescription>Perfect for getting started</CardDescription>
           <div className="mt-4">
-            <span className="text-4xl font-bold">$0</span>
+            <span className="text-4xl font-bold">₦0</span>
             <span className="text-muted-foreground">/month</span>
           </div>
         </CardHeader>
@@ -70,7 +70,7 @@ export function PricingPlans() {
           </CardTitle>
           <CardDescription>For growing freelancers</CardDescription>
           <div className="mt-4">
-            <span className="text-4xl font-bold">${PLANS.pro.price}</span>
+            <span className="text-4xl font-bold">₦{PLANS.pro.price.toLocaleString()}</span>
             <span className="text-muted-foreground">/month</span>
           </div>
         </CardHeader>
@@ -121,7 +121,7 @@ export function PricingPlans() {
           </CardTitle>
           <CardDescription>For teams and agencies</CardDescription>
           <div className="mt-4">
-            <span className="text-4xl font-bold">${PLANS.agency.price}</span>
+            <span className="text-4xl font-bold">₦{PLANS.agency.price.toLocaleString()}</span>
             <span className="text-muted-foreground">/month</span>
           </div>
         </CardHeader>

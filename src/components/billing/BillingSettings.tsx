@@ -71,7 +71,7 @@ export function BillingSettings() {
                 </Badge>
               </div>
               <p className="text-muted-foreground">
-                ${planInfo.price}/month
+                {planInfo.currency}{planInfo.price.toLocaleString()}/month
               </p>
             </div>
             {subscription?.current_period_end && isActive && (
