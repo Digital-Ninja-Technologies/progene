@@ -35,13 +35,13 @@ import {
 function CountdownTimer() {
   // Set end date to 14 days from now (persisted via localStorage for consistency)
   const getEndDate = () => {
-    const stored = localStorage.getItem('proposalgene_launch_end');
+    const stored = localStorage.getItem('progene_launch_end');
     if (stored) {
       return new Date(stored);
     }
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + 14);
-    localStorage.setItem('proposalgene_launch_end', endDate.toISOString());
+    localStorage.setItem('progene_launch_end', endDate.toISOString());
     return endDate;
   };
 
@@ -397,7 +397,7 @@ export function LandingHero() {
 
             {/* Subheadline */}
             <p className="mb-6 sm:mb-8 max-w-lg text-base sm:text-lg text-muted-foreground animate-fade-in-up [animation-delay:200ms]">
-              Tired of spending hours on proposals that don't convert? ProposalGene creates 
+              Tired of spending hours on proposals that don't convert? ProGene creates 
               professional, accurately-priced proposals in <span className="text-[#2EB67D] font-semibold">under 5 minutes</span>.
             </p>
 
@@ -469,7 +469,7 @@ export function LandingPainPoints() {
                 <div className="h-8 w-8 rounded-full bg-[#E01E5A]/20 flex items-center justify-center">
                   <XCircle className="h-4 w-4 text-[#E01E5A]" />
                 </div>
-                <span className="font-semibold text-[#E01E5A]">Without ProposalGene</span>
+                <span className="font-semibold text-[#E01E5A]">Without ProGene</span>
               </div>
               {painPoints.map((point, index) => (
                 <div
@@ -497,7 +497,7 @@ export function LandingPainPoints() {
                 <div className="h-8 w-8 rounded-full bg-[#2EB67D]/20 flex items-center justify-center">
                   <CheckCircle2 className="h-4 w-4 text-[#2EB67D]" />
                 </div>
-                <span className="font-semibold text-[#2EB67D]">With ProposalGene</span>
+                <span className="font-semibold text-[#2EB67D]">With ProGene</span>
               </div>
               {solutions.map((point, index) => (
                 <div
@@ -594,7 +594,7 @@ export function LandingProjectTypes() {
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             Whether you're building a simple landing page or a complex e-commerce site, 
-            ProposalGene understands the nuances and calculates accurate estimates.
+            ProGene understands the nuances and calculates accurate estimates.
           </p>
         </ScrollReveal>
 
@@ -701,7 +701,7 @@ const testimonials = [
     platform: "WordPress",
   },
   {
-    quote: "Finally stopped undercharging for my Webflow projects. ProposalGene helped me realize I was leaving thousands on the table every month.",
+    quote: "Finally stopped undercharging for my Webflow projects. ProGene helped me realize I was leaving thousands on the table every month.",
     name: "Marcus Johnson",
     role: "Webflow Agency Owner",
     avatar: "MJ",
@@ -725,7 +725,7 @@ const testimonials = [
     platform: "Shopify",
   },
   {
-    quote: "I was nervous about raising my rates. ProposalGene showed me exactly how to justify higher prices with detailed scope breakdowns. Clients actually respect it more.",
+    quote: "I was nervous about raising my rates. ProGene showed me exactly how to justify higher prices with detailed scope breakdowns. Clients actually respect it more.",
     name: "Jessica Williams",
     role: "Full-Stack Freelancer",
     avatar: "JW",
@@ -763,7 +763,7 @@ export function LandingTestimonials() {
             <span className="bg-gradient-to-r from-[#36C5F0] via-[#2EB67D] to-[#E01E5A] bg-clip-text text-transparent">Hear from real freelancers.</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Thousands of developers trust ProposalGene to price their projects accurately and win more clients.
+            Thousands of developers trust ProGene to price their projects accurately and win more clients.
           </p>
         </ScrollReveal>
 
@@ -819,7 +819,7 @@ export function LandingTestimonials() {
             </div>
             <div className="text-sm">
               <span className="font-semibold">2,500+</span>
-              <span className="text-muted-foreground"> freelancers trust ProposalGene</span>
+              <span className="text-muted-foreground"> freelancers trust ProGene</span>
             </div>
           </div>
         </div>
@@ -831,7 +831,7 @@ export function LandingTestimonials() {
 const pricingPlans = [
   {
     name: "Free",
-    description: "Perfect for trying out ProposalGene",
+    description: "Perfect for trying out ProGene",
     price: "$0",
     originalPrice: null,
     period: "forever",
@@ -942,7 +942,7 @@ export function LandingPricing() {
           </div>
           
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-3 sm:mb-4">
-            Try ProposalGene with 3 free proposals. No credit card required.
+            Try ProGene with 3 free proposals. No credit card required.
           </p>
           <p className="text-sm sm:text-base font-medium text-[#E01E5A] max-w-2xl mx-auto">
             ⏰ Early supporters get <span className="font-bold">$10/month off forever</span> — this offer won't last!
@@ -1157,7 +1157,7 @@ export function LandingFooter() {
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
           <Logo size="md" />
           <p className="text-sm text-muted-foreground">
-            © 2024 ProposalGene. Built for developers who value their time.
+            © 2024 ProGene. Built for developers who value their time.
           </p>
         </div>
       </div>

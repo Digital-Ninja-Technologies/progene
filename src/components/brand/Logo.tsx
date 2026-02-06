@@ -140,7 +140,7 @@ export function Logo({ size = "md", showText = true, className }: LogoProps) {
       
       {showText && (
         <span className={cn("font-semibold tracking-tight", text)}>
-          ProposalGene
+          ProGene
         </span>
       )}
     </div>
