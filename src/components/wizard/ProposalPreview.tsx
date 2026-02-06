@@ -60,7 +60,7 @@ PAYMENT STRUCTURE
 ${proposal.paymentStructure.map((p) => `• ${p.label}: ${formatCurrency(p.amount)} (${p.percentage}%)`).join('\n')}
 
 ---
-Generated with ProposalGene
+Generated with ProGene
     `.trim();
   };
 
@@ -119,7 +119,7 @@ Generated with ProposalGene
           </ul>
           
           <div class="footer">
-            Generated with ProposalGene
+            Generated with ProGene
           </div>
         </body>
         </html>
