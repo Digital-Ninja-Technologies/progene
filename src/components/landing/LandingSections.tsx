@@ -733,7 +733,7 @@ const testimonials = [
     platform: "WordPress",
   },
   {
-    quote: "The best part? No more awkward pricing conversations. I just send the proposal and let ProposalGene do the talking.",
+    quote: "The best part? No more awkward pricing conversations. I just send the proposal and let ProGene do the talking.",
     name: "Alex Thompson",
     role: "Web Design Studio",
     avatar: "AT",
@@ -1035,8 +1035,8 @@ export function LandingPricing() {
 
 const faqs = [
   {
-    question: "How does ProposalGene calculate pricing?",
-    answer: "ProposalGene uses a smart pricing engine that considers project type, number of pages, integrations, animations, CMS requirements, and urgency. It factors in your hourly rate and applies industry-standard multipliers to give you accurate estimates based on real market data."
+    question: "How does ProGene calculate pricing?",
+    answer: "ProGene uses a smart pricing engine that considers project type, number of pages, integrations, animations, CMS requirements, and urgency. It factors in your hourly rate and applies industry-standard multipliers to give you accurate estimates based on real market data."
   },
   {
     question: "What's included in the free plan?",
@@ -1048,7 +1048,7 @@ const faqs = [
   },
   {
     question: "What project types are supported?",
-    answer: "ProposalGene supports Framer, Webflow, Shopify, and WordPress projects—covering everything from simple landing pages to complex e-commerce stores and membership sites."
+    answer: "ProGene supports Framer, Webflow, Shopify, and WordPress projects—covering everything from simple landing pages to complex e-commerce stores and membership sites."
   },
   {
     question: "How accurate are the pricing estimates?",
@@ -1075,7 +1075,7 @@ export function LandingFAQ() {
             <span className="bg-gradient-to-r from-[#36C5F0] to-[#2EB67D] bg-clip-text text-transparent">Questions</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to know about ProposalGene and how it can help you price projects accurately.
+            Everything you need to know about ProGene and how it can help you price projects accurately.
           </p>
         </ScrollReveal>
 

@@ -134,7 +134,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email to the business owner
     const ownerEmailResponse = await resend.emails.send({
-      from: "ProposalGene Contact <onboarding@resend.dev>",
+      from: "ProGene Contact <onboarding@resend.dev>",
       to: ["Ifeoluwa.designs@gmail.com"],
       reply_to: email,
       subject: `[Contact Form] ${subject}`,
@@ -182,7 +182,7 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
             
             <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 24px;">
-              This email was sent from the ProposalGene contact form.
+              This email was sent from the ProGene contact form.
             </p>
           </body>
         </html>
@@ -193,7 +193,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send confirmation email to the sender
     const confirmationEmailResponse = await resend.emails.send({
-      from: "ProposalGene <onboarding@resend.dev>",
+      from: "ProGene <onboarding@resend.dev>",
       to: [email],
       subject: `We received your message: ${subject}`,
       html: `
@@ -241,16 +241,16 @@ const handler = async (req: Request): Promise<Response> => {
               
               <div style="text-align: center; padding-top: 16px; border-top: 1px solid #e5e7eb;">
                 <p style="color: #6b7280; font-size: 14px; margin-bottom: 16px;">
-                  In the meantime, feel free to explore what ProposalGene can do for you:
+                  In the meantime, feel free to explore what ProGene can do for you:
                 </p>
                 <a href="https://progene.lovable.app" style="display: inline-block; background-color: #3b82f6; color: white; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 500;">
-                  Visit ProposalGene
+                  Visit ProGene
                 </a>
               </div>
             </div>
             
             <p style="color: #9ca3af; font-size: 12px; text-align: center; margin-top: 24px;">
-              This is an automated confirmation from ProposalGene. Please don't reply to this email.
+              This is an automated confirmation from ProGene. Please don't reply to this email.
             </p>
           </body>
         </html>
