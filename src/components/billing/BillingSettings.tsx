@@ -1,42 +1,45 @@
 import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { CreditCard, Calendar, AlertCircle, Loader2 } from 'lucide-react';
+import { CreditCard, Calendar, ExternalLink, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { PricingPlans } from './PricingPlans';
 import { useSubscription, PLANS } from '@/hooks/useSubscription';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 
 export function BillingSettings() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { 
     subscription, 
-    paymentHistory, 
     loading, 
     currentPlan, 
     isActive,
-    verifyPayment,
-    cancelSubscription,
+    openCustomerPortal,
+    checkSubscription,
     processingPayment 
   } = useSubscription();
 
-  // Handle payment verification on return from Paystack
+  // Handle success/cancel redirects from Stripe
   useEffect(() => {
-    const shouldVerify = searchParams.get('verify') === 'true';
-    const reference = localStorage.getItem('paystack_reference') || searchParams.get('reference');
+    const success = searchParams.get('success');
+    const canceled = searchParams.get('canceled');
 
-    if (shouldVerify && reference) {
-      verifyPayment(reference).then(() => {
-        // Clean up URL params
-        searchParams.delete('verify');
-        searchParams.delete('reference');
-        setSearchParams(searchParams);
-      });
+    if (success === 'true') {
+      toast.success('Subscription activated successfully!');
+      checkSubscription();
+      // Clean up URL params
+      searchParams.delete('success');
+      setSearchParams(searchParams);
     }
-  }, [searchParams, setSearchParams, verifyPayment]);
+
+    if (canceled === 'true') {
+      toast.info('Checkout was canceled');
+      searchParams.delete('canceled');
+      setSearchParams(searchParams);
+    }
+  }, [searchParams, setSearchParams, checkSubscription]);
 
   if (loading) {
     return (
@@ -67,40 +70,40 @@ export function BillingSettings() {
               <div className="flex items-center gap-2">
                 <h3 className="text-2xl font-bold">{planInfo.name}</h3>
                 <Badge variant={isActive ? 'default' : 'secondary'}>
-                  {subscription?.status || 'active'}
+                  {isActive ? 'active' : 'free'}
                 </Badge>
               </div>
               <p className="text-muted-foreground">
-                {planInfo.currency}{planInfo.price.toLocaleString()}/month
+                {planInfo.currency}{planInfo.price}/month
               </p>
             </div>
-            {subscription?.current_period_end && isActive && (
+            {subscription?.subscription_end && isActive && (
               <div className="text-right text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  Renews {format(new Date(subscription.current_period_end), 'MMM d, yyyy')}
+                  Renews {format(new Date(subscription.subscription_end), 'MMM d, yyyy')}
                 </div>
               </div>
             )}
           </div>
 
-          {subscription?.status === 'cancelled' && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Subscription Cancelled</AlertTitle>
-              <AlertDescription>
-                Your subscription has been cancelled. You'll continue to have access until the end of your billing period.
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {currentPlan !== 'free' && isActive && (
+          {isActive && (
             <Button 
               variant="outline" 
-              onClick={cancelSubscription}
+              onClick={openCustomerPortal}
               disabled={processingPayment}
             >
-              Cancel Subscription
+              {processingPayment ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Opening...
+                </>
+              ) : (
+                <>
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Manage Subscription
+                </>
+              )}
             </Button>
           )}
         </CardContent>
@@ -111,35 +114,6 @@ export function BillingSettings() {
         <h2 className="mb-4 text-xl font-semibold">Available Plans</h2>
         <PricingPlans />
       </div>
-
-      {/* Payment History */}
-      {paymentHistory.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Payment History</CardTitle>
-            <CardDescription>Your recent transactions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {paymentHistory.map((payment) => (
-                <div key={payment.id} className="flex items-center justify-between py-2">
-                  <div>
-                    <p className="font-medium">
-                      ${payment.amount} {payment.currency}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {format(new Date(payment.created_at), 'MMM d, yyyy')}
-                    </p>
-                  </div>
-                  <Badge variant={payment.status === 'success' ? 'default' : 'secondary'}>
-                    {payment.status}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
