@@ -48,13 +48,15 @@ export function useSubscription() {
     }
 
     try {
+      console.log('[useSubscription] Checking subscription status...');
       const { data, error } = await supabase.functions.invoke('check-subscription');
       
       if (error) throw error;
       
+      console.log('[useSubscription] Subscription data received:', data);
       setSubscription(data as SubscriptionData);
     } catch (error) {
-      console.error('Error checking subscription:', error);
+      console.error('[useSubscription] Error checking subscription:', error);
       setSubscription({ subscribed: false, plan: 'free', subscription_end: null });
     } finally {
       setLoading(false);
