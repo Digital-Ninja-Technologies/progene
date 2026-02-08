@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Header } from "@/components/layout/Header";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { ProposalCard } from "@/components/dashboard/ProposalCard";
@@ -86,10 +86,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-14">
-      <Header />
-
-      <div className="container mx-auto px-4 py-8">
+    <DashboardLayout>
+      <div className="p-6 lg:p-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold">My Proposals</h1>
@@ -97,13 +95,13 @@ export default function DashboardPage() {
               View, edit, and duplicate your saved proposals
             </p>
           </div>
-          <Button onClick={() => navigate("/wizard")}>
+          <Button onClick={() => navigate("/wizard")} className="lg:hidden">
             <Plus className="mr-2 h-4 w-4" />
             New Proposal
           </Button>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_350px]">
+        <div className="grid gap-8 xl:grid-cols-[1fr_350px]">
           {/* Proposals Grid */}
           <div>
             {proposals.length === 0 ? (
@@ -123,11 +121,11 @@ export default function DashboardPage() {
           </div>
 
           {/* Notification Center Sidebar */}
-          <div className="order-first lg:order-last">
+          <div className="order-first xl:order-last">
             <NotificationCenter />
           </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
