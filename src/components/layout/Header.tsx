@@ -31,6 +31,16 @@ export function Header() {
       >
         Home
       </Link>
+      {user && (
+        <Link 
+          to="/dashboard" 
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
+          onClick={mobile ? closeMobileMenu : undefined}
+        >
+          <LayoutDashboard className="h-3.5 w-3.5" />
+          Dashboard
+        </Link>
+      )}
       <a 
         href="/#pricing" 
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -52,26 +62,6 @@ export function Header() {
       >
         Contact
       </Link>
-      {user && (
-        <>
-          <Link 
-            to="/dashboard" 
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
-            onClick={mobile ? closeMobileMenu : undefined}
-          >
-            <LayoutDashboard className="h-3.5 w-3.5" />
-            My Proposals
-          </Link>
-          <Link 
-            to="/settings" 
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
-            onClick={mobile ? closeMobileMenu : undefined}
-          >
-            <Settings className="h-3.5 w-3.5" />
-            Settings
-          </Link>
-        </>
-      )}
       <Link 
         to="/wizard" 
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
