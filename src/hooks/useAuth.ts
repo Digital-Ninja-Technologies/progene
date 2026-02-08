@@ -11,6 +11,7 @@ export interface Profile {
   avatar_url: string | null;
   proposals_used: number;
   is_premium: boolean;
+  subscription_plan: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -116,13 +117,17 @@ export function useAuth() {
 
   const canCreateProposal = () => {
     if (!profile) return false;
+    // Premium users (Pro or Agency) have unlimited proposals
     if (profile.is_premium) return true;
+    if (profile.subscription_plan === 'pro' || profile.subscription_plan === 'agency') return true;
     return profile.proposals_used < 3;
   };
 
   const getRemainingProposals = () => {
     if (!profile) return 0;
+    // Premium users have infinite proposals
     if (profile.is_premium) return Infinity;
+    if (profile.subscription_plan === 'pro' || profile.subscription_plan === 'agency') return Infinity;
     return Math.max(0, 3 - profile.proposals_used);
   };
 

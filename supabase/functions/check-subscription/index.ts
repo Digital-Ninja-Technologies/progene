@@ -50,7 +50,13 @@ serve(async (req) => {
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
     if (customers.data.length === 0) {
-      logStep("No Stripe customer found");
+      logStep("No Stripe customer found, setting free plan");
+      // Update profile to free plan
+      await supabaseClient.from('profiles').update({
+        is_premium: false,
+        subscription_plan: 'free',
+      }).eq('user_id', user.id);
+      
       return new Response(JSON.stringify({ 
         subscribed: false, 
         plan: 'free',
@@ -64,14 +70,31 @@ serve(async (req) => {
     const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
+    // Check for active subscriptions
     const subscriptions = await stripe.subscriptions.list({
       customer: customerId,
       status: "active",
       limit: 1,
     });
 
-    if (subscriptions.data.length === 0) {
-      logStep("No active subscription found");
+    // Also check for trialing subscriptions
+    const trialingSubscriptions = await stripe.subscriptions.list({
+      customer: customerId,
+      status: "trialing",
+      limit: 1,
+    });
+
+    const allActiveSubscriptions = [...subscriptions.data, ...trialingSubscriptions.data];
+
+    if (allActiveSubscriptions.length === 0) {
+      logStep("No active subscription found, revoking access");
+      
+      // Revoke premium access
+      await supabaseClient.from('profiles').update({
+        is_premium: false,
+        subscription_plan: 'free',
+      }).eq('user_id', user.id);
+      
       return new Response(JSON.stringify({ 
         subscribed: false, 
         plan: 'free',
@@ -82,7 +105,7 @@ serve(async (req) => {
       });
     }
 
-    const subscription = subscriptions.data[0];
+    const subscription = allActiveSubscriptions[0];
     const subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
     const productId = subscription.items.data[0].price.product as string;
     
@@ -97,14 +120,21 @@ serve(async (req) => {
     logStep("Active subscription found", { 
       subscriptionId: subscription.id, 
       plan,
+      status: subscription.status,
       endDate: subscriptionEnd 
     });
 
     // Update profile in Supabase
-    await supabaseClient.from('profiles').update({
+    const { error: updateError } = await supabaseClient.from('profiles').update({
       is_premium: true,
       subscription_plan: plan,
     }).eq('user_id', user.id);
+
+    if (updateError) {
+      logStep("Error updating profile", { error: updateError.message });
+    } else {
+      logStep("Profile updated successfully", { userId: user.id, plan });
+    }
 
     return new Response(JSON.stringify({
       subscribed: true,

@@ -28,10 +28,19 @@ export function BillingSettings() {
 
     if (success === 'true') {
       toast.success('Subscription activated successfully!');
+      // Multiple refreshes to ensure we get the updated status
       checkSubscription();
+      const timer1 = setTimeout(() => checkSubscription(), 2000);
+      const timer2 = setTimeout(() => checkSubscription(), 5000);
+      
       // Clean up URL params
       searchParams.delete('success');
       setSearchParams(searchParams);
+      
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+      };
     }
 
     if (canceled === 'true') {
