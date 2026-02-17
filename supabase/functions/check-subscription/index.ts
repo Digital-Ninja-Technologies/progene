@@ -106,7 +106,17 @@ serve(async (req) => {
     }
 
     const subscription = allActiveSubscriptions[0];
-    const subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
+    let subscriptionEnd: string | null = null;
+    try {
+      if (subscription.current_period_end) {
+        const endDate = new Date(Number(subscription.current_period_end) * 1000);
+        if (!isNaN(endDate.getTime())) {
+          subscriptionEnd = endDate.toISOString();
+        }
+      }
+    } catch (e) {
+      logStep("Could not parse subscription end date", { raw: subscription.current_period_end });
+    }
     const productId = subscription.items.data[0].price.product as string;
     
     // Determine plan based on product ID
