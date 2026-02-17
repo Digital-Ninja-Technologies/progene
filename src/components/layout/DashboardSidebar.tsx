@@ -7,13 +7,13 @@ import {
   Clock, 
   BarChart3, 
   UserCog,
-  Settings,
-  LogOut
+  Plus,
+  Settings
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { toast } from "sonner";
 
 interface NavItemProps {
   to: string;
@@ -49,23 +49,24 @@ function NavItem({ to, icon, label, badge }: NavItemProps) {
 }
 
 export function DashboardSidebar() {
-  const { profile, signOut } = useAuthContext();
+  const { profile } = useAuthContext();
   const planBadge = profile?.subscription_plan === 'agency' 
     ? 'Agency' 
     : profile?.subscription_plan === 'pro' 
       ? 'Pro' 
       : 'Free';
 
-  const handleSignOut = async () => {
-    const { error } = await signOut();
-    if (error) {
-      toast.error('Failed to sign out');
-    }
-  };
-
   return (
     <aside className="hidden lg:flex w-64 flex-col border-r border-border bg-card/50 min-h-[calc(100vh-3.5rem)]">
-      <div className="flex flex-col gap-2 p-4 flex-1">
+      <div className="flex flex-col gap-2 p-4">
+        {/* New Proposal Button */}
+        <Button asChild className="w-full justify-start gap-2 mb-4">
+          <NavLink to="/wizard">
+            <Plus className="h-4 w-4" />
+            New Proposal
+          </NavLink>
+        </Button>
+
         {/* Main Navigation */}
         <div className="space-y-1">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">
@@ -134,22 +135,6 @@ export function DashboardSidebar() {
             label="Account Settings" 
           />
         </div>
-      </div>
-
-      {/* User info & Sign Out at bottom */}
-      <div className="border-t border-border p-4 space-y-3">
-        {profile?.email && (
-          <p className="text-xs text-muted-foreground truncate px-1">
-            {profile.email}
-          </p>
-        )}
-        <button
-          onClick={handleSignOut}
-          className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm w-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-        >
-          <LogOut className="h-4 w-4" />
-          <span>Sign Out</span>
-        </button>
       </div>
     </aside>
   );
