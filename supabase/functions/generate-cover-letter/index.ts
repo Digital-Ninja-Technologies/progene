@@ -21,9 +21,45 @@ serve(async (req) => {
       });
     }
 
+    if (jobDescription.length > 5000) {
+      return new Response(JSON.stringify({ error: "Job description too long (max 5000 characters)" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (userName && (typeof userName !== "string" || userName.length > 100)) {
+      return new Response(JSON.stringify({ error: "Name too long (max 100 characters)" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (userSkills && (typeof userSkills !== "string" || userSkills.length > 1000)) {
+      return new Response(JSON.stringify({ error: "Skills description too long (max 1000 characters)" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (refinePrompt && (typeof refinePrompt !== "string" || refinePrompt.length > 2000)) {
+      return new Response(JSON.stringify({ error: "Refinement prompt too long (max 2000 characters)" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (existingLetter && (typeof existingLetter !== "string" || existingLetter.length > 10000)) {
+      return new Response(JSON.stringify({ error: "Existing letter too long" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+      console.error("Lovable API key not configured");
+      throw new Error("AI service unavailable");
     }
 
     const isRefine = refinePrompt && existingLetter;
@@ -88,8 +124,11 @@ Return ONLY the cover letter text, no extra commentary.`;
     });
   } catch (e) {
     console.error("Cover letter generation error:", e);
+    const msg = e instanceof Error ? e.message : "";
+    const safeMessages = ["AI service unavailable"];
+    const clientMessage = safeMessages.includes(msg) ? msg : "Failed to generate cover letter. Please try again.";
     return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
+      JSON.stringify({ error: clientMessage }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

@@ -21,7 +21,10 @@ serve(async (req) => {
     logStep("Function started");
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
+    if (!stripeKey) {
+      logStep("Stripe key missing");
+      throw new Error("Payment service unavailable");
+    }
     logStep("Stripe key verified");
 
     const supabaseClient = createClient(
@@ -31,20 +34,23 @@ serve(async (req) => {
     );
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
+    if (!authHeader) throw new Error("Authentication required");
 
     const token = authHeader.replace("Bearer ", "");
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    if (userError) {
+      logStep("Auth error", { message: userError.message });
+      throw new Error("Authentication failed");
+    }
     const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
+    if (!user?.email) throw new Error("Authentication required");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
     if (customers.data.length === 0) {
-      throw new Error("No Stripe customer found for this user");
+      throw new Error("No billing account found");
     }
     
     const customerId = customers.data[0].id;
@@ -65,7 +71,9 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    const safeMessages = ["Payment service unavailable", "Authentication required", "Authentication failed", "No billing account found"];
+    const clientMessage = safeMessages.includes(errorMessage) ? errorMessage : "An error occurred. Please try again.";
+    return new Response(JSON.stringify({ error: clientMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
