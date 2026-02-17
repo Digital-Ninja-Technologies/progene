@@ -31,16 +31,7 @@ export function Header() {
       >
         Home
       </Link>
-      {user && (
-        <Link 
-          to="/dashboard" 
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
-          onClick={mobile ? closeMobileMenu : undefined}
-        >
-          <LayoutDashboard className="h-3.5 w-3.5" />
-          Dashboard
-        </Link>
-      )}
+      
       <a 
         href="/#pricing" 
         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -78,7 +69,16 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          {!user && (
+          {user ? (
+            <div className="hidden md:flex">
+              <Button size="sm" className="rounded-lg gap-2" asChild>
+                <Link to="/dashboard">
+                  <LayoutDashboard className="h-4 w-4" />
+                  Dashboard
+                </Link>
+              </Button>
+            </div>
+          ) : (
             <div className="hidden md:flex items-center gap-3">
               <Button variant="ghost" size="sm" className="text-sm" asChild>
                 <Link to="/auth">Sign in</Link>
