@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { jobDescription, userName, userSkills } = await req.json();
+    const { jobDescription, userName, userSkills, refinePrompt, existingLetter } = await req.json();
 
     if (!jobDescription || typeof jobDescription !== "string" || jobDescription.trim().length === 0) {
       return new Response(JSON.stringify({ error: "Job description is required" }), {
@@ -26,7 +26,11 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are a professional cover letter writer. Given a job description, generate a compelling, personalized cover letter that:
+    const isRefine = refinePrompt && existingLetter;
+
+    const systemPrompt = isRefine
+      ? `You are a professional cover letter editor. The user has an existing cover letter and wants you to refine it based on their instructions. Apply the requested changes while maintaining professionalism and structure. Return ONLY the updated cover letter text, no extra commentary.`
+      : `You are a professional cover letter writer. Given a job description, generate a compelling, personalized cover letter that:
 - Is professional and well-structured with proper greeting, body paragraphs, and closing
 - Highlights relevant skills and experience that match the job requirements
 - Shows enthusiasm for the role and company
@@ -38,6 +42,10 @@ ${userSkills ? `- Emphasize these skills/experience: ${userSkills}` : ""}
 
 Return ONLY the cover letter text, no extra commentary.`;
 
+    const userMessage = isRefine
+      ? `Here is the current cover letter:\n\n${existingLetter}\n\nJob description for context:\n\n${jobDescription}\n\nPlease apply these changes:\n${refinePrompt}`
+      : `Generate a cover letter for this job description:\n\n${jobDescription}`;
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -48,7 +56,7 @@ Return ONLY the cover letter text, no extra commentary.`;
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Generate a cover letter for this job description:\n\n${jobDescription}` },
+          { role: "user", content: userMessage },
         ],
         stream: true,
       }),
