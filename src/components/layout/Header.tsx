@@ -55,10 +55,11 @@ export function Header() {
       </Link>
       <Link 
         to="/cover-letter" 
-        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5"
         onClick={mobile ? closeMobileMenu : undefined}
       >
         Cover Letter
+        <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-primary text-primary-foreground leading-none">Pro</span>
       </Link>
     </>
   );

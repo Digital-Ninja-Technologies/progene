@@ -1,16 +1,20 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Copy, Check, FileText, Sparkles } from "lucide-react";
+import { Loader2, Copy, Check, FileText, Sparkles, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-cover-letter`;
 
 export default function CoverLetterPage() {
+  const { user, profile, loading } = useAuthContext();
+  const navigate = useNavigate();
   const [jobDescription, setJobDescription] = useState("");
   const [userName, setUserName] = useState("");
   const [userSkills, setUserSkills] = useState("");
@@ -18,6 +22,43 @@ export default function CoverLetterPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+
+  const isPremium = profile?.is_premium === true;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background pt-14">
+        <Header />
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || !isPremium) {
+    return (
+      <div className="min-h-screen bg-background pt-14">
+        <Header />
+        <div className="container mx-auto px-4 py-20 max-w-lg text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-6">
+            <Lock className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <h1 className="text-2xl font-bold mb-3">Pro Feature</h1>
+          <p className="text-muted-foreground mb-6">
+            The AI Cover Letter Generator is available exclusively for Pro and Agency subscribers. Upgrade your plan to unlock this feature.
+          </p>
+          <div className="flex gap-3 justify-center">
+            {!user ? (
+              <Button onClick={() => navigate("/auth")}>Sign in</Button>
+            ) : (
+              <Button onClick={() => navigate("/settings")}>Upgrade to Pro</Button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleGenerate = async () => {
     if (!jobDescription.trim()) {
