@@ -13,6 +13,7 @@ import SettingsPage from "./pages/SettingsPage";
 import PublicProposalPage from "./pages/PublicProposalPage";
 import ContactPage from "./pages/ContactPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import CoverLetterPage from "./pages/CoverLetterPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/proposal/:id" element={<ProposalViewPage />} />
             <Route path="/p/:token" element={<PublicProposalPage />} />
+            <Route path="/cover-letter" element={<CoverLetterPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -53,6 +53,13 @@ export function Header() {
       >
         Contact
       </Link>
+      <Link 
+        to="/cover-letter" 
+        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        onClick={mobile ? closeMobileMenu : undefined}
+      >
+        Cover Letter
+      </Link>
     </>
   );
 
