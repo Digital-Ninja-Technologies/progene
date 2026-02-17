@@ -62,13 +62,6 @@ export function Header() {
       >
         Contact
       </Link>
-      <Link 
-        to="/wizard" 
-        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        onClick={mobile ? closeMobileMenu : undefined}
-      >
-        Create Proposal
-      </Link>
     </>
   );
 
@@ -85,28 +78,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          {user ? (
-            <>
-              {profile && !profile.is_premium && (
-                <div className="hidden sm:flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground">
-                    {remaining === 0 ? (
-                      <span className="text-destructive">No proposals left</span>
-                    ) : (
-                      <>{remaining} free proposal{remaining !== 1 ? 's' : ''} left</>
-                    )}
-                  </span>
-                </div>
-              )}
-              <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
-                <User className="h-4 w-4" />
-                <span className="hidden sm:inline">{profile?.full_name || user.email}</span>
-              </div>
-              <Button variant="ghost" size="sm" onClick={handleSignOut} className="hidden md:flex">
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </>
-          ) : (
+          {!user && (
             <div className="hidden md:flex items-center gap-3">
               <Button variant="ghost" size="sm" className="text-sm" asChild>
                 <Link to="/auth">Sign in</Link>
