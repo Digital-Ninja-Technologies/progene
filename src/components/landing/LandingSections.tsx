@@ -30,6 +30,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import progeneAdsVideo from "@/assets/Progene-Ads.mp4";
 
 // Countdown Timer Component
 function CountdownTimer() {
@@ -741,6 +742,36 @@ const testimonials = [
     platform: "Webflow",
   },
 ];
+
+export function LandingVideo() {
+  return (
+    <section className="py-24 lg:py-32 bg-muted/30 relative overflow-hidden">
+      <div className="container mx-auto px-4">
+        <ScrollReveal className="text-center mb-12">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
+            See ProGene in Action
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Watch how ProGene helps freelancers create winning proposals in minutes.
+          </p>
+        </ScrollReveal>
+        <ScrollReveal className="max-w-4xl mx-auto">
+          <div className="rounded-2xl overflow-hidden shadow-2xl border border-border bg-card">
+            <video
+              controls
+              className="w-full aspect-video"
+              preload="metadata"
+              playsInline
+            >
+              <source src={progeneAdsVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
 
 export function LandingTestimonials() {
   return (
