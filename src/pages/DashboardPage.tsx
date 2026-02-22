@@ -7,7 +7,8 @@ import { ProposalCard } from "@/components/dashboard/ProposalCard";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { NotificationCenter } from "@/components/dashboard/NotificationCenter";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ProjectConfig, PricingResult, ProposalData } from "@/types/project";
 
 export interface SavedProposal {
@@ -80,7 +81,7 @@ export default function DashboardPage() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <LoadingSpinner size="lg" label="Loading proposals..." />
       </div>
     );
   }

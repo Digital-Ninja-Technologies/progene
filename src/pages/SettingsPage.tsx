@@ -10,7 +10,8 @@ import { TimeTracker } from "@/components/analytics/TimeTracker";
 import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
 import { BillingSettings } from "@/components/billing/BillingSettings";
 import { AccountDeletion } from "@/components/settings/AccountDeletion";
-import { Loader2, FileText, Users, Palette, Clock, BarChart3, CreditCard, UserCog } from "lucide-react";
+import { FileText, Users, Palette, Clock, BarChart3, CreditCard, UserCog } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function SettingsPage() {
   const { user, loading: authLoading } = useAuthContext();
@@ -32,7 +33,7 @@ export default function SettingsPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <LoadingSpinner size="lg" label="Loading settings..." />
       </div>
     );
   }
