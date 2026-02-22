@@ -745,24 +745,18 @@ const testimonials = [
 
 export function LandingVideo() {
   return (
-    <section className="py-24 lg:py-32 bg-muted/30 relative overflow-hidden">
-      <div className="container mx-auto px-4">
-        <ScrollReveal className="max-w-4xl mx-auto">
-          <div className="rounded-2xl overflow-hidden shadow-2xl border border-border bg-card">
-            <video
-              autoPlay
-              loop
-              muted
-              className="w-full h-full object-cover"
-              preload="metadata"
-              playsInline
-            >
-              <source src={progeneAdsVideo} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </ScrollReveal>
-      </div>
+    <section className="relative w-full h-screen overflow-hidden">
+      <video
+        autoPlay
+        loop
+        muted
+        className="absolute inset-0 w-full h-full object-cover"
+        preload="metadata"
+        playsInline
+      >
+        <source src={progeneAdsVideo} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
     </section>
   );
 }
