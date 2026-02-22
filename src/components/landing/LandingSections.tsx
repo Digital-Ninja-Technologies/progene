@@ -750,7 +750,9 @@ export function LandingVideo() {
         <ScrollReveal className="max-w-4xl mx-auto">
           <div className="rounded-2xl overflow-hidden shadow-2xl border border-border bg-card">
             <video
-              controls
+              autoPlay
+              loop
+              muted
               className="w-full aspect-video"
               preload="metadata"
               playsInline
