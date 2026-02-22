@@ -753,7 +753,7 @@ export function LandingVideo() {
               autoPlay
               loop
               muted
-              className="w-full aspect-video"
+              className="w-full h-full object-cover"
               preload="metadata"
               playsInline
             >
