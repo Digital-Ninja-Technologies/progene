@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Save, Trash2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -130,7 +131,7 @@ export function TemplatesManager({ currentConfig, onLoadTemplate }: TemplatesMan
       </div>
 
       {loading ? (
-        <div className="text-center py-8 text-muted-foreground">Loading templates...</div>
+        <LoadingSpinner size="sm" label="Loading templates..." className="py-8" />
       ) : templates.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="py-8 text-center text-muted-foreground">
