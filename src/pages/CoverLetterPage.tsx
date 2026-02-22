@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Copy, Check, Lock, Send, Sparkles, User, Bot, ArrowDown } from "lucide-react";
+import { Loader2, Copy, Check, Lock, Send, Sparkles, User, Bot, ArrowDown, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useAuthContext } from "@/contexts/AuthContext";
 
@@ -219,6 +219,21 @@ export default function CoverLetterPage() {
   return (
     <div className="min-h-screen bg-background pt-14 flex flex-col">
       <Header />
+
+      {/* New Chat button */}
+      {!isEmpty && (
+        <div className="max-w-3xl mx-auto w-full px-4 pt-3 pb-1 flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => { setMessages([]); setInput(""); }}
+            className="gap-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            New Chat
+          </Button>
+        </div>
+      )}
 
       {/* Messages area */}
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto relative">
