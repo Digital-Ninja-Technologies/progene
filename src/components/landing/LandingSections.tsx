@@ -777,6 +777,7 @@ export function LandingVideo() {
           className="w-full h-full object-cover"
           preload="metadata"
           playsInline
+          ref={(el) => { if (el) el.playbackRate = 2; }}
         >
           <source src={progeneAdsVideo} type="video/mp4" />
           Your browser does not support the video tag.
