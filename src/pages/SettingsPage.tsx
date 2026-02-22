@@ -15,10 +15,10 @@ import { Loader2, FileText, Users, Palette, Clock, BarChart3, CreditCard, UserCo
 export default function SettingsPage() {
   const { user, loading: authLoading } = useAuthContext();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   
-  // Get tab from URL or default to templates
-  const defaultTab = searchParams.get('tab') || 'templates';
+  // Sync tab with URL
+  const activeTab = searchParams.get('tab') || 'templates';
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -47,7 +47,7 @@ export default function SettingsPage() {
           </p>
         </div>
 
-        <Tabs defaultValue={defaultTab} className="space-y-6">
+        <Tabs value={activeTab} onValueChange={(val) => setSearchParams({ tab: val })} className="space-y-6">
           {/* Mobile-only tabs - hidden on desktop since sidebar handles navigation */}
           <TabsList className="grid w-full grid-cols-4 md:grid-cols-7 h-auto gap-1 lg:hidden">
             <TabsTrigger value="templates" className="flex items-center gap-2 py-2.5">
