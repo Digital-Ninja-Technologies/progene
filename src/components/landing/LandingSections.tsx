@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { 
   FileText, 
   Zap, 
@@ -744,19 +744,44 @@ const testimonials = [
 ];
 
 export function LandingVideo() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      // Progress: 0 when section top is at viewport bottom, 1 when top is at viewport top
+      const progress = Math.max(0, Math.min(1, 1 - rect.top / viewportHeight));
+      // Scale from 1 (full) down to 0.7 as user scrolls past
+      const newScale = 1 - progress * 0.3;
+      setScale(newScale);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <section className="relative w-full h-screen overflow-hidden">
-      <video
-        autoPlay
-        loop
-        muted
-        className="absolute inset-0 w-full h-full object-cover"
-        preload="metadata"
-        playsInline
+    <section ref={sectionRef} className="relative w-full h-screen overflow-hidden flex items-center justify-center bg-background">
+      <div
+        className="w-full h-full rounded-2xl overflow-hidden transition-transform duration-100 ease-out"
+        style={{ transform: `scale(${scale})` }}
       >
-        <source src={progeneAdsVideo} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+        <video
+          autoPlay
+          loop
+          muted
+          className="w-full h-full object-cover"
+          preload="metadata"
+          playsInline
+        >
+          <source src={progeneAdsVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </section>
   );
 }
