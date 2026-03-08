@@ -933,13 +933,90 @@ export function LandingCTA() {
 // ─── FOOTER ─────────────────────────────────────────────────────────────────
 
 export function LandingFooter() {
+  const footerLinks = {
+    Product: [
+      { label: "Proposal Wizard", href: "/wizard" },
+      { label: "Dashboard", href: "/dashboard" },
+      { label: "Pricing", href: "/#pricing" },
+      { label: "Templates", href: "/dashboard" },
+    ],
+    Resources: [
+      { label: "How It Works", href: "/#how-it-works" },
+      { label: "FAQ", href: "/#faq" },
+      { label: "Contact", href: "/contact" },
+      { label: "Cover Letters", href: "/cover-letter" },
+    ],
+    Legal: [
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Service", href: "#" },
+      { label: "Cookie Policy", href: "#" },
+    ],
+  };
+
   return (
-    <footer className="border-t border-border py-8 bg-card">
-      <div className="w-[90%] max-w-7xl mx-auto flex flex-col items-center justify-between gap-4 md:flex-row">
-        <Logo size="md" />
-        <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} ProGene. Built for developers who value their time.
-        </p>
+    <footer className="relative border-t border-border bg-card overflow-hidden">
+      {/* Subtle mesh gradient background */}
+      <div className="absolute inset-0 mesh-gradient opacity-30" />
+      <div className="absolute inset-0 dot-grid opacity-10" />
+
+      <div className="w-[90%] max-w-7xl mx-auto relative z-10">
+        {/* Main footer grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 py-16">
+          {/* Brand column */}
+          <div className="lg:col-span-2 space-y-5">
+            <Logo size="md" />
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
+              Generate professional proposals in under 5 minutes. Built for freelancers, agencies, and developers who value their time.
+            </p>
+            <div className="flex items-center gap-3">
+              {/* Social icons as colored dots */}
+              {[
+                { color: "bg-[#36C5F0]", label: "Twitter", href: "#" },
+                { color: "bg-[#2EB67D]", label: "GitHub", href: "#" },
+                { color: "bg-[#ECB22E]", label: "LinkedIn", href: "#" },
+                { color: "bg-[#E01E5A]", label: "YouTube", href: "#" },
+              ].map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  aria-label={social.label}
+                  className={`h-8 w-8 rounded-full ${social.color} opacity-80 hover:opacity-100 hover:scale-110 transition-all duration-200 flex items-center justify-center`}
+                >
+                  <span className="sr-only">{social.label}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Link columns */}
+          {Object.entries(footerLinks).map(([title, links]) => (
+            <div key={title} className="space-y-4">
+              <h4 className="text-sm font-semibold tracking-wide">{title}</h4>
+              <ul className="space-y-2.5">
+                {links.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-border py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} ProGene. All rights reserved.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Built for developers who value their time ⚡
+          </p>
+        </div>
       </div>
     </footer>
   );
