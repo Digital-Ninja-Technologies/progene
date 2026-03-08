@@ -31,6 +31,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <OnboardingTour />
+          <CookieConsent />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<AuthPage />} />
