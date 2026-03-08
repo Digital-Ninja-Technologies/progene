@@ -76,6 +76,11 @@ export function useAuth() {
         emailRedirectTo: redirectUrl
       }
     });
+    
+    if (!error) {
+      triggerOnboardingTour();
+    }
+    
     return { error };
   };
 
