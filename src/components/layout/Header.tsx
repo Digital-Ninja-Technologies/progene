@@ -66,8 +66,8 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-3 px-4">
-      <div className="w-full max-w-5xl bg-card/70 backdrop-blur-2xl border border-border/60 rounded-2xl shadow-lg shadow-foreground/5">
-      <div className="w-[80%] flex h-14 items-center justify-between">
+      <div className="w-full max-w-5xl bg-card/70 backdrop-blur-2xl border border-border/60 rounded-2xl shadow-lg shadow-foreground/5 px-6">
+        <div className="flex h-14 items-center justify-between">
         <Link to="/" className="flex items-center">
           <Logo size="md" />
         </Link>
@@ -144,6 +144,7 @@ export function Header() {
               </div>
             </SheetContent>
           </Sheet>
+        </div>
         </div>
       </div>
     </header>
