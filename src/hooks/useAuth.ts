@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { triggerOnboardingTour } from '@/components/onboarding/OnboardingTour';
 
 export interface Profile {
   id: string;
