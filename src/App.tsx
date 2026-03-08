@@ -41,6 +41,9 @@ const App = () => (
             <Route path="/proposal/:id" element={<ProposalViewPage />} />
             <Route path="/p/:token" element={<PublicProposalPage />} />
             <Route path="/cover-letter" element={<CoverLetterPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/cookies" element={<CookiePolicyPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
