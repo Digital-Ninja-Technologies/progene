@@ -1,11 +1,12 @@
 import { Copy, Download, FileText, Check, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ProposalData, PROJECT_TYPES, CURRENCIES } from "@/types/project";
+import { ProposalData, PROJECT_TYPES, CURRENCIES, ProjectConfig } from "@/types/project";
 import { useState } from "react";
 import { toast } from "sonner";
 import { InvoiceGenerator } from "./InvoiceGenerator";
 import { ShareForSignature } from "@/components/proposal/ShareForSignature";
 import { escapeHtml } from "@/lib/htmlEscape";
+import { AIScopeWriter } from "./AIScopeWriter";
 
 interface ProposalPreviewProps {
   proposal: ProposalData;
