@@ -13,6 +13,7 @@ import {
   LandingCTA,
   LandingFooter,
 } from "@/components/landing/LandingSections";
+import { LandingROICalculator } from "@/components/landing/ROICalculator";
 
 const Index = () => {
   return (
@@ -24,6 +25,7 @@ const Index = () => {
         <LandingStats />
         <LandingFeatures />
         <LandingHowItWorks />
+        <LandingROICalculator />
         <LandingProjectTypes />
         <LandingVideo />
         <LandingTestimonials />
