@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
+import { CookieConsent } from "@/components/CookieConsent";
 import Index from "./pages/Index";
 import WizardPage from "./pages/WizardPage";
 import AuthPage from "./pages/AuthPage";
@@ -30,6 +31,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <OnboardingTour />
+          <CookieConsent />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<AuthPage />} />
