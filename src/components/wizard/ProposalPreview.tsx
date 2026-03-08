@@ -210,22 +210,29 @@ Generated with ProGene
       <div className="proposal-section">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">Scope of Work</h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              copyToClipboard(proposal.scopeOfWork.join('\n'), 'scope')
-            }
-          >
-            {copiedSection === 'scope' ? (
-              <Check className="h-4 w-4" />
-            ) : (
-              <Copy className="h-4 w-4" />
-            )}
-          </Button>
+          <div className="flex items-center gap-2">
+            <AIScopeWriter
+              config={proposal.config}
+              existingScope={[...proposal.scopeOfWork, ...additionalScope]}
+              onScopeGenerated={(newScope) => setAdditionalScope(prev => [...prev, ...newScope])}
+            />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() =>
+                copyToClipboard([...proposal.scopeOfWork, ...additionalScope].join('\n'), 'scope')
+              }
+            >
+              {copiedSection === 'scope' ? (
+                <Check className="h-4 w-4" />
+              ) : (
+                <Copy className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
         <ul className="space-y-2">
-          {proposal.scopeOfWork.map((item, index) => (
+          {[...proposal.scopeOfWork, ...additionalScope].map((item, index) => (
             <li key={index} className="flex items-start gap-2">
               <span className="text-muted-foreground mt-1">•</span>
               <span>{item}</span>
