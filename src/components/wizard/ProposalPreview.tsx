@@ -15,6 +15,7 @@ interface ProposalPreviewProps {
 
 export function ProposalPreview({ proposal, proposalId }: ProposalPreviewProps) {
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
+  const [additionalScope, setAdditionalScope] = useState<string[]>([]);
 
   const projectTypeLabel =
     PROJECT_TYPES.find((p) => p.value === proposal.config.type)?.label || 'Website';
