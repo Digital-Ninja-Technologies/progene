@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,6 +13,46 @@ serve(async (req) => {
   }
 
   try {
+    // Authenticate user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Authentication required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData, error: authError } = await supabaseClient.auth.getUser(token);
+    if (authError || !userData.user) {
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const user = userData.user;
+
+    // Rate limit: 20 requests per hour per user
+    const { data: rateLimitCount } = await supabaseClient.rpc("check_rate_limit", {
+      p_identifier: user.id,
+      p_action: "generate_cover_letter",
+      p_max_requests: 20,
+      p_window_seconds: 3600,
+    });
+
+    if (rateLimitCount && rateLimitCount > 20) {
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const { jobDescription, userName, userSkills, refinePrompt, existingLetter } = await req.json();
 
     if (!jobDescription || typeof jobDescription !== "string" || jobDescription.trim().length === 0) {
