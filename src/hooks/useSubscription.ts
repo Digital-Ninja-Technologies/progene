@@ -48,12 +48,20 @@ export function useSubscription() {
     }
 
     try {
-      console.log('[useSubscription] Checking subscription status...');
-      const { data, error } = await supabase.functions.invoke('check-subscription');
+      console.log('[useSubscription] Checking subscription via Polar...');
+      const { data, error } = await supabase.functions.invoke('polar-check-subscription');
       
-      if (error) throw error;
+      if (error) {
+        // Fallback to Stripe check-subscription
+        console.log('[useSubscription] Polar check failed, falling back to Stripe...');
+        const { data: stripeData, error: stripeError } = await supabase.functions.invoke('check-subscription');
+        if (stripeError) throw stripeError;
+        console.log('[useSubscription] Stripe subscription data:', stripeData);
+        setSubscription(stripeData as SubscriptionData);
+        return;
+      }
       
-      console.log('[useSubscription] Subscription data received:', data);
+      console.log('[useSubscription] Polar subscription data:', data);
       setSubscription(data as SubscriptionData);
     } catch (error) {
       console.error('[useSubscription] Error checking subscription:', error);
@@ -71,7 +79,7 @@ export function useSubscription() {
   useEffect(() => {
     if (!user) return;
     
-    const interval = setInterval(checkSubscription, 60000); // Check every minute
+    const interval = setInterval(checkSubscription, 60000);
     return () => clearInterval(interval);
   }, [user, checkSubscription]);
 
@@ -84,14 +92,25 @@ export function useSubscription() {
     setProcessingPayment(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
+      // Primary: Polar checkout
+      const { data, error } = await supabase.functions.invoke('polar-checkout', {
         body: { plan },
       });
 
-      if (error) throw error;
+      if (error) {
+        // Fallback to Stripe
+        console.warn('Polar checkout failed, falling back to Stripe:', error);
+        const { data: stripeData, error: stripeError } = await supabase.functions.invoke('create-checkout', {
+          body: { plan },
+        });
+        if (stripeError) throw stripeError;
+        if (stripeData.url) {
+          window.open(stripeData.url, '_blank');
+        }
+        return;
+      }
 
       if (data.url) {
-        // Open Stripe checkout in new tab
         window.open(data.url, '_blank');
       }
     } catch (error: any) {
@@ -111,9 +130,19 @@ export function useSubscription() {
     setProcessingPayment(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('customer-portal');
+      // Primary: Polar portal
+      const { data, error } = await supabase.functions.invoke('polar-customer-portal');
 
-      if (error) throw error;
+      if (error) {
+        // Fallback to Stripe customer portal
+        console.warn('Polar portal failed, falling back to Stripe:', error);
+        const { data: stripeData, error: stripeError } = await supabase.functions.invoke('customer-portal');
+        if (stripeError) throw stripeError;
+        if (stripeData.url) {
+          window.open(stripeData.url, '_blank');
+        }
+        return;
+      }
 
       if (data.url) {
         window.open(data.url, '_blank');
