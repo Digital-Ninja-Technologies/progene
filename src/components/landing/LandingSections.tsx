@@ -161,142 +161,74 @@ const stats = [
 
 export function LandingHero() {
   return (
-    <section className="relative overflow-hidden min-h-screen flex items-center justify-center">
-      {/* Mesh gradient background */}
-      <div className="absolute inset-0 mesh-gradient" />
-      
-      {/* Dot grid */}
-      <div className="absolute inset-0 dot-grid opacity-40" />
-      
-      {/* Large gradient orbs */}
-      <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#36C5F0]/8 blur-[120px]" />
-      <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#2EB67D]/8 blur-[120px]" />
-      <div className="absolute top-[30%] left-[50%] w-[400px] h-[400px] rounded-full bg-[#ECB22E]/6 blur-[100px]" />
-      
-      {/* Content */}
-      <div className="w-[90%] max-w-7xl mx-auto py-24 sm:py-32 lg:py-40 relative z-10">
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Badge */}
+    <section className="relative overflow-hidden bg-background min-h-[100vh] flex items-center justify-center">
+      {/* Soft ambient glows */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-primary/5 blur-[140px] pointer-events-none" />
+
+      {/* Floating outcome pills, scattered around the headline */}
+      {[
+        { label: "Proposal Sent", color: "bg-emerald-50 text-emerald-700 border-emerald-200", pos: "top-[18%] left-[6%] -rotate-6" },
+        { label: "Client Won", color: "bg-violet-50 text-violet-700 border-violet-200", pos: "top-[14%] right-[8%] rotate-6" },
+        { label: "Scope Locked", color: "bg-rose-50 text-rose-700 border-rose-200", pos: "top-[34%] left-[14%] rotate-3" },
+        { label: "Invoice Paid", color: "bg-amber-50 text-amber-700 border-amber-200", pos: "top-[30%] right-[12%] -rotate-3" },
+        { label: "Hours Saved", color: "bg-sky-50 text-sky-700 border-sky-200", pos: "bottom-[22%] left-[10%] rotate-6" },
+        { label: "Pricing Locked", color: "bg-violet-50 text-violet-700 border-violet-200", pos: "bottom-[26%] right-[10%] -rotate-6" },
+        { label: "Project Booked", color: "bg-emerald-50 text-emerald-700 border-emerald-200", pos: "bottom-[12%] left-1/2 -translate-x-1/2 rotate-2" },
+      ].map((p) => (
+        <div
+          key={p.label}
+          className={`hidden md:block absolute ${p.pos} ${p.color} border rounded-full px-5 py-2 text-sm font-medium shadow-sm animate-float`}
+        >
+          {p.label}
+        </div>
+      ))}
+
+      <div className="w-[90%] max-w-5xl mx-auto py-28 sm:py-32 lg:py-40 relative z-10">
+        <div className="text-center">
           <ScrollReveal>
-            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/80 backdrop-blur-sm px-5 py-2.5 text-sm font-medium shadow-sm">
-              <div className="w-2 h-2 rounded-full bg-[#2EB67D] animate-pulse" />
-              <span className="text-muted-foreground">Stop underpricing your work</span>
-              <ChevronRight className="h-3 w-3 text-muted-foreground" />
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>AI-Powered Proposal Intelligence</span>
             </div>
           </ScrollReveal>
 
-          {/* Headline */}
           <ScrollReveal delay={100}>
-            <h1 className="mb-6 text-4xl font-extrabold tracking-tight sm:text-6xl lg:text-8xl leading-[0.9]">
-              <span className="block text-foreground">Proposals that</span>
-              <span className="block bg-gradient-to-r from-[#36C5F0] via-[#2EB67D] to-[#ECB22E] bg-clip-text text-transparent py-2">
-                win clients
+            <h1 className="mb-6 text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05]">
+              <span className="block text-foreground">Don't leave your next</span>
+              <span className="block bg-gradient-to-r from-primary via-violet-500 to-fuchsia-500 bg-clip-text text-transparent py-1">
+                client to chance
               </span>
             </h1>
           </ScrollReveal>
 
-          {/* Subheadline */}
           <ScrollReveal delay={200}>
-            <p className="mb-10 max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground leading-relaxed">
-              Tired of spending hours on proposals that don't convert? Create 
-              professional, accurately-priced proposals in <span className="text-foreground font-semibold">under 5 minutes</span>.
+            <p className="mb-10 max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed">
+              ProGene is the connective tissue your freelance business has been missing: scoping, pricing, proposals, and invoicing as one engineered outcome.
             </p>
           </ScrollReveal>
 
-          {/* CTAs */}
           <ScrollReveal delay={300}>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-              <Button size="xl" className="rounded-full bg-foreground text-background hover:bg-foreground/90 shadow-2xl shadow-foreground/20 text-base px-8" asChild>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
+              <Button size="lg" className="rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/25 px-7 h-12 text-base" asChild>
                 <Link to="/wizard">
-                  Create Your First Proposal
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  Get Started Free
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" className="rounded-full border-border/60 backdrop-blur-sm" asChild>
-                <Link to="/wizard">
-                  See How It Works
-                </Link>
+              <Button variant="outline" size="lg" className="rounded-2xl border-border bg-card h-12 px-7 text-base" asChild>
+                <Link to="/auth">Sign in</Link>
               </Button>
             </div>
           </ScrollReveal>
 
-          {/* Social proof */}
           <ScrollReveal delay={400}>
-            <div className="flex items-center justify-center gap-4">
-              <div className="flex -space-x-3">
-                {["#36C5F0", "#2EB67D", "#ECB22E", "#E01E5A"].map((color, i) => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-background shadow-sm" style={{ backgroundColor: color }} />
-                ))}
-              </div>
-              <div className="text-left">
-                <p className="text-sm font-semibold">2,500+ proposals created</p>
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-3 w-3 fill-[#ECB22E] text-[#ECB22E]" />
-                  ))}
-                  <span className="text-xs text-muted-foreground ml-1">4.9/5 rating</span>
-                </div>
-              </div>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> No credit card required</span>
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> Free tier always available</span>
+              <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> Cancel anytime</span>
             </div>
           </ScrollReveal>
         </div>
-
-        {/* Floating proposal cards */}
-        <ScrollReveal delay={500}>
-          <div className="mt-20 relative max-w-5xl mx-auto">
-            {/* Main card */}
-            <div className="bg-card/90 backdrop-blur-xl border border-border rounded-3xl p-8 shadow-2xl shadow-foreground/5 mx-auto max-w-2xl">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-[#36C5F0] to-[#2EB67D] flex items-center justify-center shadow-lg shadow-[#36C5F0]/20">
-                  <FileText className="h-7 w-7 text-white" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-bold text-lg">Proposal Generated</p>
-                  <p className="text-sm text-muted-foreground">WordPress E-commerce • 12 pages</p>
-                </div>
-                <div className="flex items-center gap-2 bg-[#2EB67D]/10 text-[#2EB67D] px-3 py-1.5 rounded-full text-sm font-medium">
-                  <CheckCircle2 className="h-4 w-4" />
-                  Complete
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-background rounded-2xl p-4 text-center">
-                  <p className="text-xs text-muted-foreground mb-1">Hours</p>
-                  <p className="text-2xl font-bold">68h</p>
-                </div>
-                <div className="bg-background rounded-2xl p-4 text-center">
-                  <p className="text-xs text-muted-foreground mb-1">Value</p>
-                  <p className="text-2xl font-bold text-[#2EB67D]">$8,500</p>
-                </div>
-                <div className="bg-background rounded-2xl p-4 text-center">
-                  <p className="text-xs text-muted-foreground mb-1">Created in</p>
-                  <p className="text-2xl font-bold text-[#36C5F0]">4 min</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Floating accent cards */}
-            <div className="absolute -top-6 -left-4 lg:left-8 bg-card border border-border rounded-2xl p-4 shadow-xl animate-float hidden sm:flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#ECB22E] to-[#E01E5A] flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">AI-Powered</p>
-                <p className="text-xs text-muted-foreground">Smart pricing</p>
-              </div>
-            </div>
-
-            <div className="absolute -bottom-4 -right-4 lg:right-8 bg-card border border-border rounded-2xl p-4 shadow-xl animate-float-delayed hidden sm:flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-[#36C5F0]/15 flex items-center justify-center">
-                <Clock className="h-5 w-5 text-[#36C5F0]" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-[#36C5F0]">2+ hours saved</p>
-                <p className="text-xs text-muted-foreground">Per proposal</p>
-              </div>
-            </div>
-          </div>
-        </ScrollReveal>
       </div>
     </section>
   );
