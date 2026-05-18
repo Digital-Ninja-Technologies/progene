@@ -521,7 +521,7 @@ export function LandingVideo() {
           autoPlay
           loop
           muted
-          className="w-full h-full object-cover md:object-cover object-contain"
+          className="w-full h-full object-contain md:object-cover"
           preload="metadata"
           playsInline
           ref={(el) => { if (el) el.playbackRate = 2; }}
