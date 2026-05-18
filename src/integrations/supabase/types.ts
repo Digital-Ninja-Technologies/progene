@@ -483,6 +483,20 @@ export type Database = {
       }
       cleanup_old_rate_limits: { Args: never; Returns: undefined }
       delete_user_account: { Args: never; Returns: undefined }
+      get_public_proposal: {
+        Args: { p_token: string }
+        Returns: {
+          branding_snapshot: Json
+          client_signature: string
+          client_signed_at: string
+          created_at: string
+          id: string
+          pricing_result: Json
+          project_config: Json
+          project_type: string
+          proposal_data: Json
+        }[]
+      }
       sign_proposal: {
         Args: { p_client_signature: string; p_proposal_id: string }
         Returns: boolean
