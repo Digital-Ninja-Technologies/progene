@@ -491,6 +491,11 @@ export function LandingVideo() {
   useEffect(() => {
     const handleScroll = () => {
       if (!sectionRef.current) return;
+      // Disable the zoom effect on mobile screens
+      if (window.innerWidth < 768) {
+        setScale(1);
+        return;
+      }
       const rect = sectionRef.current.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
       const progress = Math.max(0, Math.min(1, 1 - rect.top / viewportHeight));
@@ -498,8 +503,12 @@ export function LandingVideo() {
       setScale(newScale);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
 
   return (
