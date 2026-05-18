@@ -141,8 +141,11 @@ Generate detailed, professional scope items for this project proposal.`;
     });
   } catch (error) {
     console.error("generate-scope error:", error);
+    const msg = error instanceof Error ? error.message : "";
+    const safeMessages = ["AI service unavailable", "Rate limit exceeded. Please try again later."];
+    const clientMessage = safeMessages.includes(msg) ? msg : "Failed to generate scope. Please try again.";
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: clientMessage }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
