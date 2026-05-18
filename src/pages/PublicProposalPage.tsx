@@ -84,13 +84,11 @@ export default function PublicProposalPage() {
     setLoading(true);
     setError(null);
 
-    // Fetch the proposal by share token, including branding_snapshot
-    const { data, error: fetchError } = await supabase
-      .from("proposals")
-      .select("id, project_type, project_config, pricing_result, proposal_data, created_at, client_signed_at, client_signature, branding_snapshot")
-      .eq("share_token", token)
-      .eq("is_public", true)
-      .single();
+    // Fetch via secure RPC that requires the share token (no public RLS exposure)
+    const { data: rows, error: fetchError } = await supabase
+      .rpc("get_public_proposal", { p_token: token });
+
+    const data = Array.isArray(rows) ? rows[0] : rows;
 
     if (fetchError || !data) {
       setError("Proposal not found or is not public");
