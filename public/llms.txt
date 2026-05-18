@@ -1,0 +1,17 @@
+# ProGene
+
+> ProGene helps freelancers create accurately-priced, professional client proposals in under 5 minutes with a smart pricing engine, AI scope writer, and built-in e-signature.
+
+ProGene is a SaaS platform for generating technical scopes, pricing, and proposals for web projects (Framer, Webflow, Shopify, WordPress, custom builds). Free tier includes 3 proposals; Pro and Agency plans unlock unlimited use plus client management, branding, time tracking, and analytics.
+
+## Pages
+
+- [Home](/): Product overview, features, pricing, and FAQ.
+- [Contact](/contact): Get in touch with the ProGene team.
+- [Sign in / Sign up](/auth): Account creation and login.
+
+## Optional
+
+- [Privacy Policy](/privacy)
+- [Terms of Service](/terms)
+- [Cookie Policy](/cookies)

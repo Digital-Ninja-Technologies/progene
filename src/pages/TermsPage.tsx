@@ -1,4 +1,5 @@
 import { Header } from "@/components/layout/Header";
+import { Helmet } from "react-helmet-async";
 import { ScrollReveal } from "@/components/animations/ScrollReveal";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -6,6 +7,13 @@ import { ArrowLeft } from "lucide-react";
 const TermsPage = () => {
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Terms of Service | ProGene</title>
+        <meta name="description" content="The terms and conditions governing your use of ProGene." />
+        <link rel="canonical" href="https://progene.lovable.app/terms" />
+        <meta property="og:title" content="Terms of Service | ProGene" />
+        <meta property="og:url" content="https://progene.lovable.app/terms" />
+      </Helmet>
       <Header />
       <main className="pt-32 pb-20">
         <div className="w-[90%] max-w-3xl mx-auto">

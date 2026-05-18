@@ -1,4 +1,5 @@
 import { Header } from "@/components/layout/Header";
+import { Helmet } from "react-helmet-async";
 import { ScrollReveal } from "@/components/animations/ScrollReveal";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -6,6 +7,13 @@ import { ArrowLeft } from "lucide-react";
 const CookiePolicyPage = () => {
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Cookie Policy | ProGene</title>
+        <meta name="description" content="How ProGene uses cookies and similar technologies in your browser." />
+        <link rel="canonical" href="https://progene.lovable.app/cookies" />
+        <meta property="og:title" content="Cookie Policy | ProGene" />
+        <meta property="og:url" content="https://progene.lovable.app/cookies" />
+      </Helmet>
       <Header />
       <main className="pt-32 pb-20">
         <div className="w-[90%] max-w-3xl mx-auto">

@@ -1,4 +1,5 @@
 import { Header } from "@/components/layout/Header";
+import { Helmet } from "react-helmet-async";
 import { ScrollReveal } from "@/components/animations/ScrollReveal";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -6,6 +7,13 @@ import { ArrowLeft } from "lucide-react";
 const PrivacyPolicyPage = () => {
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Privacy Policy | ProGene</title>
+        <meta name="description" content="Read how ProGene collects, uses, and protects your personal information." />
+        <link rel="canonical" href="https://progene.lovable.app/privacy" />
+        <meta property="og:title" content="Privacy Policy | ProGene" />
+        <meta property="og:url" content="https://progene.lovable.app/privacy" />
+      </Helmet>
       <Header />
       <main className="pt-32 pb-20">
         <div className="w-[90%] max-w-3xl mx-auto">

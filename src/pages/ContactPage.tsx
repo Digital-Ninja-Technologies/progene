@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Header } from "@/components/layout/Header";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -69,6 +70,14 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-background pt-14">
+      <Helmet>
+        <title>Contact Us | ProGene</title>
+        <meta name="description" content="Get in touch with the ProGene team — questions, feedback, partnerships, and support." />
+        <link rel="canonical" href="https://progene.lovable.app/contact" />
+        <meta property="og:title" content="Contact Us | ProGene" />
+        <meta property="og:description" content="Get in touch with the ProGene team." />
+        <meta property="og:url" content="https://progene.lovable.app/contact" />
+      </Helmet>
       <Header />
 
       <div className="container mx-auto px-4 py-12">
