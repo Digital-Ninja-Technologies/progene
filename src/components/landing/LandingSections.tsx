@@ -560,9 +560,9 @@ export function LandingTestimonials() {
         </ScrollReveal>
       </div>
 
-      {/* Scrolling testimonials */}
-      <div className="space-y-4 overflow-hidden">
-        <div className="flex marquee whitespace-nowrap">
+      {/* Scrolling testimonials (auto-marquee + manual scroll) */}
+      <div className="group space-y-4 overflow-x-auto overflow-y-hidden cursor-grab active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex marquee whitespace-nowrap group-hover:[animation-play-state:paused] group-active:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]">
           {allTestimonials.map((t, i) => (
             <div key={i} className="w-[400px] flex-shrink-0 mx-3">
               <div className="bg-card border border-border rounded-3xl p-6 h-full whitespace-normal">
