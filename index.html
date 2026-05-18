@@ -54,31 +54,76 @@
 
   <body>
     <div id="preloader" aria-hidden="true">
-      <div class="pl-logo">
-        <span class="pl-square pl-s1"></span>
-        <span class="pl-square pl-s2"></span>
-        <span class="pl-square pl-s3"></span>
-        <span class="pl-square pl-s4"></span>
-      </div>
-      <div class="pl-dots">
+      <!-- Skeleton header -->
+      <header class="pl-header">
+        <div class="pl-row">
+          <div class="pl-logo">
+            <span class="pl-square pl-s1"></span>
+            <span class="pl-square pl-s2"></span>
+            <span class="pl-square pl-s3"></span>
+            <span class="pl-square pl-s4"></span>
+          </div>
+          <div class="pl-skel pl-skel-text" style="width:90px"></div>
+        </div>
+        <div class="pl-nav">
+          <div class="pl-skel pl-skel-text" style="width:60px"></div>
+          <div class="pl-skel pl-skel-text" style="width:60px"></div>
+          <div class="pl-skel pl-skel-text" style="width:60px"></div>
+          <div class="pl-skel pl-skel-pill" style="width:96px"></div>
+        </div>
+      </header>
+
+      <!-- Skeleton hero -->
+      <main class="pl-main">
+        <div class="pl-skel pl-skel-pill pl-center" style="width:220px;height:28px"></div>
+        <div class="pl-skel pl-skel-text pl-center" style="width:min(640px,80%);height:44px;margin-top:24px"></div>
+        <div class="pl-skel pl-skel-text pl-center" style="width:min(520px,70%);height:44px;margin-top:12px"></div>
+        <div class="pl-skel pl-skel-text pl-center" style="width:min(440px,60%);height:16px;margin-top:24px"></div>
+        <div class="pl-skel pl-skel-text pl-center" style="width:min(360px,55%);height:16px;margin-top:8px"></div>
+        <div class="pl-cta">
+          <div class="pl-skel pl-skel-pill" style="width:180px;height:48px"></div>
+          <div class="pl-skel pl-skel-pill" style="width:120px;height:48px"></div>
+        </div>
+
+        <div class="pl-cards">
+          <div class="pl-skel pl-skel-card"></div>
+          <div class="pl-skel pl-skel-card"></div>
+          <div class="pl-skel pl-skel-card"></div>
+        </div>
+      </main>
+
+      <div class="pl-dots" aria-label="Loading">
         <span></span><span></span><span></span>
       </div>
     </div>
     <style>
-      #preloader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;background:hsl(216 33% 97%);transition:opacity .4s ease,visibility .4s ease;font-family:'Inter',system-ui,sans-serif}
+      #preloader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;background:hsl(216 33% 97%);transition:opacity .4s ease,visibility .4s ease;font-family:'Inter',system-ui,sans-serif;overflow:hidden}
       #preloader.pl-hidden{opacity:0;visibility:hidden;pointer-events:none}
-      .pl-logo{position:relative;width:48px;height:48px;animation:pl-spin 1.6s ease-in-out infinite}
-      .pl-square{position:absolute;width:22px;height:22px;border-radius:6px}
+      .pl-header{display:flex;align-items:center;justify-content:space-between;padding:20px 5%;border-bottom:1px solid hsl(214 32% 91%);background:#fff}
+      .pl-row{display:flex;align-items:center;gap:12px}
+      .pl-nav{display:flex;align-items:center;gap:16px}
+      @media(max-width:640px){.pl-nav>*:not(:last-child){display:none}}
+      .pl-logo{position:relative;width:32px;height:32px;animation:pl-spin 1.6s ease-in-out infinite;flex-shrink:0}
+      .pl-square{position:absolute;width:14px;height:14px;border-radius:4px}
       .pl-s1{top:0;left:0;background:#7c5cff}
       .pl-s2{top:0;right:0;background:#22c55e}
       .pl-s3{bottom:0;left:0;background:#f59e0b}
       .pl-s4{bottom:0;right:0;background:#ef4444}
-      .pl-dots{display:flex;gap:6px}
+      .pl-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 5% 24px;max-width:1100px;margin:0 auto;width:100%}
+      .pl-center{margin-left:auto;margin-right:auto}
+      .pl-cta{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;justify-content:center}
+      .pl-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:48px;width:100%}
+      .pl-skel{background:linear-gradient(90deg,hsl(214 32% 93%) 0%,hsl(214 32% 88%) 50%,hsl(214 32% 93%) 100%);background-size:200% 100%;animation:pl-shimmer 1.4s ease-in-out infinite;border-radius:8px}
+      .pl-skel-text{height:14px;border-radius:6px}
+      .pl-skel-pill{height:36px;border-radius:999px}
+      .pl-skel-card{height:140px;border-radius:16px}
+      .pl-dots{display:flex;gap:6px;justify-content:center;padding:24px}
       .pl-dots span{width:8px;height:8px;border-radius:50%;background:hsl(250 84% 60%);animation:pl-bounce 1s infinite ease-in-out}
       .pl-dots span:nth-child(2){animation-delay:.15s}
       .pl-dots span:nth-child(3){animation-delay:.3s}
       @keyframes pl-spin{0%,100%{transform:rotate(0)}50%{transform:rotate(180deg)}}
       @keyframes pl-bounce{0%,80%,100%{transform:translateY(0);opacity:.5}40%{transform:translateY(-8px);opacity:1}}
+      @keyframes pl-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
     </style>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
