@@ -487,6 +487,22 @@ export function LandingProjectTypes() {
 export function LandingVideo() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "300px 0px" }
+    );
+    io.observe(sectionRef.current);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -512,23 +528,25 @@ export function LandingVideo() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full overflow-hidden flex items-center justify-center bg-foreground px-5 md:px-0 py-5">
+    <section ref={sectionRef} className="relative w-full overflow-hidden flex items-center justify-center bg-foreground px-5 md:px-0 py-5 min-h-[40vh]">
       <div
         className="w-full h-full overflow-hidden rounded-2xl md:rounded-none transition-transform duration-100 ease-out"
         style={{ transform: `scale(${scale})`, borderRadius: `${(1 - scale) * 80}px` }}
       >
-        <video
-          autoPlay
-          loop
-          muted
-          className="w-full h-full object-contain md:object-cover"
-          preload="metadata"
-          playsInline
-          ref={(el) => { if (el) el.playbackRate = 2; }}
-        >
-          <source src={progeneAdsVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        {inView && (
+          <video
+            autoPlay
+            loop
+            muted
+            className="w-full h-full object-contain md:object-cover"
+            preload="metadata"
+            playsInline
+            ref={(el) => { if (el) el.playbackRate = 2; }}
+          >
+            <source src={progeneAdsVideo} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
       </div>
     </section>
   );
