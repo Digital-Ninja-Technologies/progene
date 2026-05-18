@@ -512,7 +512,7 @@ export function LandingVideo() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full h-screen overflow-hidden flex items-center justify-center bg-foreground p-5 md:p-0">
+    <section ref={sectionRef} className="relative w-full overflow-hidden flex items-center justify-center bg-foreground px-5 md:px-0 py-5">
       <div
         className="w-full h-full overflow-hidden rounded-2xl md:rounded-none transition-transform duration-100 ease-out"
         style={{ transform: `scale(${scale})`, borderRadius: `${(1 - scale) * 80}px` }}
