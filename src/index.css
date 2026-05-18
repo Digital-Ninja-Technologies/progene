@@ -237,6 +237,16 @@
   .stagger-children > *:nth-child(5) { animation-delay: 320ms; }
   .stagger-children > *:nth-child(6) { animation-delay: 400ms; }
 
+  /* Disable stagger delays on mobile to remove perceived loading lag */
+  @media (max-width: 767px) {
+    .stagger-children > * {
+      animation-delay: 0ms !important;
+    }
+    .animate-fade-in-up {
+      animation-duration: 0.2s;
+    }
+  }
+
   /* Number counter animation */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
