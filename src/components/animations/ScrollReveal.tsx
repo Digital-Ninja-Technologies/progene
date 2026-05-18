@@ -1,5 +1,6 @@
 import React from "react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ScrollRevealProps {
   children: React.ReactNode;
@@ -17,6 +18,8 @@ export function ScrollReveal({
   duration = 600,
 }: ScrollRevealProps) {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  const isMobile = useIsMobile();
+  const effectiveDelay = isMobile ? 0 : delay;
 
   const getTransform = () => {
     switch (direction) {
@@ -42,7 +45,7 @@ export function ScrollReveal({
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? "none" : getTransform(),
-        transition: `opacity ${duration}ms ease-out ${delay}ms, transform ${duration}ms ease-out ${delay}ms`,
+        transition: `opacity ${duration}ms ease-out ${effectiveDelay}ms, transform ${duration}ms ease-out ${effectiveDelay}ms`,
       }}
     >
       {children}
@@ -64,13 +67,14 @@ export function StaggerContainer({
   baseDelay = 0,
 }: StaggerContainerProps) {
   const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  const isMobile = useIsMobile();
 
   return (
     <div ref={ref} className={className}>
       {React.Children.map(children, (child, index) => {
         if (!React.isValidElement(child)) return child;
         
-        const delay = baseDelay + index * staggerDelay;
+        const delay = isMobile ? 0 : baseDelay + index * staggerDelay;
         
         return (
           <div
