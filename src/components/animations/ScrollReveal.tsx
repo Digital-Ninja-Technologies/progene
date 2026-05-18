@@ -15,11 +15,13 @@ export function ScrollReveal({
   className = "",
   delay = 0,
   direction = "up",
-  duration = 600,
+  duration = 400,
 }: ScrollRevealProps) {
-  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>({
+    rootMargin: "0px 0px 200px 0px",
+  });
   const isMobile = useIsMobile();
-  const effectiveDelay = isMobile ? 0 : delay;
+  const effectiveDelay = isMobile ? 0 : Math.min(delay, 150);
 
   const getTransform = () => {
     switch (direction) {
@@ -66,7 +68,9 @@ export function StaggerContainer({
   staggerDelay = 100,
   baseDelay = 0,
 }: StaggerContainerProps) {
-  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>();
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>({
+    rootMargin: "0px 0px 200px 0px",
+  });
   const isMobile = useIsMobile();
 
   return (
@@ -74,14 +78,14 @@ export function StaggerContainer({
       {React.Children.map(children, (child, index) => {
         if (!React.isValidElement(child)) return child;
         
-        const delay = isMobile ? 0 : baseDelay + index * staggerDelay;
+        const delay = isMobile ? 0 : baseDelay + index * Math.min(staggerDelay, 60);
         
         return (
           <div
             style={{
               opacity: isVisible ? 1 : 0,
               transform: isVisible ? "none" : "translateY(30px)",
-              transition: `opacity 500ms ease-out ${delay}ms, transform 500ms ease-out ${delay}ms`,
+              transition: `opacity 350ms ease-out ${delay}ms, transform 350ms ease-out ${delay}ms`,
             }}
           >
             {child}
