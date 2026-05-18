@@ -512,16 +512,16 @@ export function LandingVideo() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full h-screen overflow-hidden flex items-center justify-center bg-foreground">
+    <section ref={sectionRef} className="relative w-full h-screen overflow-hidden flex items-center justify-center bg-foreground p-5 md:p-0">
       <div
-        className="w-full h-full overflow-hidden transition-transform duration-100 ease-out"
+        className="w-full h-full overflow-hidden rounded-2xl md:rounded-none transition-transform duration-100 ease-out"
         style={{ transform: `scale(${scale})`, borderRadius: `${(1 - scale) * 80}px` }}
       >
         <video
           autoPlay
           loop
           muted
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover md:object-cover object-contain"
           preload="metadata"
           playsInline
           ref={(el) => { if (el) el.playbackRate = 2; }}
