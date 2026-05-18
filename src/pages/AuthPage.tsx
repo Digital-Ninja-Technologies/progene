@@ -196,6 +196,13 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <Helmet>
+        <title>Sign in to ProGene</title>
+        <meta name="description" content="Sign in or create a ProGene account to build professional, accurately-priced client proposals." />
+        <link rel="canonical" href="https://progene.lovable.app/auth" />
+        <meta property="og:title" content="Sign in to ProGene" />
+        <meta property="og:url" content="https://progene.lovable.app/auth" />
+      </Helmet>
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center mb-8">
           <Logo size="lg" />
