@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Helmet } from "react-helmet-async";
+import { useEffect } from "react";
 import {
   LandingHero,
   LandingPainPoints,
@@ -17,6 +18,22 @@ import {
 import { LandingROICalculator } from "@/components/landing/ROICalculator";
 
 const Index = () => {
+  useEffect(() => {
+    const prefetch = () => {
+      import("./WizardPage");
+      import("./DashboardPage");
+      import("./AuthPage");
+    };
+    const w = window as any;
+    const id = w.requestIdleCallback
+      ? w.requestIdleCallback(prefetch, { timeout: 2500 })
+      : window.setTimeout(prefetch, 1500);
+    return () => {
+      if (w.cancelIdleCallback) w.cancelIdleCallback(id);
+      else clearTimeout(id);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Helmet>
