@@ -935,20 +935,21 @@ export function LandingFooter() {
               Generate professional proposals in under 5 minutes. Built for freelancers, agencies, and developers who value their time.
             </p>
             <div className="flex items-center gap-3">
-              {/* Social icons as colored dots */}
               {[
-                { color: "bg-[#36C5F0]", label: "Twitter", href: "#" },
-                { color: "bg-[#2EB67D]", label: "GitHub", href: "#" },
-                { color: "bg-[#ECB22E]", label: "LinkedIn", href: "#" },
-                { color: "bg-[#E01E5A]", label: "YouTube", href: "#" },
-              ].map((social) => (
+                { color: "bg-[#0A66C2]", label: "LinkedIn", href: "https://www.linkedin.com/company/progene-ai/", Icon: Linkedin },
+                { color: "bg-[#1877F2]", label: "Facebook", href: "https://www.facebook.com/share/18ryRZMow7/", Icon: Facebook },
+                { color: "bg-[#E4405F]", label: "Instagram", href: "https://www.instagram.com/progeneai?igsh=cWNkY3d1M29nc3oy", Icon: Instagram },
+              ].map(({ color, label, href, Icon }) => (
                 <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  className={`h-8 w-8 rounded-full ${social.color} opacity-80 hover:opacity-100 hover:scale-110 transition-all duration-200 flex items-center justify-center`}
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className={`h-8 w-8 rounded-full ${color} text-white opacity-90 hover:opacity-100 hover:scale-110 transition-all duration-200 flex items-center justify-center`}
                 >
-                  <span className="sr-only">{social.label}</span>
+                  <Icon className="h-4 w-4" />
+                  <span className="sr-only">{label}</span>
                 </a>
               ))}
             </div>
