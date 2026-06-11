@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Header } from "@/components/layout/Header";
+import { LandingFooter } from "@/components/landing/LandingSections";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -207,6 +208,7 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+      <LandingFooter />
     </div>
   );
 }
