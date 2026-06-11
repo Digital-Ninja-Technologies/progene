@@ -32,6 +32,7 @@ import {
   Palette,
   Globe
 } from "lucide-react";
+import { Linkedin, Facebook, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "@/components/brand/Logo";
