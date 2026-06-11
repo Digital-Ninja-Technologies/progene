@@ -199,10 +199,10 @@ export default function ContactPage() {
             <p className="text-sm text-muted-foreground">
               Or email us directly at{" "}
               <a
-                href="mailto:Ifeoluwa.designs@gmail.com"
+                href="mailto:progene.ai@gmail.com"
                 className="text-primary hover:underline font-medium"
               >
-                Ifeoluwa.designs@gmail.com
+                progene.ai@gmail.com
               </a>
             </p>
           </div>
