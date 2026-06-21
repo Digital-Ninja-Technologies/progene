@@ -724,6 +724,24 @@ export function LandingPricing() {
           </p>
         </ScrollReveal>
 
+        {/* Value-based transparency strip */}
+        <ScrollReveal delay={100}>
+          <div className="max-w-4xl mx-auto mb-12 grid sm:grid-cols-3 gap-3 text-center">
+            <div className="rounded-2xl border border-border bg-background/60 backdrop-blur p-4">
+              <div className="text-2xl font-extrabold text-[#2EB67D]">~2 hrs</div>
+              <div className="text-xs text-muted-foreground mt-1">Saved per proposal</div>
+            </div>
+            <div className="rounded-2xl border border-border bg-background/60 backdrop-blur p-4">
+              <div className="text-2xl font-extrabold text-[#36C5F0]">3 free</div>
+              <div className="text-xs text-muted-foreground mt-1">Proposals on the Free plan — no card</div>
+            </div>
+            <div className="rounded-2xl border border-border bg-background/60 backdrop-blur p-4">
+              <div className="text-2xl font-extrabold text-[#ECB22E]">From $15/mo</div>
+              <div className="text-xs text-muted-foreground mt-1">Unlimited proposals when you upgrade</div>
+            </div>
+          </div>
+        </ScrollReveal>
+
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {pricingPlans.map((plan, i) => (
             <ScrollReveal key={plan.name} delay={i * 100}>
