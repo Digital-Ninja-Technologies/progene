@@ -16,11 +16,26 @@ export type ProjectType =
   | 'frontend-dev'
   | 'backend-dev'
   | 'fullstack-dev'
-  | 'mobile-app';
+  | 'mobile-app'
+  | 'social-media-manager'
+  | 'marketing-strategist'
+  | 'content-creator'
+  | 'seo-specialist'
+  | 'brand-designer'
+  | 'virtual-assistant';
 
 export type TimelineUrgency = 'normal' | 'fast' | 'urgent';
 
 export type Currency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'NGN' | 'ZAR' | 'KES' | 'GHS' | 'INR' | 'JPY' | 'CNY' | 'BRL' | 'MXN' | 'CHF' | 'SEK' | 'NOK' | 'DKK' | 'SGD' | 'HKD' | 'NZD' | 'AED' | 'SAR';
+
+export type ProposalTone = 'professional' | 'friendly' | 'conversational' | 'concise';
+
+export const PROPOSAL_TONES: { value: ProposalTone; label: string; description: string }[] = [
+  { value: 'professional', label: 'Professional', description: 'Polished, formal language for corporate clients.' },
+  { value: 'friendly', label: 'Friendly', description: 'Warm and approachable — feels human, not corporate.' },
+  { value: 'conversational', label: 'Conversational', description: 'Casual, plain-spoken — like talking to a peer.' },
+  { value: 'concise', label: 'Concise', description: 'Short, punchy sentences. Skip the fluff.' },
+];
 
 export interface ProjectConfig {
   type: ProjectType | null;
@@ -32,6 +47,7 @@ export interface ProjectConfig {
   maintenance: boolean;
   hourlyRate: number;
   currency: Currency;
+  tone?: ProposalTone;
 }
 
 export interface PricingResult {
@@ -161,6 +177,42 @@ export const PROJECT_TYPES: { value: ProjectType; label: string; description: st
     description: 'iOS & Android apps (React Native, Flutter, PWA)',
     icon: '📱',
   },
+  {
+    value: 'social-media-manager',
+    label: 'Social Media Management',
+    description: 'Content planning, scheduling, and community management',
+    icon: '📣',
+  },
+  {
+    value: 'marketing-strategist',
+    label: 'Marketing Strategy & Consulting',
+    description: 'Go-to-market, growth, and brand strategy engagements',
+    icon: '📈',
+  },
+  {
+    value: 'content-creator',
+    label: 'Content Creation',
+    description: 'Blog posts, scripts, copy, and editorial calendars',
+    icon: '✍️',
+  },
+  {
+    value: 'seo-specialist',
+    label: 'SEO Specialist',
+    description: 'Technical SEO audits, keyword strategy, and on-page work',
+    icon: '🔎',
+  },
+  {
+    value: 'brand-designer',
+    label: 'Brand Identity Design',
+    description: 'Logo, visual identity, and full brand guidelines',
+    icon: '🎯',
+  },
+  {
+    value: 'virtual-assistant',
+    label: 'Virtual Assistant',
+    description: 'Admin, inbox, scheduling, and operational support',
+    icon: '🗂️',
+  },
 ];
 
 export const INTEGRATIONS = [
@@ -225,6 +277,12 @@ export const BASE_HOURS: Record<ProjectType, number> = {
   'backend-dev': 48,
   'fullstack-dev': 60,
   'mobile-app': 80,
+  'social-media-manager': 24,
+  'marketing-strategist': 36,
+  'content-creator': 20,
+  'seo-specialist': 28,
+  'brand-designer': 40,
+  'virtual-assistant': 20,
 };
 
 // Hours per page by project type
@@ -247,6 +305,12 @@ export const HOURS_PER_PAGE: Record<ProjectType, number> = {
   'backend-dev': 5,
   'fullstack-dev': 5,
   'mobile-app': 6,
+  'social-media-manager': 2,
+  'marketing-strategist': 3,
+  'content-creator': 1.5,
+  'seo-specialist': 2,
+  'brand-designer': 3,
+  'virtual-assistant': 1,
 };
 
 // Urgency multipliers

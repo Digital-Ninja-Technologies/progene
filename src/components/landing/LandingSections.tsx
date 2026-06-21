@@ -156,6 +156,12 @@ const projectTypes = [
   { name: "WordPress Business Sites", color: "#E01E5A" },
   { name: "WordPress E-commerce", color: "#E01E5A" },
   { name: "WordPress Membership Sites", color: "#E01E5A" },
+  { name: "Social Media Management", color: "#36C5F0" },
+  { name: "Marketing Strategy", color: "#2EB67D" },
+  { name: "Content Creation", color: "#ECB22E" },
+  { name: "SEO Specialists", color: "#E01E5A" },
+  { name: "Brand Identity Design", color: "#36C5F0" },
+  { name: "Virtual Assistants", color: "#2EB67D" },
 ];
 
 const stats = [
@@ -191,7 +197,7 @@ export function LandingHero() {
         </div>
       ))}
 
-      <div className="w-[90%] max-w-5xl mx-auto py-28 sm:py-32 lg:py-40 relative z-10">
+      <div className="w-[92%] sm:w-[90%] max-w-5xl mx-auto py-20 sm:py-28 lg:py-40 relative z-10">
         <div className="text-center">
           <ScrollReveal>
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
@@ -201,7 +207,7 @@ export function LandingHero() {
           </ScrollReveal>
 
           <ScrollReveal delay={100}>
-            <h1 className="mb-6 text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05]">
+            <h1 className="mb-6 text-[2.25rem] sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] sm:leading-[1.05]">
               <span className="block text-foreground">Don't leave your next</span>
               <span className="block bg-gradient-to-r from-primary via-violet-500 to-fuchsia-500 bg-clip-text text-transparent py-1">
                 client to chance
@@ -211,7 +217,7 @@ export function LandingHero() {
 
           <ScrollReveal delay={200}>
             <p className="mb-10 max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed">
-              ProGene is the connective tissue your freelance business has been missing: scoping, pricing, proposals, and invoicing as one engineered outcome.
+              ProGene turns client questions into a ready-to-send proposal — with accurate pricing, scope, and timeline already filled in. Try it free, no credit card.
             </p>
           </ScrollReveal>
 
@@ -722,6 +728,24 @@ export function LandingPricing() {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Try ProGene with 3 free proposals. No credit card required.
           </p>
+        </ScrollReveal>
+
+        {/* Value-based transparency strip */}
+        <ScrollReveal delay={100}>
+          <div className="max-w-4xl mx-auto mb-12 grid sm:grid-cols-3 gap-3 text-center">
+            <div className="rounded-2xl border border-border bg-background/60 backdrop-blur p-4">
+              <div className="text-2xl font-extrabold text-[#2EB67D]">~2 hrs</div>
+              <div className="text-xs text-muted-foreground mt-1">Saved per proposal</div>
+            </div>
+            <div className="rounded-2xl border border-border bg-background/60 backdrop-blur p-4">
+              <div className="text-2xl font-extrabold text-[#36C5F0]">3 free</div>
+              <div className="text-xs text-muted-foreground mt-1">Proposals on the Free plan — no card</div>
+            </div>
+            <div className="rounded-2xl border border-border bg-background/60 backdrop-blur p-4">
+              <div className="text-2xl font-extrabold text-[#ECB22E]">From $15/mo</div>
+              <div className="text-xs text-muted-foreground mt-1">Unlimited proposals when you upgrade</div>
+            </div>
+          </div>
         </ScrollReveal>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">

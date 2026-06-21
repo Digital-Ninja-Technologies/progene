@@ -15,6 +15,7 @@ const defaultConfig: ProjectConfig = {
   maintenance: false,
   hourlyRate: 100,
   currency: 'USD',
+  tone: 'professional',
 };
 
 export function useWizard() {

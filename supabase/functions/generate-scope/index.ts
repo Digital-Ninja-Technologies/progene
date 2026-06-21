@@ -51,7 +51,7 @@ serve(async (req) => {
       );
     }
 
-    const { projectType, pages, cmsNeeded, integrations, animations, urgency, maintenance, scopeItems } = await req.json();
+    const { projectType, pages, cmsNeeded, integrations, animations, urgency, maintenance, scopeItems, tone } = await req.json();
 
     if (!projectType || typeof projectType !== "string") {
       return new Response(JSON.stringify({ error: "Project type is required" }), {
@@ -65,17 +65,28 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are a professional freelance project scope writer. Given project details, generate clear, detailed, and professional scope descriptions that freelancers can use in client proposals.
+    const toneGuides: Record<string, string> = {
+      professional: "Use polished, formal language suitable for corporate clients. Confident and authoritative.",
+      friendly: "Use warm, approachable, human language. Write like a real person, not a template. Avoid stiff corporate jargon.",
+      conversational: "Use casual, plain-spoken language — as if talking to a peer over coffee. Contractions are welcome.",
+      concise: "Keep every line short and punchy. Strip all filler words. Maximum signal, minimum words.",
+    };
+    const selectedTone = (typeof tone === "string" && toneGuides[tone]) ? tone : "professional";
 
-Your output should be a JSON array of strings, where each string is a detailed scope item. Expand brief bullet points into professional, specific scope descriptions. Each item should be 1-2 sentences. Generate 8-12 scope items.
+    const systemPrompt = `You are a freelance project scope writer. Given project details, generate clear scope descriptions a freelancer can paste straight into a client proposal.
 
-Focus on:
-- Being specific about deliverables
-- Using professional language
-- Including technical details relevant to the project type
-- Covering all aspects of the project (design, development, testing, deployment)
+TONE: ${selectedTone.toUpperCase()} — ${toneGuides[selectedTone]}
 
-Return ONLY a valid JSON array of strings. No other text.`;
+Output: a JSON array of strings. Each string is one scope item, 1–2 sentences. Generate 8–12 items.
+
+Rules:
+- Sound human. Avoid robotic phrases like "leverage synergies", "robust solution", "cutting-edge". 
+- Be specific about what the freelancer will actually deliver.
+- Mention relevant technical details for the project type when useful, but never at the cost of clarity.
+- Cover the full arc of the project (kickoff, design/strategy, build/execution, review, handoff).
+- Write so a non-technical client can understand it.
+
+Return ONLY a valid JSON array of strings. No prose, no markdown.`;
 
     const userPrompt = `Project Details:
 - Type: ${projectType}
