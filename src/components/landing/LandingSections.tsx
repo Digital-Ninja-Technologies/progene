@@ -211,7 +211,7 @@ export function LandingHero() {
 
           <ScrollReveal delay={200}>
             <p className="mb-10 max-w-2xl mx-auto text-base sm:text-lg text-muted-foreground leading-relaxed">
-              ProGene is the connective tissue your freelance business has been missing: scoping, pricing, proposals, and invoicing as one engineered outcome.
+              ProGene turns client questions into a ready-to-send proposal — with accurate pricing, scope, and timeline already filled in. Try it free, no credit card.
             </p>
           </ScrollReveal>
 
