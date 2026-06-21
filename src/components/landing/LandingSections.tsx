@@ -191,7 +191,7 @@ export function LandingHero() {
         </div>
       ))}
 
-      <div className="w-[90%] max-w-5xl mx-auto py-28 sm:py-32 lg:py-40 relative z-10">
+      <div className="w-[92%] sm:w-[90%] max-w-5xl mx-auto py-20 sm:py-28 lg:py-40 relative z-10">
         <div className="text-center">
           <ScrollReveal>
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
@@ -201,7 +201,7 @@ export function LandingHero() {
           </ScrollReveal>
 
           <ScrollReveal delay={100}>
-            <h1 className="mb-6 text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05]">
+            <h1 className="mb-6 text-[2.25rem] sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] sm:leading-[1.05]">
               <span className="block text-foreground">Don't leave your next</span>
               <span className="block bg-gradient-to-r from-primary via-violet-500 to-fuchsia-500 bg-clip-text text-transparent py-1">
                 client to chance
