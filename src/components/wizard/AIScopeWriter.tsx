@@ -3,7 +3,14 @@ import { Sparkles, Loader2, RefreshCw, Check, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ProjectConfig } from "@/types/project";
+import { ProjectConfig, PROPOSAL_TONES, ProposalTone } from "@/types/project";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AIScopeWriterProps {
   config: ProjectConfig;
@@ -15,6 +22,7 @@ export function AIScopeWriter({ config, existingScope, onScopeGenerated }: AISco
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedScope, setGeneratedScope] = useState<string[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+  const [tone, setTone] = useState<ProposalTone>(config.tone ?? "professional");
 
   const generateScope = async () => {
     if (!config.type) {
@@ -37,6 +45,7 @@ export function AIScopeWriter({ config, existingScope, onScopeGenerated }: AISco
           urgency: config.urgency,
           maintenance: config.maintenance,
           scopeItems: existingScope,
+          tone,
         },
       });
 
@@ -126,18 +135,35 @@ export function AIScopeWriter({ config, existingScope, onScopeGenerated }: AISco
   }
 
   return (
-    <Button
-      variant="outline"
-      onClick={generateScope}
-      disabled={isGenerating || !config.type}
-      className="rounded-full gap-2"
-    >
-      {isGenerating ? (
-        <Loader2 className="h-4 w-4 animate-spin" />
-      ) : (
-        <Sparkles className="h-4 w-4 text-[#ECB22E]" />
-      )}
-      {isGenerating ? "Generating scope..." : "AI Generate Scope"}
-    </Button>
+    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+      <Select value={tone} onValueChange={(v) => setTone(v as ProposalTone)}>
+        <SelectTrigger className="h-9 w-full sm:w-[180px] rounded-full text-sm">
+          <SelectValue placeholder="Tone" />
+        </SelectTrigger>
+        <SelectContent>
+          {PROPOSAL_TONES.map((t) => (
+            <SelectItem key={t.value} value={t.value}>
+              <div className="flex flex-col">
+                <span className="font-medium">{t.label}</span>
+                <span className="text-xs text-muted-foreground">{t.description}</span>
+              </div>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Button
+        variant="outline"
+        onClick={generateScope}
+        disabled={isGenerating || !config.type}
+        className="rounded-full gap-2"
+      >
+        {isGenerating ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Sparkles className="h-4 w-4 text-[#ECB22E]" />
+        )}
+        {isGenerating ? "Writing in human voice..." : "AI Generate Scope"}
+      </Button>
+    </div>
   );
 }
