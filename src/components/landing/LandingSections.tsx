@@ -156,6 +156,12 @@ const projectTypes = [
   { name: "WordPress Business Sites", color: "#E01E5A" },
   { name: "WordPress E-commerce", color: "#E01E5A" },
   { name: "WordPress Membership Sites", color: "#E01E5A" },
+  { name: "Social Media Management", color: "#36C5F0" },
+  { name: "Marketing Strategy", color: "#2EB67D" },
+  { name: "Content Creation", color: "#ECB22E" },
+  { name: "SEO Specialists", color: "#E01E5A" },
+  { name: "Brand Identity Design", color: "#36C5F0" },
+  { name: "Virtual Assistants", color: "#2EB67D" },
 ];
 
 const stats = [
