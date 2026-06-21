@@ -13,31 +13,36 @@ interface TourStep {
 
 const tourSteps: TourStep[] = [
   {
-    title: "Welcome to ProGene! 🎉",
-    description: "Let's take a quick tour to show you how to create your first professional proposal in under 5 minutes.",
+    title: "Welcome to ProGene 👋",
+    description: "ProGene helps you turn client questions into a ready-to-send proposal — with pricing, scope, and timeline already filled in. Let's walk through it in 60 seconds.",
     position: "center",
   },
   {
-    title: "Create a Proposal",
-    description: "Start by clicking here to open the proposal wizard. You'll choose your project type, set pricing, and configure features.",
+    title: "How it works — in plain English",
+    description: "1) Pick the kind of work you do.  2) Tell us your hourly rate.  3) Answer a few quick questions about the project.  4) We generate the proposal. You edit anything you want before sending.",
+    position: "center",
+  },
+  {
+    title: "Start a Proposal",
+    description: "This is the proposal wizard. There's no jargon — just simple questions about the project. You can save and come back any time.",
     route: "/wizard",
     position: "center",
   },
   {
     title: "Your Dashboard",
-    description: "View all your proposals, track analytics, manage clients, and more from your personal dashboard.",
+    description: "Every proposal you create lives here. Track which clients viewed and signed, manage contacts, and see how your business is doing at a glance.",
     route: "/dashboard",
     position: "center",
   },
   {
-    title: "Settings & Branding",
-    description: "Customize your proposals with your brand colors, logo, and company details in Settings.",
+    title: "Make it yours",
+    description: "Add your logo, brand colors, and company details in Settings. Every proposal you send will use them automatically.",
     route: "/settings",
     position: "center",
   },
   {
-    title: "You're all set! 🚀",
-    description: "You have 3 free proposals to get started. Create your first one now and win that client!",
+    title: "You're all set 🚀",
+    description: "You've got 3 free proposals to try things out — no credit card needed. Upgrade only when you're ready. Let's create your first one!",
     position: "center",
   },
 ];
@@ -159,4 +164,12 @@ export function OnboardingTour() {
 export function triggerOnboardingTour() {
   localStorage.setItem("progene_show_tour", "true");
   localStorage.removeItem("progene_tour_completed");
+}
+
+// Manually restart the tour (e.g. from a "Take a tour" button)
+export function restartOnboardingTour() {
+  localStorage.setItem("progene_show_tour", "true");
+  localStorage.removeItem("progene_tour_completed");
+  // Force a reload so the tour mounts and triggers from step 0
+  window.location.reload();
 }
