@@ -1,6 +1,6 @@
 import { PROJECT_TYPES, ProjectType } from "@/types/project";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
+import { Check, Lightbulb } from "lucide-react";
 
 interface ProjectTypeStepProps {
   selectedType: ProjectType | null;
@@ -15,8 +15,18 @@ export function ProjectTypeStep({ selectedType, onSelect }: ProjectTypeStepProps
           What type of project is this?
         </h2>
         <p className="text-muted-foreground">
-          Select the project type that best matches your client's needs.
+          Pick what's closest — you can edit everything later. Don't see your category? Choose the nearest match.
         </p>
+      </div>
+
+      <div className="mx-auto max-w-2xl flex items-start gap-3 rounded-2xl border border-[#ECB22E]/30 bg-[#ECB22E]/5 p-4 text-sm">
+        <Lightbulb className="h-4 w-4 text-[#ECB22E] mt-0.5 flex-shrink-0" />
+        <div>
+          <span className="font-semibold">First time?</span>{" "}
+          <span className="text-muted-foreground">
+            This wizard takes about 3 minutes. We'll ask 5 simple questions, then generate a complete proposal you can edit.
+          </span>
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
