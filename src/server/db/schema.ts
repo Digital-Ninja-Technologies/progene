@@ -46,7 +46,9 @@ export const proposals = pgTable("proposals", {
   clientSignedAt: timestamp("client_signed_at", { withTimezone: true }),
   clientSignature: text("client_signature"),
   brandingSnapshot: jsonb("branding_snapshot"),
+  documentDetails: jsonb("document_details"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 // ─── clients ────────────────────────────────────────────────────────────────
