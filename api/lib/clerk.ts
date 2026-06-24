@@ -1,4 +1,6 @@
-import { verifyToken } from "@clerk/backend";
+import { createClerkClient, verifyToken } from "@clerk/backend";
+
+export const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! });
 
 export async function getUserIdFromHeader(authHeader: string | null): Promise<string | null> {
   if (!authHeader?.startsWith("Bearer ")) return null;
