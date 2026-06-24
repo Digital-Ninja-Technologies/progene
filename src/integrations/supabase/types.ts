@@ -175,6 +175,36 @@ export type Database = {
           },
         ]
       }
+      polar_webhook_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          payload: Json
+          polar_event_id: string
+          processed_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          payload: Json
+          polar_event_id: string
+          processed_at?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          payload?: Json
+          polar_event_id?: string
+          processed_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           anonymized: boolean | null
