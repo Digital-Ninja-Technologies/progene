@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { requireAuth } from "../lib/auth";
 import { db, proposals, proposalViews, profiles, brandingSettings } from "../lib/db";
 import { randomBytes } from "crypto";
@@ -14,6 +14,16 @@ proposalsRoutes.use("*", async (c, next) => {
   // Public routes: GET /share/:token, POST /share/:token/view, POST /share/:token/sign
   if (c.req.path.includes("/share/")) return next();
   return requireAuth(c, next);
+});
+
+// GET /api/proposals/views — all views for user's proposals (analytics)
+proposalsRoutes.get("/views", async (c) => {
+  const userId = c.get("userId");
+  const userProposals = await db.select({ id: proposals.id }).from(proposals).where(eq(proposals.userId, userId));
+  if (userProposals.length === 0) return c.json([]);
+  const ids = userProposals.map((p) => p.id);
+  const views = await db.select().from(proposalViews).where(inArray(proposalViews.proposalId, ids));
+  return c.json(views);
 });
 
 // GET /api/proposals — list user's proposals
@@ -83,13 +93,13 @@ proposalsRoutes.get("/:id", async (c) => {
 proposalsRoutes.put("/:id", async (c) => {
   const userId = c.get("userId");
   const body = await c.req.json();
-  const allowed = ["projectConfig", "pricingResult", "proposalData", "isPublic", "clientId"];
+  const allowed = ["projectConfig", "pricingResult", "proposalData", "isPublic", "clientId", "documentDetails"];
   const updates: Record<string, unknown> = {};
   for (const key of allowed) if (key in body) updates[key] = body[key];
 
   const [updated] = await db
     .update(proposals)
-    .set(updates)
+    .set({ ...updates, updatedAt: new Date() })
     .where(and(eq(proposals.id, c.req.param("id")), eq(proposals.userId, userId)))
     .returning();
 
@@ -104,6 +114,68 @@ proposalsRoutes.delete("/:id", async (c) => {
     .delete(proposals)
     .where(and(eq(proposals.id, c.req.param("id")), eq(proposals.userId, userId)));
   return c.json({ ok: true });
+});
+
+// GET /api/proposals/:id/share-status — share status for proposal owner
+proposalsRoutes.get("/:id/share-status", async (c) => {
+  const userId = c.get("userId");
+  const [row] = await db
+    .select()
+    .from(proposals)
+    .where(and(eq(proposals.id, c.req.param("id")), eq(proposals.userId, userId)))
+    .limit(1);
+  if (!row) return c.json({ error: "Not found" }, 404);
+
+  const viewCount = await db
+    .select()
+    .from(proposalViews)
+    .where(eq(proposalViews.proposalId, row.id));
+
+  return c.json({
+    isPublic: row.isPublic,
+    shareToken: row.shareToken,
+    clientSignedAt: row.clientSignedAt,
+    clientSignature: row.clientSignature,
+    viewCount: viewCount.length,
+  });
+});
+
+// POST /api/proposals/:id/share — enable public sharing (auth'd owner)
+proposalsRoutes.post("/:id/share", async (c) => {
+  const userId = c.get("userId");
+  const [branding] = await db.select().from(brandingSettings).where(eq(brandingSettings.userId, userId)).limit(1);
+  const [updated] = await db
+    .update(proposals)
+    .set({ isPublic: true, brandingSnapshot: branding ?? null, updatedAt: new Date() })
+    .where(and(eq(proposals.id, c.req.param("id")), eq(proposals.userId, userId)))
+    .returning();
+  if (!updated) return c.json({ error: "Not found" }, 404);
+  return c.json({ shareToken: updated.shareToken });
+});
+
+// POST /api/proposals/:id/sign — sign by ID (used from public page when proposal ID is known)
+proposalsRoutes.post("/:id/sign", async (c) => {
+  const { clientSignature } = await c.req.json();
+  const trimmed = (clientSignature ?? "").trim();
+  if (!trimmed) return c.json({ error: "Signature cannot be empty" }, 400);
+  if (trimmed.length > 100) return c.json({ error: "Signature too long" }, 400);
+  if (!/^[a-zA-Z\s\-'.]+$/.test(trimmed)) return c.json({ error: "Invalid signature characters" }, 400);
+
+  const [row] = await db
+    .select()
+    .from(proposals)
+    .where(and(eq(proposals.id, c.req.param("id")), eq(proposals.isPublic, true)))
+    .limit(1);
+  if (!row) return c.json({ error: "Not found" }, 404);
+  if (row.clientSignedAt) return c.json({ error: "Already signed" }, 409);
+
+  const [updated] = await db
+    .update(proposals)
+    .set({ clientSignature: trimmed, clientSignedAt: new Date() })
+    .where(eq(proposals.id, row.id))
+    .returning();
+  notifySign(row.id, trimmed).catch(console.error);
+  return c.json(updated);
 });
 
 // GET /api/proposals/share/:token — public proposal view

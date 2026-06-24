@@ -85,11 +85,16 @@ export default function PublicProposalPage() {
     setError(null);
 
     try {
-      const data = await apiFetch<PublicProposal>(`/api/proposals/share/${token}`, {
-        method: "POST",
-        body: { viewerUserAgent: navigator.userAgent },
-      });
+      const data = await apiFetch<PublicProposal>(`/api/proposals/share/${token}`);
       setProposal(data);
+      // Fire-and-forget view log
+      if (!hasLoggedView.current) {
+        hasLoggedView.current = true;
+        apiFetch(`/api/proposals/share/${token}/view`, {
+          method: "POST",
+          body: { viewerUserAgent: navigator.userAgent },
+        }).catch(() => {});
+      }
     } catch {
       setError("Proposal not found or is not public");
     }
