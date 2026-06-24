@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useMemo } from "react";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -23,84 +23,32 @@ interface Activity {
 }
 
 export function NotificationCenter() {
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { proposalViews, proposalStats, loading } = useAnalytics();
 
-  useEffect(() => {
-    fetchActivities();
-  }, []);
+  const activities: Activity[] = useMemo(() => {
+    const list: Activity[] = [];
 
-  const fetchActivities = async () => {
-    setLoading(true);
-
-    // Fetch user's proposals
-    const { data: proposals, error: proposalsError } = await supabase
-      .from("proposals")
-      .select("id, project_type, client_signed_at, client_signature");
-
-    if (proposalsError || !proposals) {
-      setLoading(false);
-      return;
-    }
-
-    const proposalMap = new Map(
-      proposals.map((p) => [p.id, { projectType: p.project_type, clientSignature: p.client_signature }])
-    );
-    const proposalIds = proposals.map((p) => p.id);
-
-    if (proposalIds.length === 0) {
-      setLoading(false);
-      return;
-    }
-
-    // Fetch views for all proposals
-    const { data: views, error: viewsError } = await supabase
-      .from("proposal_views")
-      .select("id, proposal_id, viewed_at")
-      .in("proposal_id", proposalIds)
-      .order("viewed_at", { ascending: false })
-      .limit(50);
-
-    const activityList: Activity[] = [];
-
-    // Add views
-    if (!viewsError && views) {
-      views.forEach((view) => {
-        const proposal = proposalMap.get(view.proposal_id);
-        if (proposal) {
-          activityList.push({
-            id: `view-${view.id}`,
-            type: "view",
-            proposalId: view.proposal_id,
-            projectType: proposal.projectType,
-            timestamp: view.viewed_at,
-          });
-        }
+    proposalViews.forEach((v) => {
+      list.push({
+        id: `view-${v.proposalId}-${v.viewedAt}`,
+        type: "view",
+        proposalId: v.proposalId,
+        projectType: "",
+        timestamp: v.viewedAt,
       });
-    }
-
-    // Add signatures
-    proposals.forEach((p) => {
-      if (p.client_signed_at) {
-        activityList.push({
-          id: `sign-${p.id}`,
-          type: "sign",
-          proposalId: p.id,
-          projectType: p.project_type,
-          timestamp: p.client_signed_at,
-          clientSignature: p.client_signature || undefined,
-        });
-      }
     });
 
-    // Sort by timestamp descending
-    activityList.sort(
-      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    );
+    proposalStats
+      .filter((s) => s.lastViewed)
+      .forEach((s) => {
+        const existing = list.find((a) => a.type === "sign" && a.proposalId === s.proposalId);
+        if (!existing) return;
+      });
 
-    setActivities(activityList.slice(0, 20));
-    setLoading(false);
-  };
+    return list
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, 20);
+  }, [proposalViews, proposalStats]);
 
   const getActivityIcon = (type: "view" | "sign") => {
     if (type === "view") {

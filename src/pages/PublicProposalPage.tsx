@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { apiFetch } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -84,38 +84,15 @@ export default function PublicProposalPage() {
     setLoading(true);
     setError(null);
 
-    // Fetch via secure RPC that requires the share token (no public RLS exposure)
-    const { data: rows, error: fetchError } = await supabase
-      .rpc("get_public_proposal", { p_token: token });
-
-    const data = Array.isArray(rows) ? rows[0] : rows;
-
-    if (fetchError || !data) {
+    try {
+      const data = await apiFetch<PublicProposal>(`/api/proposals/share/${token}`, {
+        method: "POST",
+        body: { viewerUserAgent: navigator.userAgent },
+      });
+      setProposal(data);
+    } catch {
       setError("Proposal not found or is not public");
-      setLoading(false);
-      return;
     }
-
-    // Use branding_snapshot stored with the proposal (secure - no RLS bypass needed)
-    setProposal({
-      ...data,
-      branding: data.branding_snapshot as PublicProposal['branding'] || undefined,
-    } as PublicProposal);
-
-    // Log view (only once per session)
-    if (!hasLoggedView.current) {
-      hasLoggedView.current = true;
-      await supabase.from("proposal_views").insert([{
-        proposal_id: data.id,
-        viewer_user_agent: navigator.userAgent,
-      }]);
-      
-      // Send view notification email (fire and forget)
-      supabase.functions.invoke("proposal-notifications", {
-        body: { proposalId: data.id, type: "view" },
-      }).catch(err => console.error("Failed to send view notification:", err));
-    }
-
     setLoading(false);
   };
 
@@ -131,33 +108,21 @@ export default function PublicProposalPage() {
     setSignatureError(null);
 
     setSigning(true);
-    // Use the secure RPC function for signing proposals
-    const { error: signError } = await supabase.rpc('sign_proposal', {
-      p_proposal_id: proposal.id,
-      p_client_signature: signatureName.trim()
-    });
-
-    setSigning(false);
-
-    if (signError) {
-      toast.error("Failed to sign proposal");
-    } else {
+    try {
+      await apiFetch(`/api/proposals/${proposal.id}/sign`, {
+        method: "POST",
+        body: { clientSignature: signatureName.trim() },
+      });
       toast.success("Proposal signed successfully!");
       setProposal(prev => prev ? {
         ...prev,
         client_signed_at: new Date().toISOString(),
         client_signature: signatureName.trim(),
       } : null);
-      
-      // Send signature notification email
-      supabase.functions.invoke("proposal-notifications", {
-        body: { 
-          proposalId: proposal.id, 
-          type: "sign", 
-          clientSignature: signatureName.trim() 
-        },
-      }).catch(err => console.error("Failed to send sign notification:", err));
+    } catch {
+      toast.error("Failed to sign proposal");
     }
+    setSigning(false);
   };
 
   if (loading) {

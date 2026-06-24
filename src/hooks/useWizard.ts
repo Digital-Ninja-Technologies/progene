@@ -1,9 +1,9 @@
 import { useState, useCallback, useMemo } from 'react';
 import { ProjectConfig, PricingResult, ProposalData } from '@/types/project';
 import { calculatePricing, generateProposal } from '@/lib/pricing';
-import { supabase } from '@/integrations/supabase/client';
+import { apiFetch } from '@/lib/api';
+import { useAuth } from '@clerk/react';
 import { useAuthContext } from '@/contexts/AuthContext';
-import type { Json } from '@/integrations/supabase/types';
 
 const defaultConfig: ProjectConfig = {
   type: null,
@@ -23,6 +23,7 @@ export function useWizard() {
   const [config, setConfig] = useState<ProjectConfig>(defaultConfig);
   const [isSaving, setIsSaving] = useState(false);
   const [savedProposalId, setSavedProposalId] = useState<string | null>(null);
+  const { getToken } = useAuth();
   const { user, profile, fetchProfile, canCreateProposal } = useAuthContext();
 
   const totalSteps = 5;
@@ -47,35 +48,30 @@ export function useWizard() {
     if (!user || !canCreateProposal()) return { error: new Error('Cannot create proposal'), proposalId: null };
     
     setIsSaving(true);
-    
-    // Save proposal to database
-    const { data: insertData, error: insertError } = await supabase
-      .from('proposals')
-      .insert([{
-        user_id: user.id,
-        project_type: config.type || '',
-        project_config: JSON.parse(JSON.stringify(config)) as Json,
-        pricing_result: JSON.parse(JSON.stringify(proposalData.pricing)) as Json,
-        proposal_data: JSON.parse(JSON.stringify(proposalData)) as Json,
-      }])
-      .select('id')
-      .single();
-    
-    if (insertError) {
-      setIsSaving(false);
-      return { error: insertError, proposalId: null };
-    }
-    
-    // Store the proposal ID
-    const proposalId = insertData?.id || null;
-    setSavedProposalId(proposalId);
-    
-    // The auto_increment_proposals DB trigger already incremented proposals_used.
-    // Just refresh the profile so the UI reflects the new count.
-    await fetchProfile(user.id);
 
-    setIsSaving(false);
-    return { error: null, proposalId };
+    try {
+      const token = (await getToken()) ?? undefined;
+      const result = await apiFetch<{ id: string }>("/api/proposals", {
+        method: "POST",
+        token,
+        body: {
+          projectType: config.type || '',
+          projectConfig: config,
+          pricingResult: proposalData.pricing,
+          proposalData,
+        },
+      });
+
+      const proposalId = result.id;
+      setSavedProposalId(proposalId);
+      await fetchProfile(user.id);
+
+      setIsSaving(false);
+      return { error: null, proposalId };
+    } catch (err: any) {
+      setIsSaving(false);
+      return { error: err, proposalId: null };
+    }
   }, [user, config, profile, canCreateProposal, fetchProfile]);
 
   const nextStep = useCallback(() => {

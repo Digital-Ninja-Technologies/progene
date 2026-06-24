@@ -1,154 +1,82 @@
-import { useState, useEffect } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
-import { triggerOnboardingTour } from '@/components/onboarding/OnboardingTour';
+import { useUser, useAuth, useClerk } from "@clerk/react";
+import { useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiFetch } from "@/lib/api";
 
 export interface Profile {
   id: string;
-  user_id: string;
+  userId: string;
   email: string | null;
-  full_name: string | null;
-  company_name: string | null;
-  avatar_url: string | null;
-  proposals_used: number;
-  is_premium: boolean;
-  subscription_plan: string | null;
-  created_at: string;
-  updated_at: string;
+  fullName: string | null;
+  companyName: string | null;
+  avatarUrl: string | null;
+  proposalsUsed: number;
+  isPremium: boolean;
+  subscriptionPlan: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+export function useAuthHook() {
+  const { user, isLoaded: userLoaded } = useUser();
+  const { getToken, isLoaded: authLoaded, isSignedIn } = useAuth();
+  const { signOut: clerkSignOut, openSignIn, openSignUp } = useClerk();
+  const qc = useQueryClient();
 
-  useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        // Defer profile fetch with setTimeout to avoid deadlock
-        if (session?.user) {
-          setTimeout(() => {
-            fetchProfile(session.user.id);
-          }, 0);
-        } else {
-          setProfile(null);
-        }
-      }
-    );
+  const loading = !userLoaded || !authLoaded;
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
-      setLoading(false);
-    });
+  const { data: profile, refetch: refetchProfile } = useQuery<Profile>({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const token = await getToken();
+      return apiFetch("/api/profile", { token: token ?? undefined });
+    },
+    enabled: !!isSignedIn,
+  });
 
-    return () => subscription.unsubscribe();
-  }, []);
+  const fetchProfile = useCallback(async () => {
+    await refetchProfile();
+  }, [refetchProfile]);
 
-  const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
-    
-    if (!error && data) {
-      setProfile(data as Profile);
-    }
-  };
+  const updateProfile = useCallback(async (updates: Partial<Profile>) => {
+    const token = await getToken();
+    await apiFetch("/api/profile", { method: "PUT", token: token ?? undefined, body: updates });
+    await refetchProfile();
+    return { error: null };
+  }, [getToken, refetchProfile]);
 
-  const signUp = async (email: string, password: string) => {
-    const redirectUrl = `${window.location.origin}/`;
-    
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl
-      }
-    });
-    
-    if (!error) {
-      triggerOnboardingTour();
-    }
-    
-    return { error };
-  };
+  const signOut = useCallback(async () => {
+    await clerkSignOut();
+    qc.clear();
+    return { error: null };
+  }, [clerkSignOut, qc]);
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { error };
-  };
-
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    return { error };
-  };
-
-  const resetPassword = async (email: string) => {
-    const redirectUrl = `${window.location.origin}/reset-password`;
-    
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl
-    });
-    return { error };
-  };
-
-  const updateProfile = async (updates: Partial<Profile>) => {
-    if (!user) return { error: new Error('Not authenticated') };
-    
-    const { error } = await supabase
-      .from('profiles')
-      .update(updates)
-      .eq('user_id', user.id);
-    
-    if (!error) {
-      await fetchProfile(user.id);
-    }
-    
-    return { error };
-  };
-
-  const canCreateProposal = () => {
+  const canCreateProposal = useCallback(() => {
     if (!profile) return false;
-    // Premium users (Pro or Agency) have unlimited proposals
-    if (profile.is_premium) return true;
-    if (profile.subscription_plan === 'pro' || profile.subscription_plan === 'agency') return true;
-    return profile.proposals_used < 3;
-  };
+    if (profile.isPremium) return true;
+    if (profile.subscriptionPlan === "pro" || profile.subscriptionPlan === "agency") return true;
+    return profile.proposalsUsed < 3;
+  }, [profile]);
 
-  const getRemainingProposals = () => {
+  const getRemainingProposals = useCallback(() => {
     if (!profile) return 0;
-    // Premium users have infinite proposals
-    if (profile.is_premium) return Infinity;
-    if (profile.subscription_plan === 'pro' || profile.subscription_plan === 'agency') return Infinity;
-    return Math.max(0, 3 - profile.proposals_used);
-  };
+    if (profile.isPremium) return Infinity;
+    if (profile.subscriptionPlan === "pro" || profile.subscriptionPlan === "agency") return Infinity;
+    return Math.max(0, 3 - profile.proposalsUsed);
+  }, [profile]);
 
   return {
     user,
-    session,
-    profile,
+    profile: profile ?? null,
     loading,
-    signUp,
-    signIn,
+    isSignedIn: !!isSignedIn,
+    getToken,
     signOut,
-    resetPassword,
     updateProfile,
     fetchProfile,
     canCreateProposal,
     getRemainingProposals,
+    openSignIn,
+    openSignUp,
   };
 }

@@ -1,81 +1,80 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuthContext } from '@/contexts/AuthContext';
-import { ProposalTemplate } from '@/types/database';
-import { ProjectConfig } from '@/types/project';
-import type { Json } from '@/integrations/supabase/types';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/react";
+import { apiFetch } from "@/lib/api";
+import { ProjectConfig } from "@/types/project";
+
+export interface ProposalTemplate {
+  id: string;
+  userId: string;
+  name: string;
+  description: string | null;
+  projectConfig: ProjectConfig;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export function useTemplates() {
-  const { user } = useAuthContext();
-  const [templates, setTemplates] = useState<ProposalTemplate[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { getToken, isSignedIn } = useAuth();
+  const qc = useQueryClient();
 
-  const fetchTemplates = useCallback(async () => {
-    if (!user) return;
-    
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('proposal_templates')
-      .select('*')
-      .order('created_at', { ascending: false });
+  const { data: templates = [], isLoading: loading } = useQuery<ProposalTemplate[]>({
+    queryKey: ["templates"],
+    queryFn: async () => apiFetch("/api/templates", { token: (await getToken()) ?? undefined }),
+    enabled: !!isSignedIn,
+  });
 
-    if (!error && data) {
-      setTemplates(data as unknown as ProposalTemplate[]);
-    }
-    setLoading(false);
-  }, [user]);
+  const createMutation = useMutation({
+    mutationFn: async (body: { name: string; description: string; projectConfig: ProjectConfig }) =>
+      apiFetch<ProposalTemplate>("/api/templates", {
+        method: "POST",
+        token: (await getToken()) ?? undefined,
+        body,
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["templates"] }),
+  });
 
-  useEffect(() => {
-    if (user) {
-      fetchTemplates();
-    }
-  }, [user, fetchTemplates]);
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<ProposalTemplate> }) =>
+      apiFetch<ProposalTemplate>(`/api/templates/${id}`, {
+        method: "PUT",
+        token: (await getToken()) ?? undefined,
+        body: updates,
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["templates"] }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) =>
+      apiFetch(`/api/templates/${id}`, { method: "DELETE", token: (await getToken()) ?? undefined }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["templates"] }),
+  });
 
   const saveTemplate = async (name: string, description: string, config: ProjectConfig) => {
-    if (!user) return { error: new Error('Not authenticated') };
-
-    const { data, error } = await supabase
-      .from('proposal_templates')
-      .insert([{
-        user_id: user.id,
-        name,
-        description,
-        project_config: JSON.parse(JSON.stringify(config)) as Json,
-      }])
-      .select()
-      .single();
-
-    if (!error && data) {
-      setTemplates(prev => [data as unknown as ProposalTemplate, ...prev]);
+    try {
+      const data = await createMutation.mutateAsync({ name, description, projectConfig: config });
+      return { error: null, data };
+    } catch (error) {
+      return { error: error as Error, data: null };
     }
-
-    return { error, data };
   };
 
-  const updateTemplate = async (id: string, updates: Partial<Pick<ProposalTemplate, 'name' | 'description' | 'is_default'>>) => {
-    const { error } = await supabase
-      .from('proposal_templates')
-      .update(updates)
-      .eq('id', id);
-
-    if (!error) {
-      setTemplates(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
+  const updateTemplate = async (id: string, updates: Partial<ProposalTemplate>) => {
+    try {
+      await updateMutation.mutateAsync({ id, updates });
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
     }
-
-    return { error };
   };
 
   const deleteTemplate = async (id: string) => {
-    const { error } = await supabase
-      .from('proposal_templates')
-      .delete()
-      .eq('id', id);
-
-    if (!error) {
-      setTemplates(prev => prev.filter(t => t.id !== id));
+    try {
+      await deleteMutation.mutateAsync(id);
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
     }
-
-    return { error };
   };
 
   return {
@@ -84,6 +83,6 @@ export function useTemplates() {
     saveTemplate,
     updateTemplate,
     deleteTemplate,
-    refetch: fetchTemplates,
+    refetch: () => qc.invalidateQueries({ queryKey: ["templates"] }),
   };
 }

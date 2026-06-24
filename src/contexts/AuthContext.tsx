@@ -1,38 +1,33 @@
-import { createContext, useContext, ReactNode } from 'react';
-import { useAuth, Profile } from '@/hooks/useAuth';
-import { User, Session } from '@supabase/supabase-js';
+import { createContext, useContext, ReactNode } from "react";
+import { useAuthHook, type Profile } from "@/hooks/useAuth";
+import type { UserResource } from "@clerk/types";
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: UserResource | null | undefined;
   profile: Profile | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signOut: () => Promise<{ error: Error | null }>;
-  resetPassword: (email: string) => Promise<{ error: Error | null }>;
-  updateProfile: (updates: Partial<Profile>) => Promise<{ error: Error | null }>;
-  fetchProfile: (userId: string) => Promise<void>;
+  isSignedIn: boolean;
+  getToken: () => Promise<string | null>;
+  signOut: () => Promise<{ error: null }>;
+  updateProfile: (updates: Partial<Profile>) => Promise<{ error: null }>;
+  fetchProfile: () => Promise<void>;
   canCreateProposal: () => boolean;
   getRemainingProposals: () => number;
+  openSignIn: () => void;
+  openSignUp: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const auth = useAuth();
-
-  return (
-    <AuthContext.Provider value={auth}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const auth = useAuthHook();
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }
 
 export function useAuthContext() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuthContext must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuthContext must be used within an AuthProvider");
+  return ctx;
 }
+
+export type { Profile };

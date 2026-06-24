@@ -24,7 +24,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
+import { apiFetch } from "@/lib/api";
+import { useAuth } from "@clerk/react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -43,6 +44,7 @@ interface ProposalStatus {
 
 export function ShareForSignature({ proposalId, onStatusChange }: ShareForSignatureProps) {
   const { user } = useAuthContext();
+  const { getToken } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<ProposalStatus>({
@@ -62,68 +64,31 @@ export function ShareForSignature({ proposalId, onStatusChange }: ShareForSignat
 
   const fetchStatus = async () => {
     setLoading(true);
-    
-    // Fetch proposal status
-    const { data: proposal } = await supabase
-      .from("proposals")
-      .select("is_public, share_token, client_signed_at, client_signature")
-      .eq("id", proposalId)
-      .single();
-
-    // Fetch view count
-    const { count } = await supabase
-      .from("proposal_views")
-      .select("*", { count: "exact", head: true })
-      .eq("proposal_id", proposalId);
-
-    if (proposal) {
-      setStatus({
-        isPublic: proposal.is_public || false,
-        shareToken: proposal.share_token,
-        clientSignedAt: proposal.client_signed_at,
-        clientSignature: proposal.client_signature,
-        viewCount: count || 0,
-      });
+    try {
+      const token = (await getToken()) ?? undefined;
+      const data = await apiFetch<ProposalStatus>(`/api/proposals/${proposalId}/share-status`, { token });
+      setStatus(data);
+    } catch {
+      // ignore
     }
-    
     setLoading(false);
   };
 
   const enableSharing = async () => {
     if (!user) return;
-    
     setLoading(true);
-
-    // Fetch current branding settings to snapshot
-    const { data: branding } = await supabase
-      .from("branding_settings")
-      .select("company_name, tagline, primary_color, secondary_color, website, email, phone, address, logo_url")
-      .eq("user_id", user.id)
-      .single();
-
-    // Update proposal with is_public and branding snapshot
-    const { data, error } = await supabase
-      .from("proposals")
-      .update({ 
-        is_public: true,
-        branding_snapshot: branding || null
-      })
-      .eq("id", proposalId)
-      .select("share_token")
-      .single();
-
-    if (error) {
-      toast.error("Failed to enable sharing");
-    } else {
-      setStatus(prev => ({
-        ...prev,
-        isPublic: true,
-        shareToken: data.share_token,
-      }));
+    try {
+      const token = (await getToken()) ?? undefined;
+      const data = await apiFetch<{ shareToken: string }>(`/api/proposals/${proposalId}/share`, {
+        method: "POST",
+        token,
+      });
+      setStatus(prev => ({ ...prev, isPublic: true, shareToken: data.shareToken }));
       toast.success("Sharing enabled! Copy the link to send to your client.");
       onStatusChange?.();
+    } catch {
+      toast.error("Failed to enable sharing");
     }
-    
     setLoading(false);
   };
 
