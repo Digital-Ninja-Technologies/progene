@@ -70,14 +70,9 @@ export function useWizard() {
     const proposalId = insertData?.id || null;
     setSavedProposalId(proposalId);
     
-    // Increment proposals_used counter atomically
-    const { error: updateError } = await supabase.rpc('increment_proposals_used', { uid: user.id });
-
-    if (updateError) {
-      console.error('Failed to increment proposals_used counter:', updateError);
-    } else {
-      await fetchProfile(user.id);
-    }
+    // The auto_increment_proposals DB trigger already incremented proposals_used.
+    // Just refresh the profile so the UI reflects the new count.
+    await fetchProfile(user.id);
 
     setIsSaving(false);
     return { error: null, proposalId };
