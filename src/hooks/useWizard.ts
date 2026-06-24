@@ -70,19 +70,17 @@ export function useWizard() {
     const proposalId = insertData?.id || null;
     setSavedProposalId(proposalId);
     
-    // Increment proposals_used counter
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({ proposals_used: (profile?.proposals_used || 0) + 1 })
-      .eq('user_id', user.id);
-    
-    if (!updateError) {
-      // Refresh profile to get updated count
+    // Increment proposals_used counter atomically
+    const { error: updateError } = await supabase.rpc('increment_proposals_used', { uid: user.id });
+
+    if (updateError) {
+      console.error('Failed to increment proposals_used counter:', updateError);
+    } else {
       await fetchProfile(user.id);
     }
-    
+
     setIsSaving(false);
-    return { error: updateError, proposalId };
+    return { error: null, proposalId };
   }, [user, config, profile, canCreateProposal, fetchProfile]);
 
   const nextStep = useCallback(() => {
