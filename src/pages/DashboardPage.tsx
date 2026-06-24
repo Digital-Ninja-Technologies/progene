@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { apiFetch } from "@/lib/api";
+import { useAuth } from "@clerk/react";
 import { ProposalCard } from "@/components/dashboard/ProposalCard";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { NotificationCenter } from "@/components/dashboard/NotificationCenter";
@@ -22,6 +23,7 @@ export interface SavedProposal {
 
 export default function DashboardPage() {
   const { user, loading: authLoading } = useAuthContext();
+  const { getToken } = useAuth();
   const navigate = useNavigate();
   const [proposals, setProposals] = useState<SavedProposal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,41 +42,42 @@ export default function DashboardPage() {
 
   const fetchProposals = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("proposals")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (!error && data) {
-      setProposals(data as unknown as SavedProposal[]);
+    try {
+      const token = (await getToken()) ?? undefined;
+      const data = await apiFetch<SavedProposal[]>("/api/proposals", { token });
+      setProposals(data);
+    } catch {
+      // ignore
     }
     setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("proposals").delete().eq("id", id);
-    if (!error) {
+    try {
+      const token = (await getToken()) ?? undefined;
+      await apiFetch(`/api/proposals/${id}`, { method: "DELETE", token });
       setProposals((prev) => prev.filter((p) => p.id !== id));
+    } catch {
+      // ignore
     }
   };
 
   const handleDuplicate = async (proposal: SavedProposal) => {
-    const insertData = {
-      user_id: user!.id,
-      project_type: proposal.project_type,
-      project_config: JSON.parse(JSON.stringify(proposal.project_config)),
-      pricing_result: JSON.parse(JSON.stringify(proposal.pricing_result)),
-      proposal_data: JSON.parse(JSON.stringify(proposal.proposal_data)),
-    };
-    
-    const { data, error } = await supabase
-      .from("proposals")
-      .insert([insertData])
-      .select()
-      .single();
-
-    if (!error && data) {
-      setProposals((prev) => [data as unknown as SavedProposal, ...prev]);
+    try {
+      const token = (await getToken()) ?? undefined;
+      const data = await apiFetch<SavedProposal>("/api/proposals", {
+        method: "POST",
+        token,
+        body: {
+          projectType: proposal.project_type,
+          projectConfig: proposal.project_config,
+          pricingResult: proposal.pricing_result,
+          proposalData: proposal.proposal_data,
+        },
+      });
+      setProposals((prev) => [data, ...prev]);
+    } catch {
+      // ignore
     }
   };
 

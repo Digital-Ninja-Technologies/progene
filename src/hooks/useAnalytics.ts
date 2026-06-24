@@ -1,7 +1,18 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuthContext } from '@/contexts/AuthContext';
-import { ProposalView } from '@/types/database';
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@clerk/react";
+import { apiFetch } from "@/lib/api";
+
+interface Proposal {
+  id: string;
+  pricingResult: { recommendedPrice?: number } | null;
+  clientSignedAt: string | null;
+}
+
+interface ProposalView {
+  proposalId: string;
+  viewedAt: string;
+  ipAddress: string | null;
+}
 
 interface ProposalStats {
   proposalId: string;
@@ -18,107 +29,60 @@ interface RevenueStats {
 }
 
 export function useAnalytics() {
-  const { user } = useAuthContext();
-  const [proposalViews, setProposalViews] = useState<ProposalView[]>([]);
-  const [proposalStats, setProposalStats] = useState<ProposalStats[]>([]);
-  const [revenueStats, setRevenueStats] = useState<RevenueStats>({
-    totalValue: 0,
-    signedValue: 0,
-    pendingValue: 0,
-    proposalCount: 0,
-    signedCount: 0,
+  const { getToken, isSignedIn } = useAuth();
+
+  const { data: proposals = [], isLoading: loadingProposals } = useQuery<Proposal[]>({
+    queryKey: ["proposals"],
+    queryFn: async () => apiFetch("/api/proposals", { token: (await getToken()) ?? undefined }),
+    enabled: !!isSignedIn,
   });
-  const [loading, setLoading] = useState(true);
 
-  const fetchAnalytics = useCallback(async () => {
-    if (!user) return;
-    
-    setLoading(true);
+  const proposalIds = proposals.map((p) => p.id);
 
-    // Fetch all proposals with their view counts
-    const { data: proposals, error: proposalsError } = await supabase
-      .from('proposals')
-      .select('id, pricing_result, client_signed_at, is_public');
+  const { data: allViews = [], isLoading: loadingViews } = useQuery<ProposalView[]>({
+    queryKey: ["proposal-views"],
+    queryFn: async () => apiFetch("/api/proposals/views", { token: (await getToken()) ?? undefined }),
+    enabled: !!isSignedIn && proposalIds.length > 0,
+  });
 
-    if (!proposalsError && proposals) {
-      // Calculate revenue stats
-      let totalValue = 0;
-      let signedValue = 0;
-      let signedCount = 0;
+  const loading = loadingProposals || loadingViews;
 
-      proposals.forEach((p: any) => {
-        const price = p.pricing_result?.recommendedPrice || 0;
-        totalValue += price;
-        if (p.client_signed_at) {
-          signedValue += price;
-          signedCount++;
-        }
-      });
-
-      setRevenueStats({
-        totalValue,
-        signedValue,
-        pendingValue: totalValue - signedValue,
-        proposalCount: proposals.length,
-        signedCount,
-      });
-
-      // Fetch views for each proposal
-      const proposalIds = proposals.map((p: any) => p.id);
-      if (proposalIds.length > 0) {
-        const { data: views, error: viewsError } = await supabase
-          .from('proposal_views')
-          .select('*')
-          .in('proposal_id', proposalIds);
-
-        if (!viewsError && views) {
-          setProposalViews(views as ProposalView[]);
-
-          // Calculate stats per proposal
-          const statsMap = new Map<string, ProposalStats>();
-          proposalIds.forEach(id => {
-            statsMap.set(id, { proposalId: id, viewCount: 0, lastViewed: null });
-          });
-
-          views.forEach((view: ProposalView) => {
-            const stats = statsMap.get(view.proposal_id);
-            if (stats) {
-              stats.viewCount++;
-              if (!stats.lastViewed || view.viewed_at > stats.lastViewed) {
-                stats.lastViewed = view.viewed_at;
-              }
-            }
-          });
-
-          setProposalStats(Array.from(statsMap.values()));
-        }
+  const revenueStats: RevenueStats = proposals.reduce(
+    (acc, p) => {
+      const price = p.pricingResult?.recommendedPrice ?? 0;
+      acc.totalValue += price;
+      acc.proposalCount++;
+      if (p.clientSignedAt) {
+        acc.signedValue += price;
+        acc.signedCount++;
       }
-    }
+      return acc;
+    },
+    { totalValue: 0, signedValue: 0, pendingValue: 0, proposalCount: 0, signedCount: 0 }
+  );
+  revenueStats.pendingValue = revenueStats.totalValue - revenueStats.signedValue;
 
-    setLoading(false);
-  }, [user]);
+  const proposalStats: ProposalStats[] = proposalIds.map((id) => {
+    const views = allViews.filter((v) => v.proposalId === id);
+    const lastViewed = views.reduce<string | null>((latest, v) => {
+      if (!latest || v.viewedAt > latest) return v.viewedAt;
+      return latest;
+    }, null);
+    return { proposalId: id, viewCount: views.length, lastViewed };
+  });
 
-  useEffect(() => {
-    if (user) {
-      fetchAnalytics();
-    }
-  }, [user, fetchAnalytics]);
+  const getViewsForProposal = (proposalId: string) =>
+    allViews.filter((v) => v.proposalId === proposalId);
 
-  const getViewsForProposal = (proposalId: string) => {
-    return proposalViews.filter(v => v.proposal_id === proposalId);
-  };
-
-  const getStatsForProposal = (proposalId: string) => {
-    return proposalStats.find(s => s.proposalId === proposalId);
-  };
+  const getStatsForProposal = (proposalId: string) =>
+    proposalStats.find((s) => s.proposalId === proposalId);
 
   return {
-    proposalViews,
+    proposalViews: allViews,
     proposalStats,
     revenueStats,
     loading,
     getViewsForProposal,
     getStatsForProposal,
-    refetch: fetchAnalytics,
   };
 }

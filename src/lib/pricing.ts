@@ -24,8 +24,12 @@ export function calculatePricing(config: ProjectConfig): PricingResult {
   // Start with base hours
   let hours = BASE_HOURS[config.type];
 
-  // Add hours for pages
-  hours += config.pages * HOURS_PER_PAGE[config.type];
+  // Add hours for pages (web projects only — service types use base hours without a page multiplier)
+  const WEB_PREFIXES = ['framer-', 'webflow-', 'shopify-', 'wordpress-'];
+  const isWebProject = WEB_PREFIXES.some((p) => config.type!.startsWith(p));
+  if (isWebProject) {
+    hours += config.pages * HOURS_PER_PAGE[config.type];
+  }
 
   // CMS adds 15% more hours
   if (config.cmsNeeded) {

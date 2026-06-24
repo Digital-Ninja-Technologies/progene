@@ -160,7 +160,13 @@ Generated with ProGene
           Copy All
         </Button>
         <InvoiceGenerator proposal={proposal} proposalId={proposalId} />
-        <Button variant="pill-outline" size="lg">
+        <Button
+          variant="pill-outline"
+          size="lg"
+          onClick={() => {
+            window.location.href = `mailto:?subject=Project Proposal – ${projectTypeLabel}&body=${encodeURIComponent(generateFullProposalText())}`;
+          }}
+        >
           <Mail className="mr-2 h-4 w-4" />
           Email Draft
         </Button>

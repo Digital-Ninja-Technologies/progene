@@ -1,91 +1,86 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuthContext } from '@/contexts/AuthContext';
-import { TimeEntry } from '@/types/database';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/react";
+import { apiFetch } from "@/lib/api";
+
+export interface TimeEntry {
+  id: string;
+  userId: string;
+  proposalId: string | null;
+  description: string;
+  hours: number;
+  date: string;
+  billable: boolean;
+  createdAt: string;
+}
 
 export function useTimeTracking() {
-  const { user } = useAuthContext();
-  const [entries, setEntries] = useState<TimeEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { getToken, isSignedIn } = useAuth();
+  const qc = useQueryClient();
 
-  const fetchEntries = useCallback(async () => {
-    if (!user) return;
-    
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('time_entries')
-      .select('*')
-      .order('date', { ascending: false });
+  const { data: entries = [], isLoading: loading } = useQuery<TimeEntry[]>({
+    queryKey: ["time-entries"],
+    queryFn: async () => apiFetch("/api/time", { token: (await getToken()) ?? undefined }),
+    enabled: !!isSignedIn,
+  });
 
-    if (!error && data) {
-      setEntries(data as TimeEntry[]);
+  const createMutation = useMutation({
+    mutationFn: async (entry: Omit<TimeEntry, "id" | "userId" | "createdAt">) =>
+      apiFetch<TimeEntry>("/api/time", {
+        method: "POST",
+        token: (await getToken()) ?? undefined,
+        body: entry,
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["time-entries"] }),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<TimeEntry> }) =>
+      apiFetch<TimeEntry>(`/api/time/${id}`, {
+        method: "PUT",
+        token: (await getToken()) ?? undefined,
+        body: updates,
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["time-entries"] }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) =>
+      apiFetch(`/api/time/${id}`, { method: "DELETE", token: (await getToken()) ?? undefined }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["time-entries"] }),
+  });
+
+  const createEntry = async (entry: Omit<TimeEntry, "id" | "userId" | "createdAt">) => {
+    try {
+      const data = await createMutation.mutateAsync(entry);
+      return { error: null, data };
+    } catch (error) {
+      return { error: error as Error, data: null };
     }
-    setLoading(false);
-  }, [user]);
-
-  useEffect(() => {
-    if (user) {
-      fetchEntries();
-    }
-  }, [user, fetchEntries]);
-
-  const createEntry = async (entry: Omit<TimeEntry, 'id' | 'user_id' | 'created_at'>) => {
-    if (!user) return { error: new Error('Not authenticated') };
-
-    const { data, error } = await supabase
-      .from('time_entries')
-      .insert([{
-        user_id: user.id,
-        ...entry,
-      }])
-      .select()
-      .single();
-
-    if (!error && data) {
-      setEntries(prev => [data as TimeEntry, ...prev]);
-    }
-
-    return { error, data };
   };
 
-  const updateEntry = async (id: string, updates: Partial<Omit<TimeEntry, 'id' | 'user_id' | 'created_at'>>) => {
-    const { error } = await supabase
-      .from('time_entries')
-      .update(updates)
-      .eq('id', id);
-
-    if (!error) {
-      setEntries(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
+  const updateEntry = async (id: string, updates: Partial<TimeEntry>) => {
+    try {
+      await updateMutation.mutateAsync({ id, updates });
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
     }
-
-    return { error };
   };
 
   const deleteEntry = async (id: string) => {
-    const { error } = await supabase
-      .from('time_entries')
-      .delete()
-      .eq('id', id);
-
-    if (!error) {
-      setEntries(prev => prev.filter(e => e.id !== id));
+    try {
+      await deleteMutation.mutateAsync(id);
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
     }
-
-    return { error };
   };
 
-  // Calculate totals
-  const getTotalHours = (billableOnly = false) => {
-    return entries
-      .filter(e => !billableOnly || e.billable)
-      .reduce((sum, e) => sum + Number(e.hours), 0);
-  };
+  const getTotalHours = (billableOnly = false) =>
+    entries.filter((e) => !billableOnly || e.billable).reduce((sum, e) => sum + Number(e.hours), 0);
 
-  const getHoursByProposal = (proposalId: string) => {
-    return entries
-      .filter(e => e.proposal_id === proposalId)
-      .reduce((sum, e) => sum + Number(e.hours), 0);
-  };
+  const getHoursByProposal = (proposalId: string) =>
+    entries.filter((e) => e.proposalId === proposalId).reduce((sum, e) => sum + Number(e.hours), 0);
 
   return {
     entries,
@@ -95,6 +90,6 @@ export function useTimeTracking() {
     deleteEntry,
     getTotalHours,
     getHoursByProposal,
-    refetch: fetchEntries,
+    refetch: () => qc.invalidateQueries({ queryKey: ["time-entries"] }),
   };
 }

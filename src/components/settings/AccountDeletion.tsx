@@ -16,12 +16,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { apiFetch } from "@/lib/api";
+import { useAuth } from "@clerk/react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, AlertTriangle, Trash2 } from "lucide-react";
 
 export function AccountDeletion() {
   const { user, signOut } = useAuthContext();
+  const { getToken } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [confirmText, setConfirmText] = useState("");
@@ -40,10 +42,8 @@ export function AccountDeletion() {
 
     setIsDeleting(true);
     try {
-      // Call the delete_user_account function
-      const { error } = await supabase.rpc('delete_user_account');
-      
-      if (error) throw error;
+      const token = (await getToken()) ?? undefined;
+      await apiFetch("/api/profile", { method: "DELETE", token });
 
       // Sign out the user
       await signOut();

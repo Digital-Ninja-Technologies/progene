@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Sparkles, Loader2, RefreshCw, Check, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { apiFetch } from "@/lib/api";
+import { useAuth } from "@clerk/react";
 import { toast } from "sonner";
 import { ProjectConfig, PROPOSAL_TONES, ProposalTone } from "@/types/project";
 import {
@@ -19,6 +20,7 @@ interface AIScopeWriterProps {
 }
 
 export function AIScopeWriter({ config, existingScope, onScopeGenerated }: AIScopeWriterProps) {
+  const { getToken } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedScope, setGeneratedScope] = useState<string[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
@@ -35,7 +37,10 @@ export function AIScopeWriter({ config, existingScope, onScopeGenerated }: AISco
     setSelectedItems(new Set());
 
     try {
-      const { data, error } = await supabase.functions.invoke("generate-scope", {
+      const token = (await getToken()) ?? undefined;
+      const data = await apiFetch<{ scope: string[] }>("/api/ai/scope", {
+        method: "POST",
+        token,
         body: {
           projectType: config.type,
           pages: config.pages,
@@ -48,12 +53,6 @@ export function AIScopeWriter({ config, existingScope, onScopeGenerated }: AISco
           tone,
         },
       });
-
-      if (error) throw error;
-      if (data?.error) {
-        toast.error(data.error);
-        return;
-      }
 
       const scope = data?.scope || [];
       setGeneratedScope(scope);

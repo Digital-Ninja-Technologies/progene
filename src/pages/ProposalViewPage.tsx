@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button";
 import { ProposalPreview } from "@/components/wizard/ProposalPreview";
 import { ShareForSignature } from "@/components/proposal/ShareForSignature";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { apiFetch } from "@/lib/api";
+import { useAuth } from "@clerk/react";
 import { SavedProposal } from "@/pages/DashboardPage";
 import { toast } from "sonner";
 
 export default function ProposalViewPage() {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuthContext();
+  const { getToken } = useAuth();
   const navigate = useNavigate();
   const [proposal, setProposal] = useState<SavedProposal | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,42 +33,35 @@ export default function ProposalViewPage() {
 
   const fetchProposal = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("proposals")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    if (error || !data) {
+    try {
+      const token = (await getToken()) ?? undefined;
+      const data = await apiFetch<SavedProposal>(`/api/proposals/${id}`, { token });
+      setProposal(data);
+    } catch {
       toast.error("Proposal not found");
       navigate("/dashboard");
-      return;
     }
-
-    setProposal(data as unknown as SavedProposal);
     setLoading(false);
   };
 
   const handleDuplicate = async () => {
     if (!proposal || !user) return;
-
-    const insertData = {
-      user_id: user.id,
-      project_type: proposal.project_type,
-      project_config: JSON.parse(JSON.stringify(proposal.project_config)),
-      pricing_result: JSON.parse(JSON.stringify(proposal.pricing_result)),
-      proposal_data: JSON.parse(JSON.stringify(proposal.proposal_data)),
-    };
-
-    const { data, error } = await supabase
-      .from("proposals")
-      .insert([insertData])
-      .select()
-      .single();
-
-    if (!error && data) {
+    try {
+      const token = (await getToken()) ?? undefined;
+      const data = await apiFetch<SavedProposal>("/api/proposals", {
+        method: "POST",
+        token,
+        body: {
+          projectType: proposal.project_type,
+          projectConfig: proposal.project_config,
+          pricingResult: proposal.pricing_result,
+          proposalData: proposal.proposal_data,
+        },
+      });
       toast.success("Proposal duplicated!");
       navigate(`/proposal/${data.id}`);
+    } catch {
+      toast.error("Failed to duplicate proposal");
     }
   };
 

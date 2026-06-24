@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { apiFetch } from "@/lib/api";
 import { Loader2, Mail, MessageSquare, User, Send, CheckCircle } from "lucide-react";
 
 const contactSchema = z.object({
@@ -40,7 +40,8 @@ export default function ContactPage() {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.functions.invoke("send-contact-email", {
+      await apiFetch("/api/contact", {
+        method: "POST",
         body: {
           name: data.name,
           email: data.email,
@@ -48,8 +49,6 @@ export default function ContactPage() {
           message: data.message,
         },
       });
-
-      if (error) throw error;
 
       setIsSubmitted(true);
       reset();

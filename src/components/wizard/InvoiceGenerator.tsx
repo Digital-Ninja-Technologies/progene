@@ -16,9 +16,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProposalData, PROJECT_TYPES, CURRENCIES, InvoiceData, InvoiceItem } from "@/types/project";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+import { apiFetch } from "@/lib/api";
+import { useAuth } from "@clerk/react";
 import { useAuthContext } from "@/contexts/AuthContext";
-import type { Json } from "@/integrations/supabase/types";
 import { escapeHtml, escapeHtmlWithBreaks } from "@/lib/htmlEscape";
 
 interface InvoiceGeneratorProps {
@@ -58,6 +58,7 @@ interface DocumentDetails {
 
 export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGeneratorProps) {
   const { user } = useAuthContext();
+  const { getToken } = useAuth();
   const currencySymbol =
     CURRENCIES.find((c) => c.value === proposal.config.currency)?.symbol || "$";
   
@@ -234,19 +235,21 @@ export function InvoiceGenerator({ proposal, proposalId, onSaved }: InvoiceGener
       total,
     };
 
-    const { error } = await supabase
-      .from("proposals")
-      .update({ document_details: documentDetails as unknown as Json })
-      .eq("id", proposalId)
-      .eq("user_id", user.id);
-
-    setIsSaving(false);
-
-    if (error) {
-      console.error("Error saving document:", error);
+    try {
+      const token = (await getToken()) ?? undefined;
+      await apiFetch(`/api/proposals/${proposalId}`, {
+        method: "PUT",
+        token,
+        body: { documentDetails },
+      });
+    } catch (err) {
+      console.error("Error saving document:", err);
       toast.error("Failed to save proposal document");
+      setIsSaving(false);
       return;
     }
+
+    setIsSaving(false);
 
     setIsSaved(true);
     toast.success("Proposal document saved successfully!");

@@ -1,89 +1,43 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuthContext } from '@/contexts/AuthContext';
-import { BrandingSettings } from '@/types/database';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/react";
+import { apiFetch } from "@/lib/api";
 
-const defaultBranding: Omit<BrandingSettings, 'id' | 'user_id' | 'created_at' | 'updated_at'> = {
-  logo_url: null,
-  company_name: null,
-  tagline: null,
-  primary_color: '#6366f1',
-  secondary_color: '#8b5cf6',
-  website: null,
-  email: null,
-  phone: null,
-  address: null,
-};
+export interface BrandingSettings {
+  id: string;
+  userId: string;
+  logoUrl: string | null;
+  companyName: string | null;
+  tagline: string | null;
+  primaryColor: string;
+  secondaryColor: string;
+  website: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export function useBranding() {
-  const { user } = useAuthContext();
-  const [branding, setBranding] = useState<BrandingSettings | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { getToken, isSignedIn } = useAuth();
+  const qc = useQueryClient();
 
-  const fetchBranding = useCallback(async () => {
-    if (!user) return;
-    
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('branding_settings')
-      .select('*')
-      .eq('user_id', user.id)
-      .single();
+  const { data: branding = null, isLoading: loading } = useQuery<BrandingSettings | null>({
+    queryKey: ["branding"],
+    queryFn: async () => apiFetch("/api/branding", { token: (await getToken()) ?? undefined }),
+    enabled: !!isSignedIn,
+  });
 
-    if (!error && data) {
-      setBranding(data as BrandingSettings);
-    } else if (error?.code === 'PGRST116') {
-      // No branding settings yet, create default
-      setBranding(null);
-    }
-    setLoading(false);
-  }, [user]);
-
-  useEffect(() => {
-    if (user) {
-      fetchBranding();
-    }
-  }, [user, fetchBranding]);
-
-  const saveBranding = async (settings: Partial<Omit<BrandingSettings, 'id' | 'user_id' | 'created_at' | 'updated_at'>>) => {
-    if (!user) return { error: new Error('Not authenticated') };
-
-    if (branding) {
-      // Update existing
-      const { error } = await supabase
-        .from('branding_settings')
-        .update(settings)
-        .eq('id', branding.id);
-
-      if (!error) {
-        setBranding(prev => prev ? { ...prev, ...settings } : null);
-      }
-
-      return { error };
-    } else {
-      // Create new
-      const { data, error } = await supabase
-        .from('branding_settings')
-        .insert([{
-          user_id: user.id,
-          ...defaultBranding,
-          ...settings,
-        }])
-        .select()
-        .single();
-
-      if (!error && data) {
-        setBranding(data as BrandingSettings);
-      }
-
-      return { error, data };
-    }
-  };
+  const saveBranding = useMutation({
+    mutationFn: async (settings: Partial<BrandingSettings>) =>
+      apiFetch<BrandingSettings>("/api/branding", { method: "POST", token: (await getToken()) ?? undefined, body: settings }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["branding"] }),
+  });
 
   return {
     branding,
     loading,
-    saveBranding,
-    refetch: fetchBranding,
+    saveBranding: (s: Partial<BrandingSettings>) => saveBranding.mutateAsync(s),
+    refetch: () => qc.invalidateQueries({ queryKey: ["branding"] }),
   };
 }
