@@ -22,6 +22,7 @@ const CoverLetterPage = lazy(() => import("./pages/CoverLetterPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const TermsPage = lazy(() => import("./pages/TermsPage"));
 const CookiePolicyPage = lazy(() => import("./pages/CookiePolicyPage"));
+const VanguardPage = lazy(() => import("./pages/VanguardPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
               <Route path="/privacy" element={<PrivacyPolicyPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/cookies" element={<CookiePolicyPage />} />
+              <Route path="/vanguard" element={<VanguardPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
