@@ -15,8 +15,6 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        inter: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        podium: ['"FSP DEMO - PODIUM Sharp 4.11"', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
