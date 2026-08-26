@@ -6,6 +6,7 @@ export interface TimeEntry {
   id: string;
   userId: string;
   proposalId: string | null;
+  clientId: string | null;
   description: string;
   hours: number;
   date: string;

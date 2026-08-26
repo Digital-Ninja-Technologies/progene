@@ -4,14 +4,16 @@ import { apiFetch } from "@/lib/api";
 
 interface Proposal {
   id: string;
+  projectType: string;
   pricingResult: { recommendedPrice?: number } | null;
   clientSignedAt: string | null;
+  clientSignature: string | null;
 }
 
 interface ProposalView {
   proposalId: string;
   viewedAt: string;
-  ipAddress: string | null;
+  viewerIp: string | null;
 }
 
 interface ProposalStats {
@@ -78,6 +80,7 @@ export function useAnalytics() {
     proposalStats.find((s) => s.proposalId === proposalId);
 
   return {
+    proposals,
     proposalViews: allViews,
     proposalStats,
     revenueStats,

@@ -110,9 +110,21 @@ proposalsRoutes.put("/:id", async (c) => {
 // DELETE /api/proposals/:id
 proposalsRoutes.delete("/:id", async (c) => {
   const userId = c.get("userId");
-  await db
+  const [deleted] = await db
     .delete(proposals)
-    .where(and(eq(proposals.id, c.req.param("id")), eq(proposals.userId, userId)));
+    .where(and(eq(proposals.id, c.req.param("id")), eq(proposals.userId, userId)))
+    .returning({ id: proposals.id });
+
+  if (deleted) {
+    const [profile] = await db.select().from(profiles).where(eq(profiles.userId, userId)).limit(1);
+    if (profile) {
+      await db
+        .update(profiles)
+        .set({ proposalsUsed: Math.max(0, (profile.proposalsUsed ?? 0) - 1), updatedAt: new Date() })
+        .where(eq(profiles.userId, userId));
+    }
+  }
+
   return c.json({ ok: true });
 });
 
@@ -151,31 +163,6 @@ proposalsRoutes.post("/:id/share", async (c) => {
     .returning();
   if (!updated) return c.json({ error: "Not found" }, 404);
   return c.json({ shareToken: updated.shareToken });
-});
-
-// POST /api/proposals/:id/sign — sign by ID (used from public page when proposal ID is known)
-proposalsRoutes.post("/:id/sign", async (c) => {
-  const { clientSignature } = await c.req.json();
-  const trimmed = (clientSignature ?? "").trim();
-  if (!trimmed) return c.json({ error: "Signature cannot be empty" }, 400);
-  if (trimmed.length > 100) return c.json({ error: "Signature too long" }, 400);
-  if (!/^[a-zA-Z\s\-'.]+$/.test(trimmed)) return c.json({ error: "Invalid signature characters" }, 400);
-
-  const [row] = await db
-    .select()
-    .from(proposals)
-    .where(and(eq(proposals.id, c.req.param("id")), eq(proposals.isPublic, true)))
-    .limit(1);
-  if (!row) return c.json({ error: "Not found" }, 404);
-  if (row.clientSignedAt) return c.json({ error: "Already signed" }, 409);
-
-  const [updated] = await db
-    .update(proposals)
-    .set({ clientSignature: trimmed, clientSignedAt: new Date() })
-    .where(eq(proposals.id, row.id))
-    .returning();
-  notifySign(row.id, trimmed).catch(console.error);
-  return c.json(updated);
 });
 
 // GET /api/proposals/share/:token — public proposal view

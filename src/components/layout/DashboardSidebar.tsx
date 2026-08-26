@@ -53,10 +53,10 @@ function NavItem({ to, icon, label, badge }: NavItemProps) {
 export function DashboardSidebar() {
   const { user, profile, signOut, getRemainingProposals } = useAuthContext();
   const remaining = getRemainingProposals();
-  const planBadge = profile?.subscription_plan === 'agency' 
-    ? 'Agency' 
-    : profile?.subscription_plan === 'pro' 
-      ? 'Pro' 
+  const planBadge = profile?.subscriptionPlan === 'agency'
+    ? 'Agency'
+    : profile?.subscriptionPlan === 'pro'
+      ? 'Pro'
       : 'Free';
 
   return (
@@ -142,7 +142,7 @@ export function DashboardSidebar() {
 
       {/* User Info & Sign Out */}
       <div className="mt-auto p-4 border-t border-border">
-        {profile && !profile.is_premium && (
+        {profile && !profile.isPremium && (
           <div className="text-sm text-muted-foreground mb-3">
             {remaining === 0 ? (
               <span className="text-destructive">No proposals left</span>
@@ -153,7 +153,7 @@ export function DashboardSidebar() {
         )}
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
           <User className="h-4 w-4 shrink-0" />
-          <span className="truncate">{profile?.full_name || user?.email}</span>
+          <span className="truncate">{profile?.fullName || user?.primaryEmailAddress?.emailAddress}</span>
         </div>
         <button
           onClick={() => signOut()}

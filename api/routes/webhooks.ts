@@ -75,13 +75,13 @@ webhooksRoutes.post("/polar", async (c) => {
   const signature = c.req.header("webhook-signature") ?? c.req.header("x-polar-signature");
   const body = await c.req.text();
 
-  if (signature) {
-    const encoder = new TextEncoder();
-    const key = await crypto.subtle.importKey("raw", encoder.encode(webhookSecret), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
-    const sigBytes = hexToBytes(signature.replace(/^sha256=/, ""));
-    const valid = await crypto.subtle.verify("HMAC", key, sigBytes, encoder.encode(body));
-    if (!valid) return c.json({ error: "Invalid signature" }, 401);
-  }
+  if (!signature) return c.json({ error: "No signature" }, 400);
+
+  const encoder = new TextEncoder();
+  const key = await crypto.subtle.importKey("raw", encoder.encode(webhookSecret), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
+  const sigBytes = hexToBytes(signature.replace(/^sha256=/, ""));
+  const valid = await crypto.subtle.verify("HMAC", key, sigBytes, encoder.encode(body));
+  if (!valid) return c.json({ error: "Invalid signature" }, 401);
 
   const event = JSON.parse(body);
 

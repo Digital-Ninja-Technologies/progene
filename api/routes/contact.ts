@@ -12,8 +12,21 @@ function escapeHtml(s: string) {
 }
 
 // POST /api/contact
+function getClientIp(c: { req: { header: (name: string) => string | undefined } }): string {
+  const realIp = c.req.header("x-real-ip");
+  if (realIp) return realIp.trim();
+  const forwarded = c.req.header("x-forwarded-for");
+  if (forwarded) {
+    const parts = forwarded.split(",").map((p) => p.trim()).filter(Boolean);
+    // The last entry is appended by our own trusted reverse proxy; earlier
+    // entries can be set by the client and are not trustworthy for rate limiting.
+    return parts[parts.length - 1] ?? "unknown";
+  }
+  return "unknown";
+}
+
 contactRoutes.post("/", async (c) => {
-  const ip = c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const ip = getClientIp(c);
   const rl = await checkRateLimit(ip, "contact_form", 5, 3600);
   if (!rl.allowed) return c.json({ error: "Too many requests. Please try again later." }, 429);
 

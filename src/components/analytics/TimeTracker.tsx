@@ -50,8 +50,8 @@ interface TimeEntryFormData {
   hours: string;
   date: string;
   billable: boolean;
-  client_id: string | null;
-  proposal_id: string | null;
+  clientId: string | null;
+  proposalId: string | null;
 }
 
 const defaultFormData: TimeEntryFormData = {
@@ -59,8 +59,8 @@ const defaultFormData: TimeEntryFormData = {
   hours: "",
   date: new Date().toISOString().split('T')[0],
   billable: true,
-  client_id: null,
-  proposal_id: null,
+  clientId: null,
+  proposalId: null,
 };
 
 export function TimeTracker() {
@@ -79,8 +79,8 @@ export function TimeTracker() {
       hours: parseFloat(formData.hours),
       date: formData.date,
       billable: formData.billable,
-      client_id: formData.client_id,
-      proposal_id: formData.proposal_id,
+      clientId: formData.clientId,
+      proposalId: formData.proposalId,
     });
     setSaving(false);
 
@@ -164,8 +164,8 @@ export function TimeTracker() {
               <div>
                 <label className="text-sm font-medium">Client (optional)</label>
                 <Select
-                  value={formData.client_id || "none"}
-                  onValueChange={(v) => setFormData(prev => ({ ...prev, client_id: v === "none" ? null : v }))}
+                  value={formData.clientId || "none"}
+                  onValueChange={(v) => setFormData(prev => ({ ...prev, clientId: v === "none" ? null : v }))}
                 >
                   <SelectTrigger className="mt-1.5">
                     <SelectValue placeholder="Select a client" />
@@ -270,7 +270,7 @@ export function TimeTracker() {
             </TableHeader>
             <TableBody>
               {entries.slice(0, 20).map((entry) => {
-                const client = clients.find(c => c.id === entry.client_id);
+                const client = clients.find(c => c.id === entry.clientId);
                 return (
                   <TableRow key={entry.id}>
                     <TableCell className="text-muted-foreground">

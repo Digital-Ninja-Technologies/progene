@@ -832,7 +832,6 @@ ${invoice.yourEmail}`);
                         onChange={(e) => {
                           const val = parseFloat(e.target.value) || 0;
                           updateItem(index, "rate", val);
-                          updateItem(index, "amount", val);
                         }}
                       />
                     </div>

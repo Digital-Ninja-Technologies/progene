@@ -38,10 +38,10 @@ export function ProposalCard({ proposal, onDelete, onDuplicate }: ProposalCardPr
   const navigate = useNavigate();
   const { user } = useAuthContext();
   const { getToken } = useAuth();
-  const projectType = PROJECT_TYPES.find((t) => t.value === proposal.project_type);
-  const currency = CURRENCIES.find((c) => c.value === proposal.project_config.currency);
-  const [isPublic, setIsPublic] = useState((proposal as any).is_public || false);
-  const [shareToken, setShareToken] = useState((proposal as any).share_token || null);
+  const projectType = PROJECT_TYPES.find((t) => t.value === proposal.projectType);
+  const currency = CURRENCIES.find((c) => c.value === proposal.projectConfig.currency);
+  const [isPublic, setIsPublic] = useState(proposal.isPublic || false);
+  const [shareToken, setShareToken] = useState(proposal.shareToken || null);
   const [copied, setCopied] = useState(false);
   const [updating, setUpdating] = useState(false);
 
@@ -102,7 +102,7 @@ export function ProposalCard({ proposal, onDelete, onDuplicate }: ProposalCardPr
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const isSigned = !!(proposal as any).client_signed_at;
+  const isSigned = !!proposal.clientSignedAt;
 
   return (
     <Card className="group hover:shadow-lg transition-all duration-200 hover:border-primary/20">
@@ -112,10 +112,10 @@ export function ProposalCard({ proposal, onDelete, onDuplicate }: ProposalCardPr
             <span className="text-2xl">{projectType?.icon || "📄"}</span>
             <div>
               <h3 className="font-semibold text-lg leading-tight">
-                {projectType?.label || proposal.project_type}
+                {projectType?.label || proposal.projectType}
               </h3>
               <p className="text-sm text-muted-foreground mt-0.5">
-                {proposal.project_config.pages} page{proposal.project_config.pages !== 1 ? "s" : ""}
+                {proposal.projectConfig.pages} page{proposal.projectConfig.pages !== 1 ? "s" : ""}
               </p>
             </div>
           </div>
@@ -126,7 +126,7 @@ export function ProposalCard({ proposal, onDelete, onDuplicate }: ProposalCardPr
               </Badge>
             )}
             <Badge variant="secondary" className="shrink-0">
-              {proposal.pricing_result.complexityLevel}
+              {proposal.pricingResult.complexityLevel}
             </Badge>
           </div>
         </div>
@@ -138,29 +138,29 @@ export function ProposalCard({ proposal, onDelete, onDuplicate }: ProposalCardPr
             <DollarSign className="h-4 w-4" />
             <span>
               {currency?.symbol || "$"}
-              {proposal.pricing_result.recommendedPrice.toLocaleString()}
+              {proposal.pricingResult.recommendedPrice.toLocaleString()}
             </span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Clock className="h-4 w-4" />
-            <span>{proposal.pricing_result.estimatedHours}h</span>
+            <span>{proposal.pricingResult.estimatedHours}h</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground col-span-2">
             <Calendar className="h-4 w-4" />
-            <span>{format(new Date(proposal.created_at), "MMM d, yyyy")}</span>
+            <span>{format(new Date(proposal.createdAt), "MMM d, yyyy")}</span>
           </div>
         </div>
 
-        {proposal.project_config.integrations.length > 0 && (
+        {proposal.projectConfig.integrations.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
-            {proposal.project_config.integrations.slice(0, 3).map((integration) => (
+            {proposal.projectConfig.integrations.slice(0, 3).map((integration) => (
               <Badge key={integration} variant="outline" className="text-xs">
                 {integration}
               </Badge>
             ))}
-            {proposal.project_config.integrations.length > 3 && (
+            {proposal.projectConfig.integrations.length > 3 && (
               <Badge variant="outline" className="text-xs">
-                +{proposal.project_config.integrations.length - 3}
+                +{proposal.projectConfig.integrations.length - 3}
               </Badge>
             )}
           </div>

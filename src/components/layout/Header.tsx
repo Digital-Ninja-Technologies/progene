@@ -115,9 +115,9 @@ export function Header() {
                   <>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <User className="h-4 w-4" />
-                      <span>{profile?.full_name || user.email}</span>
+                      <span>{profile?.fullName || user?.primaryEmailAddress?.emailAddress}</span>
                     </div>
-                    {profile && !profile.is_premium && (
+                    {profile && !profile.isPremium && (
                       <div className="text-sm text-muted-foreground">
                         {remaining === 0 ? (
                           <span className="text-destructive">No proposals left</span>

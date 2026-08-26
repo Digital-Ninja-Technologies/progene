@@ -11,13 +11,28 @@ brandingRoutes.get("/", async (c) => {
   return c.json(row ?? null);
 });
 
+const ALLOWED_FIELDS = [
+  "logoUrl",
+  "companyName",
+  "tagline",
+  "primaryColor",
+  "secondaryColor",
+  "website",
+  "email",
+  "phone",
+  "address",
+] as const;
+
 brandingRoutes.post("/", async (c) => {
   const userId = c.get("userId");
   const body = await c.req.json();
+  const updates: Record<string, unknown> = {};
+  for (const key of ALLOWED_FIELDS) if (key in body) updates[key] = body[key];
+
   const [upserted] = await db
     .insert(brandingSettings)
-    .values({ userId, ...body })
-    .onConflictDoUpdate({ target: brandingSettings.userId, set: { ...body, updatedAt: new Date() } })
+    .values({ userId, ...updates })
+    .onConflictDoUpdate({ target: brandingSettings.userId, set: { ...updates, updatedAt: new Date() } })
     .returning();
   return c.json(upserted);
 });
