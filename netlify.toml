@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# The API is a separate Render web service (see api/server.ts), not hosted
+# here. This is only the SPA fallback for react-router's client-side routing.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

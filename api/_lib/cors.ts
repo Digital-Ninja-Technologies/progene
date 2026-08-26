@@ -3,7 +3,9 @@ import type { MiddlewareHandler } from "hono";
 const ALLOWED_ORIGINS = [
   "http://localhost:5173",
   "http://localhost:3000",
+  "http://localhost:8080",
   "https://progene.lovable.app",
+  "https://progeneai.netlify.app",
   process.env.FRONTEND_URL ?? "",
 ].filter(Boolean);
 

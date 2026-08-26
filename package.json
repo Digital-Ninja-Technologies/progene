@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "start": "tsx api/server.ts",
+    "dev:api": "tsx watch api/server.ts"
   },
   "dependencies": {
     "@clerk/backend": "^3.8.3",
@@ -76,6 +78,7 @@
     "stripe": "^22.2.3",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.22.4",
     "vaul": "^0.9.9",
     "zod": "^3.25.76"
   },
