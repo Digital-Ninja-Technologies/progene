@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { Resend } from "resend";
-import { db, contactSubmissions } from "../lib/db";
-import { checkRateLimit } from "../lib/rateLimit";
+import { db, contactSubmissions } from "../_lib/db";
+import { checkRateLimit } from "../_lib/rateLimit";
 
 export const contactRoutes = new Hono();
 

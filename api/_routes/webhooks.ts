@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import Stripe from "stripe";
 import { eq } from "drizzle-orm";
-import { db, profiles, subscriptions } from "../lib/db";
+import { db, profiles, subscriptions } from "../_lib/db";
 
 export const webhooksRoutes = new Hono();
 

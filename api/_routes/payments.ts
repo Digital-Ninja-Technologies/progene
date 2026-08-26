@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import Stripe from "stripe";
 import { eq } from "drizzle-orm";
-import { requireAuth } from "../lib/auth";
-import { db, profiles } from "../lib/db";
+import { requireAuth } from "../_lib/auth";
+import { db, profiles } from "../_lib/db";
 
 export const paymentsRoutes = new Hono<{ Variables: { userId: string } }>();
 

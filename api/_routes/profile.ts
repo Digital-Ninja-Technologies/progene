@@ -1,9 +1,9 @@
 import { Hono } from "hono";
 import { eq } from "drizzle-orm";
 import Stripe from "stripe";
-import { requireAuth } from "../lib/auth";
-import { db, profiles, clients, proposalTemplates, timeEntries, subscriptions } from "../lib/db";
-import { clerk } from "../lib/clerk";
+import { requireAuth } from "../_lib/auth";
+import { db, profiles, clients, proposalTemplates, timeEntries, subscriptions } from "../_lib/db";
+import { clerk } from "../_lib/clerk";
 
 export const profileRoutes = new Hono<{ Variables: { userId: string } }>();
 
@@ -82,7 +82,7 @@ profileRoutes.delete("/", async (c) => {
   }).where(eq(profiles.userId, userId));
 
   // Revoke all public proposals
-  const { proposals: proposalsTable } = await import("../lib/db");
+  const { proposals: proposalsTable } = await import("../_lib/db");
   await db.update(proposalsTable).set({ isPublic: false, shareToken: null }).where(eq(proposalsTable.userId, userId));
 
   // Attempt to delete Clerk user (best-effort)

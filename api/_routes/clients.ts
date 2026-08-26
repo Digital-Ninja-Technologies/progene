@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { eq, and } from "drizzle-orm";
-import { requireAuth } from "../lib/auth";
-import { db, clients } from "../lib/db";
+import { requireAuth } from "../_lib/auth";
+import { db, clients } from "../_lib/db";
 
 export const clientsRoutes = new Hono<{ Variables: { userId: string } }>();
 clientsRoutes.use("*", requireAuth);

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { eq, and, inArray } from "drizzle-orm";
-import { requireAuth } from "../lib/auth";
-import { db, proposals, proposalViews, profiles, brandingSettings } from "../lib/db";
+import { requireAuth } from "../_lib/auth";
+import { db, proposals, proposalViews, profiles, brandingSettings } from "../_lib/db";
 import { randomBytes } from "crypto";
 import { Resend } from "resend";
 

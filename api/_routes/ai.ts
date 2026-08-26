@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { requireAuth } from "../lib/auth";
-import { checkRateLimit } from "../lib/rateLimit";
+import { requireAuth } from "../_lib/auth";
+import { checkRateLimit } from "../_lib/rateLimit";
 
 export const aiRoutes = new Hono<{ Variables: { userId: string } }>();
 
