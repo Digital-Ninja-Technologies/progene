@@ -64,7 +64,7 @@ export function useWizard() {
 
       const proposalId = result.id;
       setSavedProposalId(proposalId);
-      await fetchProfile(user.id);
+      await fetchProfile();
 
       setIsSaving(false);
       return { error: null, proposalId };

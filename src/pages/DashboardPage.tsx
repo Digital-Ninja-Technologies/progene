@@ -14,11 +14,15 @@ import { ProjectConfig, PricingResult, ProposalData } from "@/types/project";
 
 export interface SavedProposal {
   id: string;
-  project_type: string;
-  project_config: ProjectConfig;
-  pricing_result: PricingResult;
-  proposal_data: ProposalData;
-  created_at: string;
+  projectType: string;
+  projectConfig: ProjectConfig;
+  pricingResult: PricingResult;
+  proposalData: ProposalData;
+  isPublic: boolean;
+  shareToken: string | null;
+  clientSignedAt: string | null;
+  clientSignature: string | null;
+  createdAt: string;
 }
 
 export default function DashboardPage() {
@@ -69,10 +73,10 @@ export default function DashboardPage() {
         method: "POST",
         token,
         body: {
-          projectType: proposal.project_type,
-          projectConfig: proposal.project_config,
-          pricingResult: proposal.pricing_result,
-          proposalData: proposal.proposal_data,
+          projectType: proposal.projectType,
+          projectConfig: proposal.projectConfig,
+          pricingResult: proposal.pricingResult,
+          proposalData: proposal.proposalData,
         },
       });
       setProposals((prev) => [data, ...prev]);

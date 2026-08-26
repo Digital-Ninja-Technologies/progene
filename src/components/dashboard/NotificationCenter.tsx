@@ -23,32 +23,39 @@ interface Activity {
 }
 
 export function NotificationCenter() {
-  const { proposalViews, proposalStats, loading } = useAnalytics();
+  const { proposals, proposalViews, loading } = useAnalytics();
 
   const activities: Activity[] = useMemo(() => {
     const list: Activity[] = [];
+    const projectTypeById = new Map(proposals.map((p) => [p.id, p.projectType]));
 
     proposalViews.forEach((v) => {
       list.push({
         id: `view-${v.proposalId}-${v.viewedAt}`,
         type: "view",
         proposalId: v.proposalId,
-        projectType: "",
+        projectType: projectTypeById.get(v.proposalId) ?? "",
         timestamp: v.viewedAt,
       });
     });
 
-    proposalStats
-      .filter((s) => s.lastViewed)
-      .forEach((s) => {
-        const existing = list.find((a) => a.type === "sign" && a.proposalId === s.proposalId);
-        if (!existing) return;
+    proposals
+      .filter((p) => p.clientSignedAt)
+      .forEach((p) => {
+        list.push({
+          id: `sign-${p.id}`,
+          type: "sign",
+          proposalId: p.id,
+          projectType: p.projectType,
+          timestamp: p.clientSignedAt as string,
+          clientSignature: p.clientSignature ?? undefined,
+        });
       });
 
     return list
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, 20);
-  }, [proposalViews, proposalStats]);
+  }, [proposals, proposalViews]);
 
   const getActivityIcon = (type: "view" | "sign") => {
     if (type === "view") {

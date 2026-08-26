@@ -8,6 +8,7 @@ import {
   Square, RefreshCw, Download, FileText, Settings2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@clerk/react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -21,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-cover-letter`;
+const CHAT_URL = "/api/ai/cover-letter";
 const MAX_CHARS = 5000;
 const PROFILE_KEY = "progene_cl_profile";
 
@@ -65,6 +66,7 @@ function pickSuggestions(): string[] {
 
 export default function CoverLetterPage() {
   const { user, profile, loading } = useAuthContext();
+  const { getToken } = useAuth();
   const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -87,7 +89,7 @@ export default function CoverLetterPage() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lastPromptRef = useRef<string>("");
 
-  const isPremium = profile?.is_premium === true;
+  const isPremium = profile?.isPremium === true;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -148,11 +150,12 @@ export default function CoverLetterPage() {
     onText: (full: string) => void,
   ) => {
     abortRef.current = new AbortController();
+    const token = await getToken();
     const resp = await fetch(CHAT_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(body),
       signal: abortRef.current.signal,

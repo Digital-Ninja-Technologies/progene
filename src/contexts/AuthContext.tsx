@@ -1,6 +1,8 @@
 import { createContext, useContext, ReactNode } from "react";
+import { useUser } from "@clerk/react";
 import { useAuthHook, type Profile } from "@/hooks/useAuth";
-import type { UserResource } from "@clerk/types";
+
+type UserResource = NonNullable<ReturnType<typeof useUser>["user"]>;
 
 interface AuthContextType {
   user: UserResource | null | undefined;

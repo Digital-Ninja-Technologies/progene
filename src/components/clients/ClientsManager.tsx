@@ -24,8 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useClients } from "@/hooks/useClients";
-import { Client } from "@/types/database";
+import { useClients, Client } from "@/hooks/useClients";
 import { toast } from "sonner";
 
 interface ClientFormData {
@@ -87,33 +86,28 @@ export function ClientsManager({ onSelectClient, selectedClientId }: ClientsMana
       notes: formData.notes.trim() || null,
     };
 
-    if (editingClient) {
-      const { error } = await updateClient(editingClient.id, clientData);
-      if (error) {
-        toast.error("Failed to update client");
-      } else {
+    try {
+      if (editingClient) {
+        await updateClient(editingClient.id, clientData);
         toast.success("Client updated!");
-        setIsOpen(false);
-      }
-    } else {
-      const { error } = await createClient(clientData);
-      if (error) {
-        toast.error("Failed to create client");
       } else {
+        await createClient(clientData);
         toast.success("Client created!");
-        setIsOpen(false);
       }
+      setIsOpen(false);
+    } catch {
+      toast.error(editingClient ? "Failed to update client" : "Failed to create client");
     }
-    
+
     setSaving(false);
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await deleteClient(id);
-    if (error) {
-      toast.error("Failed to delete client");
-    } else {
+    try {
+      await deleteClient(id);
       toast.success("Client deleted");
+    } catch {
+      toast.error("Failed to delete client");
     }
   };
 

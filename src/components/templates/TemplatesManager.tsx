@@ -26,8 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useTemplates } from "@/hooks/useTemplates";
-import { ProposalTemplate } from "@/types/database";
+import { useTemplates, ProposalTemplate } from "@/hooks/useTemplates";
 import { ProjectConfig, PROJECT_TYPES } from "@/types/project";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -63,7 +62,7 @@ export function TemplatesManager({ currentConfig, onLoadTemplate }: TemplatesMan
 
   const handleLoad = (template: ProposalTemplate) => {
     if (onLoadTemplate) {
-      onLoadTemplate(template.project_config);
+      onLoadTemplate(template.projectConfig);
       toast.success(`Loaded template: ${template.name}`);
     }
   };
@@ -143,7 +142,7 @@ export function TemplatesManager({ currentConfig, onLoadTemplate }: TemplatesMan
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {templates.map((template) => {
-            const projectType = PROJECT_TYPES.find(t => t.value === template.project_config.type);
+            const projectType = PROJECT_TYPES.find(t => t.value === template.projectConfig.type);
             return (
               <Card key={template.id} className="hover:border-primary/30 transition-colors">
                 <CardHeader className="pb-2">
@@ -152,7 +151,7 @@ export function TemplatesManager({ currentConfig, onLoadTemplate }: TemplatesMan
                       <span className="text-lg">{projectType?.icon || "📄"}</span>
                       <CardTitle className="text-base">{template.name}</CardTitle>
                     </div>
-                    {template.is_default && (
+                    {template.isDefault && (
                       <Badge variant="secondary" className="shrink-0">Default</Badge>
                     )}
                   </div>
@@ -164,11 +163,11 @@ export function TemplatesManager({ currentConfig, onLoadTemplate }: TemplatesMan
                     </p>
                   )}
                   <div className="flex flex-wrap gap-1.5 text-xs">
-                    <Badge variant="outline">{projectType?.label || template.project_config.type}</Badge>
-                    <Badge variant="outline">{template.project_config.pages} pages</Badge>
+                    <Badge variant="outline">{projectType?.label || template.projectConfig.type}</Badge>
+                    <Badge variant="outline">{template.projectConfig.pages} pages</Badge>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Created {format(new Date(template.created_at), "MMM d, yyyy")}
+                    Created {format(new Date(template.createdAt), "MMM d, yyyy")}
                   </p>
                   <div className="flex gap-2 pt-1">
                     <Button 

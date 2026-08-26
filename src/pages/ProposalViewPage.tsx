@@ -52,10 +52,10 @@ export default function ProposalViewPage() {
         method: "POST",
         token,
         body: {
-          projectType: proposal.project_type,
-          projectConfig: proposal.project_config,
-          pricingResult: proposal.pricing_result,
-          proposalData: proposal.proposal_data,
+          projectType: proposal.projectType,
+          projectConfig: proposal.projectConfig,
+          pricingResult: proposal.pricingResult,
+          proposalData: proposal.proposalData,
         },
       });
       toast.success("Proposal duplicated!");
@@ -68,7 +68,7 @@ export default function ProposalViewPage() {
   const handleEdit = () => {
     if (!proposal) return;
     // Store config in sessionStorage and redirect to wizard
-    sessionStorage.setItem("editProposalConfig", JSON.stringify(proposal.project_config));
+    sessionStorage.setItem("editProposalConfig", JSON.stringify(proposal.projectConfig));
     sessionStorage.setItem("editProposalId", proposal.id);
     navigate("/wizard");
   };
@@ -110,7 +110,7 @@ export default function ProposalViewPage() {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          <ProposalPreview proposal={proposal.proposal_data} />
+          <ProposalPreview proposal={proposal.proposalData} />
         </div>
       </div>
     </div>

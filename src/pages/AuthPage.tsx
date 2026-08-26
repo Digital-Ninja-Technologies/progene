@@ -28,13 +28,13 @@ export default function AuthPage() {
         {isLogin ? (
           <SignIn
             routing="hash"
-            afterSignInUrl={redirectUrl}
+            fallbackRedirectUrl={redirectUrl}
             appearance={{ elements: { rootBox: "w-full max-w-md", card: "shadow-none border border-border rounded-2xl" } }}
           />
         ) : (
           <SignUp
             routing="hash"
-            afterSignUpUrl={redirectUrl}
+            fallbackRedirectUrl={redirectUrl}
             appearance={{ elements: { rootBox: "w-full max-w-md", card: "shadow-none border border-border rounded-2xl" } }}
           />
         )}

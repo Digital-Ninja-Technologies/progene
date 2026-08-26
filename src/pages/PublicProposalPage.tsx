@@ -26,23 +26,23 @@ import { Logo } from "@/components/brand/Logo";
 
 interface PublicProposal {
   id: string;
-  project_type: string;
-  project_config: any;
-  pricing_result: any;
-  proposal_data: any;
-  created_at: string;
-  client_signed_at: string | null;
-  client_signature: string | null;
-  branding?: {
-    company_name: string | null;
+  projectType: string;
+  projectConfig: any;
+  pricingResult: any;
+  proposalData: any;
+  createdAt: string;
+  clientSignedAt: string | null;
+  clientSignature: string | null;
+  brandingSnapshot?: {
+    companyName: string | null;
     tagline: string | null;
-    primary_color: string;
-    secondary_color: string;
+    primaryColor: string;
+    secondaryColor: string;
     website: string | null;
     email: string | null;
     phone: string | null;
     address: string | null;
-    logo_url: string | null;
+    logoUrl: string | null;
   };
 }
 
@@ -114,15 +114,15 @@ export default function PublicProposalPage() {
 
     setSigning(true);
     try {
-      await apiFetch(`/api/proposals/${proposal.id}/sign`, {
+      await apiFetch(`/api/proposals/share/${token}/sign`, {
         method: "POST",
         body: { clientSignature: signatureName.trim() },
       });
       toast.success("Proposal signed successfully!");
       setProposal(prev => prev ? {
         ...prev,
-        client_signed_at: new Date().toISOString(),
-        client_signature: signatureName.trim(),
+        clientSignedAt: new Date().toISOString(),
+        clientSignature: signatureName.trim(),
       } : null);
     } catch {
       toast.error("Failed to sign proposal");
@@ -154,9 +154,9 @@ export default function PublicProposalPage() {
     );
   }
 
-  const projectType = PROJECT_TYPES.find(t => t.value === proposal.project_type);
-  const currency = CURRENCIES.find(c => c.value === proposal.project_config.currency);
-  const primaryColor = proposal.branding?.primary_color || "#6366f1";
+  const projectType = PROJECT_TYPES.find(t => t.value === proposal.projectType);
+  const currency = CURRENCIES.find(c => c.value === proposal.projectConfig.currency);
+  const primaryColor = proposal.brandingSnapshot?.primaryColor || "#6366f1";
 
   return (
     <div className="min-h-screen bg-background">
@@ -167,23 +167,23 @@ export default function PublicProposalPage() {
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {proposal.branding?.company_name ? (
+            {proposal.brandingSnapshot?.companyName ? (
               <div>
-                <h1 
+                <h1
                   className="font-bold text-lg"
                   style={{ color: primaryColor }}
                 >
-                  {proposal.branding.company_name}
+                  {proposal.brandingSnapshot.companyName}
                 </h1>
-                {proposal.branding.tagline && (
-                  <p className="text-xs text-muted-foreground">{proposal.branding.tagline}</p>
+                {proposal.brandingSnapshot.tagline && (
+                  <p className="text-xs text-muted-foreground">{proposal.brandingSnapshot.tagline}</p>
                 )}
               </div>
             ) : (
               <Logo size="md" />
             )}
           </div>
-          {proposal.client_signed_at && (
+          {proposal.clientSignedAt && (
             <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
               <CheckCircle className="h-3.5 w-3.5 mr-1" />
               Signed
@@ -198,18 +198,18 @@ export default function PublicProposalPage() {
           <div className="flex items-center gap-3 mb-4">
             <span className="text-3xl">{projectType?.icon || "📄"}</span>
             <div>
-              <h1 className="text-2xl font-bold">{projectType?.label || proposal.project_type}</h1>
+              <h1 className="text-2xl font-bold">{projectType?.label || proposal.projectType}</h1>
               <p className="text-muted-foreground">{projectType?.description}</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
-              Created {format(new Date(proposal.created_at), "MMMM d, yyyy")}
+              Created {format(new Date(proposal.createdAt), "MMMM d, yyyy")}
             </div>
             <div className="flex items-center gap-1.5">
               <Clock className="h-4 w-4" />
-              {proposal.pricing_result.estimatedHours} hours
+              {proposal.pricingResult.estimatedHours} hours
             </div>
           </div>
         </div>
@@ -224,23 +224,23 @@ export default function PublicProposalPage() {
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-bold mb-2" style={{ color: primaryColor }}>
-              {currency?.symbol || "$"}{proposal.pricing_result.recommendedPrice.toLocaleString()}
+              {currency?.symbol || "$"}{proposal.pricingResult.recommendedPrice.toLocaleString()}
             </div>
             <p className="text-muted-foreground">
-              Timeline: ~{proposal.pricing_result.timelineWeeks} weeks
+              Timeline: ~{proposal.pricingResult.timelineWeeks} weeks
             </p>
           </CardContent>
         </Card>
 
         {/* Scope of Work */}
-        {proposal.proposal_data?.scopeOfWork?.length > 0 && (
+        {proposal.proposalData?.scopeOfWork?.length > 0 && (
           <Card className="mb-6">
             <CardHeader>
               <CardTitle>Scope of Work</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2">
-                {proposal.proposal_data.scopeOfWork.map((item: string, i: number) => (
+                {proposal.proposalData.scopeOfWork.map((item: string, i: number) => (
                   <li key={i} className="flex items-start gap-2">
                     <CheckCircle className="h-4 w-4 mt-0.5 text-green-500 shrink-0" />
                     <span>{item}</span>
@@ -252,14 +252,14 @@ export default function PublicProposalPage() {
         )}
 
         {/* Deliverables */}
-        {proposal.proposal_data?.deliverables?.length > 0 && (
+        {proposal.proposalData?.deliverables?.length > 0 && (
           <Card className="mb-6">
             <CardHeader>
               <CardTitle>Deliverables</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-2">
-                {proposal.proposal_data.deliverables.map((item: string, i: number) => (
+                {proposal.proposalData.deliverables.map((item: string, i: number) => (
                   <li key={i} className="flex items-start gap-2">
                     <FileText className="h-4 w-4 mt-0.5 text-primary shrink-0" />
                     <span>{item}</span>
@@ -271,14 +271,14 @@ export default function PublicProposalPage() {
         )}
 
         {/* Payment Structure */}
-        {proposal.proposal_data?.paymentStructure?.length > 0 && (
+        {proposal.proposalData?.paymentStructure?.length > 0 && (
           <Card className="mb-6">
             <CardHeader>
               <CardTitle>Payment Structure</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {proposal.proposal_data.paymentStructure.map((payment: any, i: number) => (
+                {proposal.proposalData.paymentStructure.map((payment: any, i: number) => (
                   <div key={i} className="flex items-center justify-between py-2 border-b last:border-0">
                     <div>
                       <span className="font-medium">{payment.label}</span>
@@ -303,13 +303,13 @@ export default function PublicProposalPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {proposal.client_signed_at ? (
+            {proposal.clientSignedAt ? (
               <div className="text-center py-6">
                 <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
                 <p className="text-lg font-semibold">Proposal Accepted</p>
                 <p className="text-muted-foreground">
-                  Signed by {proposal.client_signature} on{" "}
-                  {format(new Date(proposal.client_signed_at), "MMMM d, yyyy 'at' h:mm a")}
+                  Signed by {proposal.clientSignature} on{" "}
+                  {format(new Date(proposal.clientSignedAt), "MMMM d, yyyy 'at' h:mm a")}
                 </p>
               </div>
             ) : (
@@ -352,32 +352,32 @@ export default function PublicProposalPage() {
         </Card>
 
         {/* Contact Footer */}
-        {proposal.branding && (
+        {proposal.brandingSnapshot && (
           <>
             <Separator className="my-8" />
             <div className="text-center text-sm text-muted-foreground space-y-2">
-              {proposal.branding.company_name && (
+              {proposal.brandingSnapshot.companyName && (
                 <p className="font-medium" style={{ color: primaryColor }}>
-                  {proposal.branding.company_name}
+                  {proposal.brandingSnapshot.companyName}
                 </p>
               )}
               <div className="flex flex-wrap justify-center gap-4">
-                {proposal.branding.email && (
-                  <a href={`mailto:${proposal.branding.email}`} className="flex items-center gap-1 hover:text-foreground">
+                {proposal.brandingSnapshot.email && (
+                  <a href={`mailto:${proposal.brandingSnapshot.email}`} className="flex items-center gap-1 hover:text-foreground">
                     <Mail className="h-3.5 w-3.5" />
-                    {proposal.branding.email}
+                    {proposal.brandingSnapshot.email}
                   </a>
                 )}
-                {proposal.branding.phone && (
-                  <a href={`tel:${proposal.branding.phone}`} className="flex items-center gap-1 hover:text-foreground">
+                {proposal.brandingSnapshot.phone && (
+                  <a href={`tel:${proposal.brandingSnapshot.phone}`} className="flex items-center gap-1 hover:text-foreground">
                     <Phone className="h-3.5 w-3.5" />
-                    {proposal.branding.phone}
+                    {proposal.brandingSnapshot.phone}
                   </a>
                 )}
-                {proposal.branding.website && (
-                  <a href={proposal.branding.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-foreground">
+                {proposal.brandingSnapshot.website && (
+                  <a href={proposal.brandingSnapshot.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-foreground">
                     <Globe className="h-3.5 w-3.5" />
-                    {proposal.branding.website.replace(/^https?:\/\//, '')}
+                    {proposal.brandingSnapshot.website.replace(/^https?:\/\//, '')}
                   </a>
                 )}
               </div>

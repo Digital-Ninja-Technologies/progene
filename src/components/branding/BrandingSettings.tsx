@@ -12,10 +12,10 @@ export function BrandingSettings() {
   const { branding, loading, saveBranding } = useBranding();
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
-    company_name: branding?.company_name || "",
+    companyName: branding?.companyName || "",
     tagline: branding?.tagline || "",
-    primary_color: branding?.primary_color || "#6366f1",
-    secondary_color: branding?.secondary_color || "#8b5cf6",
+    primaryColor: branding?.primaryColor || "#6366f1",
+    secondaryColor: branding?.secondaryColor || "#8b5cf6",
     website: branding?.website || "",
     email: branding?.email || "",
     phone: branding?.phone || "",
@@ -26,10 +26,10 @@ export function BrandingSettings() {
   useState(() => {
     if (branding) {
       setFormData({
-        company_name: branding.company_name || "",
+        companyName: branding.companyName || "",
         tagline: branding.tagline || "",
-        primary_color: branding.primary_color || "#6366f1",
-        secondary_color: branding.secondary_color || "#8b5cf6",
+        primaryColor: branding.primaryColor || "#6366f1",
+        secondaryColor: branding.secondaryColor || "#8b5cf6",
         website: branding.website || "",
         email: branding.email || "",
         phone: branding.phone || "",
@@ -40,23 +40,22 @@ export function BrandingSettings() {
 
   const handleSave = async () => {
     setSaving(true);
-    const { error } = await saveBranding({
-      company_name: formData.company_name || null,
-      tagline: formData.tagline || null,
-      primary_color: formData.primary_color,
-      secondary_color: formData.secondary_color,
-      website: formData.website || null,
-      email: formData.email || null,
-      phone: formData.phone || null,
-      address: formData.address || null,
-    });
-    setSaving(false);
-
-    if (error) {
-      toast.error("Failed to save branding settings");
-    } else {
+    try {
+      await saveBranding({
+        companyName: formData.companyName || null,
+        tagline: formData.tagline || null,
+        primaryColor: formData.primaryColor,
+        secondaryColor: formData.secondaryColor,
+        website: formData.website || null,
+        email: formData.email || null,
+        phone: formData.phone || null,
+        address: formData.address || null,
+      });
       toast.success("Branding settings saved!");
+    } catch {
+      toast.error("Failed to save branding settings");
     }
+    setSaving(false);
   };
 
   if (loading) {
@@ -93,8 +92,8 @@ export function BrandingSettings() {
               <Label htmlFor="company_name">Company Name</Label>
               <Input
                 id="company_name"
-                value={formData.company_name}
-                onChange={(e) => setFormData(prev => ({ ...prev, company_name: e.target.value }))}
+                value={formData.companyName}
+                onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
                 placeholder="Your Company Name"
                 className="mt-1.5"
               />
@@ -128,13 +127,13 @@ export function BrandingSettings() {
                 <Input
                   type="color"
                   id="primary_color"
-                  value={formData.primary_color}
-                  onChange={(e) => setFormData(prev => ({ ...prev, primary_color: e.target.value }))}
+                  value={formData.primaryColor}
+                  onChange={(e) => setFormData(prev => ({ ...prev, primaryColor: e.target.value }))}
                   className="w-16 h-10 p-1 cursor-pointer"
                 />
                 <Input
-                  value={formData.primary_color}
-                  onChange={(e) => setFormData(prev => ({ ...prev, primary_color: e.target.value }))}
+                  value={formData.primaryColor}
+                  onChange={(e) => setFormData(prev => ({ ...prev, primaryColor: e.target.value }))}
                   placeholder="#6366f1"
                   className="flex-1"
                 />
@@ -146,13 +145,13 @@ export function BrandingSettings() {
                 <Input
                   type="color"
                   id="secondary_color"
-                  value={formData.secondary_color}
-                  onChange={(e) => setFormData(prev => ({ ...prev, secondary_color: e.target.value }))}
+                  value={formData.secondaryColor}
+                  onChange={(e) => setFormData(prev => ({ ...prev, secondaryColor: e.target.value }))}
                   className="w-16 h-10 p-1 cursor-pointer"
                 />
                 <Input
-                  value={formData.secondary_color}
-                  onChange={(e) => setFormData(prev => ({ ...prev, secondary_color: e.target.value }))}
+                  value={formData.secondaryColor}
+                  onChange={(e) => setFormData(prev => ({ ...prev, secondaryColor: e.target.value }))}
                   placeholder="#8b5cf6"
                   className="flex-1"
                 />
@@ -162,11 +161,11 @@ export function BrandingSettings() {
             <div className="flex gap-2 pt-2">
               <div 
                 className="w-12 h-12 rounded-lg shadow-inner" 
-                style={{ backgroundColor: formData.primary_color }}
+                style={{ backgroundColor: formData.primaryColor }}
               />
-              <div 
-                className="w-12 h-12 rounded-lg shadow-inner" 
-                style={{ backgroundColor: formData.secondary_color }}
+              <div
+                className="w-12 h-12 rounded-lg shadow-inner"
+                style={{ backgroundColor: formData.secondaryColor }}
               />
             </div>
           </CardContent>
