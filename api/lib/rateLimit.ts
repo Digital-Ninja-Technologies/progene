@@ -1,5 +1,5 @@
 import { db, rateLimits } from "./db";
-import { eq, and } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 export async function checkRateLimit(
   identifier: string,
@@ -7,34 +7,23 @@ export async function checkRateLimit(
   maxRequests: number,
   windowSeconds: number
 ): Promise<{ allowed: boolean; count: number }> {
-  const windowMs = windowSeconds * 1000;
   const now = new Date();
+  const cutoff = new Date(now.getTime() - windowSeconds * 1000);
 
-  const [existing] = await db
-    .select()
-    .from(rateLimits)
-    .where(and(eq(rateLimits.identifier, identifier), eq(rateLimits.action, action)))
-    .limit(1);
+  // A single atomic UPSERT avoids the read-then-write race of a separate
+  // select + insert/update: concurrent requests for the same identifier
+  // can no longer all read a stale count and all pass the check at once.
+  const [row] = await db
+    .insert(rateLimits)
+    .values({ identifier, action, requestCount: 1, windowStart: now })
+    .onConflictDoUpdate({
+      target: [rateLimits.identifier, rateLimits.action],
+      set: {
+        requestCount: sql`CASE WHEN ${rateLimits.windowStart} < ${cutoff} THEN 1 ELSE ${rateLimits.requestCount} + 1 END`,
+        windowStart: sql`CASE WHEN ${rateLimits.windowStart} < ${cutoff} THEN ${now} ELSE ${rateLimits.windowStart} END`,
+      },
+    })
+    .returning({ requestCount: rateLimits.requestCount });
 
-  if (!existing || now.getTime() - existing.windowStart.getTime() > windowMs) {
-    await db
-      .insert(rateLimits)
-      .values({ identifier, action, requestCount: 1, windowStart: now })
-      .onConflictDoUpdate({
-        target: [rateLimits.identifier, rateLimits.action],
-        set: { requestCount: 1, windowStart: now },
-      });
-    return { allowed: true, count: 1 };
-  }
-
-  if (existing.requestCount >= maxRequests) {
-    return { allowed: false, count: existing.requestCount };
-  }
-
-  await db
-    .update(rateLimits)
-    .set({ requestCount: existing.requestCount + 1 })
-    .where(and(eq(rateLimits.identifier, identifier), eq(rateLimits.action, action)));
-
-  return { allowed: true, count: existing.requestCount + 1 };
+  return { allowed: row.requestCount <= maxRequests, count: row.requestCount };
 }
