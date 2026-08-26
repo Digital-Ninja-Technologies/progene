@@ -1,17 +1,12 @@
 [build]
   command = "npm run build"
   publish = "dist"
-  functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "20"
 
-[functions]
-  node_bundler = "esbuild"
-
-# Client-side routing (react-router) fallback. Netlify serves this only
-# when no static file and no function path (see netlify/functions/api.ts's
-# `path: "/api/*"` config) already matched the request.
+# The API is a separate Render web service (see api/server.ts), not hosted
+# here. This is only the SPA fallback for react-router's client-side routing.
 [[redirects]]
   from = "/*"
   to = "/index.html"
